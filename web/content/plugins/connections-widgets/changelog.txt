@@ -1,0 +1,18 @@
+= 1.2 09/18/2013 =
+* TWEAK: Force links in the widgets to resolve to the directory home page.
+
+= 1.1.2 08/25/2013 =
+* BUG: Fix grammar.
+
+= 1.1.1 07/25/2013 =
+* BUG: Remove stray debug code.
+
+= 1.1 07/24/2013 =
+* Add Dutch translation.
+
+= 1.0.1 07/17/2013 =
+* Remove the page_link filter from the search widget so it'll search the entire directory when on a directory page.
+* Move the changelog.txt file.
+
+= 1.0 10/1/2012 =
+* Initial Release

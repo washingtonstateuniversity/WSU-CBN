@@ -1,0 +1,413 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Connections Form\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-21 17:06-0500\n"
+"PO-Revision-Date: 2012-11-21 17:06-0500\n"
+"Last-Translator: Steven A. Zahm <helpdesk@connections-pro.com>\n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e;_c;_ngettext\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../connections_form.php:135
+msgid "Please wait, your submission is being processed."
+msgstr "Por favor espere, su solicitud está siendo procesada."
+
+#: ../connections_form.php:136
+msgid "Submission received."
+msgstr "Solicitud recivida."
+
+#: ../connections_form.php:137
+msgid "We will review and approve your submission soon."
+msgstr "Su solicitud está pendiente de revisión."
+
+#: ../connections_form.php:164
+msgid "Form"
+msgstr ""
+
+#: ../connections_form.php:189
+msgid "Require Login"
+msgstr ""
+
+#: ../connections_form.php:196
+msgid "Email Notifications"
+msgstr ""
+
+#: ../connections_form.php:216
+msgid "Login Required"
+msgstr ""
+
+#: ../connections_form.php:217
+msgid ""
+"Require registered users to login before showing the entry submission form."
+msgstr ""
+
+#: ../connections_form.php:218
+msgid ""
+"Check this option if you wish to only allow registered users to submit "
+"entries for your review and approval."
+msgstr ""
+
+#: ../connections_form.php:229
+#, fuzzy
+msgid "Message"
+msgstr "Mensajería Instantanea"
+
+#: ../connections_form.php:233
+msgid "Please login in order to submit your entry to our directory."
+msgstr ""
+
+#: ../connections_form.php:242
+msgid "Auto Reply"
+msgstr ""
+
+#: ../connections_form.php:243
+msgid "Send an email notice of receipt."
+msgstr ""
+
+#: ../connections_form.php:255
+msgid "Auto Reply From Name"
+msgstr ""
+
+#: ../connections_form.php:256
+msgid "The name in which the email is said to come from."
+msgstr ""
+
+#: ../connections_form.php:268
+msgid "Auto Reply From Email"
+msgstr ""
+
+#: ../connections_form.php:269
+msgid ""
+"The address in which email is said to come from. This will set the \"from\" "
+"and \"reply to\" address."
+msgstr ""
+
+#: ../connections_form.php:281
+msgid "Auto Reply Subject"
+msgstr ""
+
+#: ../connections_form.php:282
+msgid "The auto reply email subject."
+msgstr ""
+
+#: ../connections_form.php:286
+msgid "Your directory entry submission has been received."
+msgstr ""
+
+#: ../connections_form.php:295
+msgid "Auto Reply Message"
+msgstr ""
+
+#: ../connections_form.php:299
+#, fuzzy
+msgid ""
+"Thank you for your submission. We will review and approve your submission "
+"soon."
+msgstr "Su solicitud está pendiente de revisión."
+
+#: ../connections_form.php:308
+#, fuzzy
+msgid "Submission Notice"
+msgstr "Solicitud recivida."
+
+#: ../connections_form.php:309
+msgid "Send an email notice of entry submission."
+msgstr ""
+
+#: ../connections_form.php:322
+#, fuzzy
+msgid "Submission Notice To"
+msgstr "Solicitud recivida."
+
+#: ../connections_form.php:323
+msgid "The email address in which to send the entry submission notice to."
+msgstr ""
+
+#: ../connections_form.php:335
+#, fuzzy
+msgid "Submission Notice Subject"
+msgstr "Solicitud recivida."
+
+#: ../connections_form.php:336
+msgid "The submission notice subject."
+msgstr ""
+
+#: ../connections_form.php:340
+msgid "You have received a new directory entry submission."
+msgstr ""
+
+#: ../connections_form.php:349
+#, fuzzy
+msgid "Submission Notice Message"
+msgstr "Solicitud recivida."
+
+#: ../connections_form.php:353
+msgid ""
+"You have recieved a new directory submission. Please visit your moderation "
+"queue to review and approve it."
+msgstr ""
+
+#: ../connections_form.php:583
+msgid "Entry Name"
+msgstr "Nombre"
+
+#: ../connections_form.php:584
+msgid "Biography"
+msgstr "Biografía"
+
+#: ../connections_form.php:585
+msgid "Notes"
+msgstr "Notas"
+
+#: ../connections_form.php:633
+msgid "I am an"
+msgstr "Yo soy una"
+
+#: ../connections_form.php:634
+msgid "Individual"
+msgstr "Persona"
+
+#: ../connections_form.php:634 ../connections_form.php:661
+msgid "Organization"
+msgstr "Organización"
+
+#: ../connections_form.php:649
+msgid "Prefix"
+msgstr "Tratamiento"
+
+#: ../connections_form.php:650
+msgid "First Name"
+msgstr "Nombre"
+
+#: ../connections_form.php:651
+msgid "Middle Name"
+msgstr "Segundo Nombre"
+
+#: ../connections_form.php:652
+msgid "Last Name"
+msgstr "Apellidos"
+
+#: ../connections_form.php:653
+msgid "Suffix"
+msgstr "Sufijo"
+
+#: ../connections_form.php:655 ../connections_form.php:1250
+#: ../connections_form.php:1304
+msgid "Title"
+msgstr "Cargo"
+
+#: ../connections_form.php:663
+msgid "Department"
+msgstr "Departamento"
+
+#: ../connections_form.php:666
+msgid "Contact First Name"
+msgstr "Nombre"
+
+#: ../connections_form.php:667
+msgid "Contact Last Name"
+msgstr "Apellidos"
+
+#: ../connections_form.php:684
+msgid "Image"
+msgstr "Imagen"
+
+#: ../connections_form.php:694 ../connections_form.php:708
+msgid "Display"
+msgstr "Mostrar"
+
+#: ../connections_form.php:694 ../connections_form.php:708
+msgid "Not Displayed"
+msgstr "No se muestra"
+
+#: ../connections_form.php:694 ../connections_form.php:708
+#: ../connections_form.php:800 ../connections_form.php:885
+#: ../connections_form.php:930 ../connections_form.php:964
+#: ../connections_form.php:1009 ../connections_form.php:1044
+#: ../connections_form.php:1090 ../connections_form.php:1124
+#: ../connections_form.php:1170 ../connections_form.php:1204
+#: ../connections_form.php:1269 ../connections_form.php:1324
+msgid "Remove"
+msgstr "Quitar"
+
+#: ../connections_form.php:699
+msgid "Select Photo"
+msgstr "Seleccione Foto"
+
+#: ../connections_form.php:713
+msgid "Select Logo"
+msgstr "Seleccione Logo"
+
+#: ../connections_form.php:729 ../connections_form.php:740
+msgid "Address Type"
+msgstr "Tipo Dirección"
+
+#: ../connections_form.php:741 ../connections_form.php:824
+#: ../connections_form.php:920 ../connections_form.php:953
+#: ../connections_form.php:999 ../connections_form.php:1033
+#: ../connections_form.php:1080 ../connections_form.php:1113
+#: ../connections_form.php:1160 ../connections_form.php:1193
+#: ../connections_form.php:1240 ../connections_form.php:1294
+msgid "Preferred"
+msgstr "Preferido"
+
+#: ../connections_form.php:752 ../connections_form.php:835
+msgid "Address Line 1"
+msgstr "Dirección Línea 1"
+
+#: ../connections_form.php:757 ../connections_form.php:840
+msgid "Address Line 2"
+msgstr "Dirección Línea 2"
+
+#: ../connections_form.php:762 ../connections_form.php:845
+msgid "Address Line 3"
+msgstr "Dirección Línea 3"
+
+#: ../connections_form.php:770 ../connections_form.php:852
+msgid "City"
+msgstr "Ciudad"
+
+#: ../connections_form.php:774 ../connections_form.php:856
+msgid "State"
+msgstr "Estado/Provincia"
+
+#: ../connections_form.php:778 ../connections_form.php:860
+msgid "Zipcode"
+msgstr "Código Postal"
+
+#: ../connections_form.php:784 ../connections_form.php:866
+msgid "Country"
+msgstr "País"
+
+#: ../connections_form.php:790 ../connections_form.php:872
+msgid "Latitude"
+msgstr "Latitud"
+
+#: ../connections_form.php:794 ../connections_form.php:876
+msgid "Longitude"
+msgstr "Longitud"
+
+#: ../connections_form.php:895
+msgid "Add Address"
+msgstr "Añadir Dirección"
+
+#: ../connections_form.php:908
+msgid "Phone Numbers"
+msgstr "Número Teléfono"
+
+#: ../connections_form.php:919 ../connections_form.php:952
+msgid "Phone Type"
+msgstr "Tipo de Teléfono"
+
+#: ../connections_form.php:929 ../connections_form.php:962
+msgid "Phone Number"
+msgstr "Número Teléfono"
+
+#: ../connections_form.php:973
+msgid "Add Phone Number"
+msgstr "Agregar Número Teléfono"
+
+#: ../connections_form.php:987
+msgid "Email"
+msgstr "Correo Electrónico"
+
+#: ../connections_form.php:998 ../connections_form.php:1032
+msgid "Email Type"
+msgstr "Tipo de Correo"
+
+#: ../connections_form.php:1008 ../connections_form.php:1042
+msgid "Email Address"
+msgstr "Dirección de Correo Electrónico"
+
+#: ../connections_form.php:1054
+msgid "Add Email Address"
+msgstr "Agregar Correo Electrónico"
+
+#: ../connections_form.php:1068
+msgid "Messenger"
+msgstr "Mensajería Instantanea"
+
+#: ../connections_form.php:1079 ../connections_form.php:1112
+msgid "IM Type"
+msgstr "Tipo M.I."
+
+#: ../connections_form.php:1089 ../connections_form.php:1122
+msgid "IM Network ID"
+msgstr "Dirección Mensajería"
+
+#: ../connections_form.php:1134
+msgid "Add Messenger ID"
+msgstr "Añadir ID. Mensajería"
+
+#: ../connections_form.php:1148
+msgid "Social Media"
+msgstr "Social Media"
+
+#: ../connections_form.php:1159 ../connections_form.php:1192
+msgid "Social Network"
+msgstr "Red Social"
+
+#: ../connections_form.php:1169 ../connections_form.php:1202
+#: ../connections_form.php:1251 ../connections_form.php:1305
+msgid "URL"
+msgstr "Nombre de Dominio"
+
+#: ../connections_form.php:1214
+msgid "Add Social Media ID"
+msgstr "Añadir Red Social"
+
+#: ../connections_form.php:1228
+msgid "Links"
+msgstr "Enlaces"
+
+#: ../connections_form.php:1239 ../connections_form.php:1293
+msgid "Type"
+msgstr "Tipo"
+
+#: ../connections_form.php:1264 ../connections_form.php:1318
+msgid "Assign link to the image."
+msgstr "Asignar enlace a imagen."
+
+#: ../connections_form.php:1265 ../connections_form.php:1319
+msgid "Assign link to the logo."
+msgstr "Asignar enlace a logo."
+
+#: ../connections_form.php:1334
+msgid "Add Link"
+msgstr "Añadir Enlace"
+
+#: ../connections_form.php:1348
+msgid "Dates"
+msgstr "Fechas"
+
+#: ../connections_form.php:1355
+msgid "Birthday"
+msgstr "Cumpleaños"
+
+#: ../connections_form.php:1358 ../connections_form.php:1368
+msgid "Field not available for this entry type."
+msgstr "El campo no está disponible para este tipo de entrada."
+
+#: ../connections_form.php:1365
+msgid "Anniversary"
+msgstr "Aniversario"
+
+#: ../connections_form.php:1383
+msgid "Category"
+msgstr "Categoría"
+
+#: ../connections_form.php:1392
+msgid "Select Categories"
+msgstr "Seleccione Categorías"
+
+#: ../connections_form.php:1519
+msgid "Submit"
+msgstr "Subir"

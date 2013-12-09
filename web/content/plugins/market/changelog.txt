@@ -1,0 +1,44 @@
+= 3.0.1 04/09/2013 =
+* BUG: Fixed a couple variables that should have been converted to booleans.
+
+= 3.0 03/26/2013 =
+* Complete rewrite to support the new template system in Connections 0.7.6.
+
+= 2.1 10/17/2012 =
+* OTHER: Add a couple extra styles to help prevent theme's from affecting the table.
+* OTHER: Update to use the new template parts in the Connections core.
+* OTHER: Cleanup CSS.
+* OTHER: Update the "Visit Website" link code to use the target/follow/title settings as set when editing the entry's links.
+
+= 2.0.8 07/17/2012 =
+* OTHER: Some CSS style tweaks to help prevent themes from breaking the layout.
+
+= 2.0.7 5/9/2012 =
+* BUG: Use character entity codes for the page forward / page backward buttons.
+
+= 2.0.6 05/01/2012 =
+* OTHER: Added an additional style to make sure themes do not add borders and rules to the table elements.
+
+= 2.0.5 4/22/2012 =
+* BUG: When searching for terms that returned no results; the search showed all entries. Now the 'No Results' message will be returned.
+
+= 2.0.4 3/26/2012 =
+* BUG: If enable_category_select is set to false, set the category_width option to 0.
+
+= 2.0.3 2/8/2012 =
+* BUG: Fixed bug that prevented the website link from displaying.
+
+= 2.0.2 2/6/2012 =
+* FEATURE: Add the shortcode options; address_types, phone_types, email_types.
+* BUG: Fix the enable_website_link shortcode attribute.
+* BUG: Show the radio as selected and highlighted for the active category in the category sidebar
+* OTHER: Change CSS positioning if the search icon.
+
+= 2.0.1 1/23/2012 =
+* OTHER: Slight CSS style tweak for the alphaindex.
+
+= 2.0 1/16/2012 =
+* OTHER: Complete rewrite to support Connections 0.7.2.1
+
+= 1.0 =
+* OTHER: Initial Release.

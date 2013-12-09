@@ -1,0 +1,32 @@
+= 3.0.1 04/03/2013 =
+* BUG: Convert a couple $atts values to booleans that were missed in the re-write.
+
+= 3.0 03/26/2013 =
+* Complete rewrite to support the new template system in Connections 0.7.6.
+
+= 2.1. 01/24/2013 =
+* BUG: Added missing var that should have been set so the category drop down could be limited to the selected root parents.
+
+= 2.1 10/29/2012 =
+* OTHER: Added CSS to line wrap long email addresses.
+* OTHER: Update to use the new template parts in the Connections core.
+* OTHER: Cleanup CSS.
+* OTHER: Update the "Visit Website" link code to use the target/follow/title settings as set when editing the entry's links.
+
+= 2.0.3 5/9/2012 =
+* BUG: Use character entity codes for the page forward / page backward buttons.
+
+= 2.0.2 4/22/2012 =
+* BUG: When searching for terms that returned no results; the search showed all entries. Now the 'No Results' message will be returned.
+
+= 2.0.1 2/15/2012 =
+* BUG: Added missing option arrays to support some shortcode options for the address, phone and email blocks.
+
+= 2.0 2/12/2012 =
+* OTHER: Complete rewrite to support Connections 0.7.2.1
+
+= 1.0.1 =
+* Fixed CSS to better target IE.
+
+= 1.0 =
+* Initial Release

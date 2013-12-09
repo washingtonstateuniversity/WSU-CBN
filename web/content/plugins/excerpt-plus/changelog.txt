@@ -1,0 +1,9 @@
+= 1.0.2 07/08/2013 =
+* BUG: Add missing filter that enabled the excerpt_length shortcode option.
+* BUG: A couple methods were not declared as static.
+
+= 1.0.1 03/21/2013 =
+* OTHER: Correct the default settings.
+
+= 1.0. 03/21/2013 =
+* Initial release

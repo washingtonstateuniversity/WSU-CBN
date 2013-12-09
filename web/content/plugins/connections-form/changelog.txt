@@ -1,0 +1,61 @@
+= 1.0.2 2/18/2013 =
+* BUG: The .gitignore file was set to ignore .mo files.
+* OTHER: Inlude the missing .mo files.
+
+= 1.0.1 1/30/2013 =
+* BUG: Remove the !important declartion on the CSS margin for the Chosen search results <li>.
+* BUG: Correct the padding on the CSS for the category select.
+* OTHER: Add the missing release date in the changelog for 1.0.
+* OTHER: Correct some misspellings in the changelog.
+
+= 1.0 11/22/2012 =
+* FEATURE: Configurable email notification is sent when a new entry has been submitted to the moderation queue.
+* FEATURE: Configurable email notification is sent to the submitter if they supplied an email address thanking them for their submission.
+* FEATURE: Option to require the user to login before showing the submission form.
+* BUG: Fix bug with submitting in IE8 by setting the post method on the form.
+* BUG: Change the input line height from 1px to 1em as it should have been set in the first place. Fixes IE rendering.
+* BUG: Ensure the localize JS is only output on the page a single time by hooking the function into the wp_enqueue_scripts action. Some themes were outputting it multiple times.
+* OTHER: Include German translation. Credit: Andreas
+* OTHER: Include Dutch translation. Credit: Dirk
+* OTHER: Removed the action attribute from the form, unneeded.
+* OTHER: Added additional styles to prevent themes from breaking the layout.
+* OTHER: Make the CSS declarations a little more efficient.
+* OTHER: Code clean up, first pass to bring in better alignment to WP coding standards.
+* OTHER: Remove pass by reference when referencing class methods in actions and filters for PHP 5.4 compatibility.
+* OTHER: Add admin error notice if Form is installed and activated and Connections is not.
+* OTHER: Use proper WP functions for base path and URL. This should ensure proper compatibility with multisite.
+
+= 0.3.4 6/30/2012 =
+* OTHER: Removed trailing comma in the cn-form-user.js file to prevent IE9 JavaScript errors.
+* OTHER: Include Russian translation. Credit: Aslan
+
+= 0.3.3 6/24/2012 =
+* OTHER: Added shortcode option to disable tinyMCE for the Bio and Notes fields.
+
+= 0.3.3 5/8/2012 =
+* OTHER: Include Hungarian translation. Credit: Robert
+* OTHER: Include French translation. Credit: Patricia
+* OTHER: Updated Spanish translation. Credit: Jaime
+* OTHER: Include Spanish Peru translation. Credit: Gary.
+
+= 0.3.1 4/30/2012 =
+* BUG: Fixed JavaScript error that prevented submission with a lot of data to fail.
+* OTHER: Added some additional CSS to help from keep themes from breaking the layout.
+
+= 0.3 4/22/2012 =
+* FEATURE: Translation ready.
+* FEATURE: Added an option to disable the selectable entry type radio.
+* FEATURE: Added an option to change the Bio meta box name to a custom string.
+* FEATURE: Added an option to change the Note meta box name to a custom string.
+* OTHER: Include Spanish translation. Credit: Jamie
+* OTHER: Include Polish translation. Credit: Iwona
+
+= 0.2.1 4/4/2012 =
+* BUG: Fixed a bug that prevented empty categories from showing.
+
+= 0.2 4/1/2012 =
+* FEATURE: Added the option to set the default for the entry type.
+* FEATURE: Added the ability for the submitter to select the categories they would like to be listed.
+
+= 0.1 3/1/2012 =
+* Initial Release

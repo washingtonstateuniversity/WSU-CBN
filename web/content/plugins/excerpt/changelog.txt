@@ -1,0 +1,20 @@
+= 2.0.1 09/30/2013 =
+* BUG: Add missing excerpt length filter.
+
+= 2.0 03/22/2013 =
+* OTHER: Complete rewrite to support the new templating system introduced in Connections 0.7.6
+
+= 1.1 10/xx/2012 =
+* OTHER: Use the getEmailAddressBlock() method rather than custom code.
+
+= 1.0.2 7/17/2012 =
+* OTHER: Remove the absolute positioning applied to "div.cn-entry div.cn-excerpt".
+
+= 1.0.1 7/17/2012 =
+* OTHER: Hard code the width and height.
+* OTHER: Update template to use the new getImage method and adjust CSS styles accordingly.
+* OTHER: Add the missing ellipse at the end of the excerpt.
+* OTHER: Strip shortcodes from the excerpts.
+
+= 1.0.1 =
+* Initial release

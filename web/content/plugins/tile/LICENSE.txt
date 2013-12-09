@@ -1,0 +1,22 @@
+This Connections Template is comprised of two parts:
+
+
+(1) The PHP code is licensed under the GPL license as is WordPress itself.  You will find a copy of the license text in the same directory as this text file. Or you can read it here:
+
+http://codex.wordpress.org/GPL
+
+
+
+(2) All other parts of the template including, but not limited to the CSS code [Work], images [Work], and design [Work] are licensed according to the following terms.
+
+(a) The license grants you [Purchaser], the Purchaser a non-exclusive, non-transferable right to make use of the Work.
+
+(b) Purchaser agrees that the use of the Work will be limited to a single concurrent use.
+
+(c) Unless the Purchaser receives written consent the Purachaser may not directly or indirectly license or sublicense, sell or resell or provide for free the Work. Each of these from hereforth will be referred as Resale.
+
+(d) The Purchaser may use the Work in a work which the Purchaser is creating or is creating on behalf of the Purchaser client.
+
+(e) The Work may not be incorporated in a work which is created for for Resale by the Purchaser or the Purchaser's client.
+
+(f) Notwithstanding the restrictions on Resale the Purchaser may recoup the cost of aquiring the Work from the Purchaser's client.

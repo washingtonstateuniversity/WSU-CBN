@@ -1,0 +1,11 @@
+= 3.0 03/28/2013 =
+* Complete rewrite to support the new template system in Connections 0.7.6.
+
+= 2.0 3/27/2012 =
+* OTHER: Complete rewrite to support Connections 0.7.2.1
+
+= 1.0.1 =
+* Fixed CSS to better target IE.
+
+= 1.0 =
+* Initial Release

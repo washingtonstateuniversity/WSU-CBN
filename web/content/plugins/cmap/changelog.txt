@@ -1,0 +1,62 @@
+= 3.0.3 05/01/2013 =
+* TWEAK: Slight improvement to the layout of the entry in single view.
+* BUG: Add the current page.post permalink to the form action attribute.
+
+= 3.0.2 04/09/2013 =
+* BUG: Fixed a couple variables that should have been converted to booleans.
+
+= 3.0.1 03/25/2013 =
+* Complete rewrite to support the new template system in Connections 0.7.6.
+
+= 2.1 10/16/2012 =
+* FEATURE: Add 'email_format' option.
+* FEATURE: Add 'phone_format' option.
+* OTHER: Update to use the new template parts in the Connections core.
+* OTHER: Add a couple extra styles to help prevent theme's from affecting the table.
+* OTHER: Update the "Visit Website" link code to use the target/follow/title settings as set when editing the entry's links.
+
+= 2.0.10 5/9/2012 =
+* BUG: Use character entity codes for the page forward / page backward buttons.
+
+= 2.0.9 5/6/2012 =
+* FEATURE: Added multi-select for the category slection.
+
+= 2.0.8 4/22/2012 =
+* BUG: When searching for terms that returned no results; the search showed all entries. Now the 'No Results' message will be returned.
+
+= 2.0.7 2/19/2012 =
+* BUG: Fix CSS bug when using repeat_alphaindex.
+
+= 2.0.6 2/6/2012 =
+* FEATURE: Add the shortcode options; address_types, phone_types, email_types.
+* BUG: Fix the enable_website_link shortcode attribute.
+* OTHER: Change CSS positioning if the search icon.
+* OTHER: Add 6px left margin to the image in the bio tray.
+
+= 2.0.5 1/17/2012 =
+* BUG: Fix the CSS for the alphaindex positioning when using the show_alphaindex='true' show_alphahead='true'  shortcode attributes.
+
+= 2.0.4 1/15/2012 =
+* FEATURE: Added the ability to change the address labels via shortcode.
+* FEATURE: Add the ability to change the address layout via shortcode.
+* FEATURE: Add the ability to change the contact name layout via shortcode.
+* FEATURE: Add the ability to change the contact name label via shortcode.
+* OTHER: A few CSS tweaks to the bio and notes area.
+* OTHER: The image im the bio tray will now float right by default for a more balanced layout.
+
+= 2.0.3 1/14/2012 =
+* BUG: Fix the enable_search shortcode option.
+* OTHER: A few CSS tweaks.
+
+= 2.0.2 1/10/2012 =
+* OTHER: Fixed the email and phone labels filters so they would run.
+* OTHER: Added a couple styles to the .bio and .note classes to prevent themes to from styling those eareas oddly.
+
+= 2.0 1/2/2012 =
+* OTHER: Complete rewrite to support Connections 0.7.2.1
+
+= 1.1.1 11/17/2011 =
+* BUG: Set the default pagination count back to 20.
+
+= 1.1 11/17/2011 =
+* OTHER: Change the pagination style from a list to match the pagination stype found on the page / post admin pages.
