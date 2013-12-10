@@ -583,7 +583,7 @@ if ( ! class_exists( 'CN_Market' ) ) {
 		 * @param  (array)  $atts The shortcode $atts array.
 		 * @return (array)
 		 */
-		public function setCategory( $atts ) {
+		public static function setCategory( $atts ) {
 
 			if ( get_query_var('cn-cat') ) $atts['category'] = get_query_var('cn-cat');
 

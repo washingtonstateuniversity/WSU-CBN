@@ -1,0 +1,144 @@
+Entry Type
+Visibility
+Honorific Prefix
+First Name
+Middle Name
+Last Name
+Honorific Suffix
+Title
+Organization
+Department
+Contact First Name
+Contact Last Name
+Biography
+Notes
+Categories
+Home Address | Line One
+Home Address | Line Two
+Home Address | Line Three
+Home Address | City
+Home Address | State
+Home Address | Zipcode
+Home Address | Country
+Home Address | Latitude
+Home Address | Longitude
+Work Address | Line One
+Work Address | Line Two
+Work Address | Line Three
+Work Address | City
+Work Address | State
+Work Address | Zipcode
+Work Address | Country
+Work Address | Latitude
+Work Address | Longitude
+School Address | Line One
+School Address | Line Two
+School Address | Line Three
+School Address | City
+School Address | State
+School Address | Zipcode
+School Address | Country
+School Address | Latitude
+School Address | Longitude
+Other Address | Line One
+Other Address | Line Two
+Other Address | Line Three
+Other Address | City
+Other Address | State
+Other Address | Zipcode
+Other Address | Country
+Other Address | Latitude
+Other Address | Longitude
+Address 1 | Line One
+Address 1 | Line Two
+Address 1 | Line Three
+Address 1 | City
+Address 1 | State
+Address 1 | Zipcode
+Address 1 | Country
+Address 1 | Latitude
+Address 1 | Longitude
+Address 2 | Line One
+Address 2 | Line Two
+Address 2 | Line Three
+Address 2 | City
+Address 2 | State
+Address 2 | Zipcode
+Address 2 | Country
+Address 2 | Latitude
+Address 2 | Longitude
+Address 3 | Line One
+Address 3 | Line Two
+Address 3 | Line Three
+Address 3 | City
+Address 3 | State
+Address 3 | Zipcode
+Address 3 | Country
+Address 3 | Latitude
+Address 3 | Longitude
+Address 4 | Line One
+Address 4 | Line Two
+Address 4 | Line Three
+Address 4 | City
+Address 4 | State
+Address 4 | Zipcode
+Address 4 | Country
+Address 4 | Latitude
+Address 4 | Longitude
+Address 5 | Line One
+Address 5 | Line Two
+Address 5 | Line Three
+Address 5 | City
+Address 5 | State
+Address 5 | Zipcode
+Address 5 | Country
+Address 5 | Latitude
+Address 5 | Longitude
+Phone | Home Phone
+Phone | Home Fax
+Phone | Cell Phone
+Phone | Work Phone
+Phone | Work Fax
+Email | Personal Email
+Email | Work Email
+Messenger | AIM
+Messenger | Yahoo IM
+Messenger | Jabber / Google Talk
+Messenger | Messenger
+Messenger | Skype
+Messenger | ICQ
+Social Network | delicious
+Social Network | CD Baby
+Social Network | Facebook
+Social Network | Flickr
+Social Network | foursquare
+Social Network | Google+
+Social Network | iTunes
+Social Network | Linked-in
+Social Network | mixcloud
+Social Network | MySpace
+Social Network | Odnoklassniki
+Social Network | Pinterest
+Social Network | Podcast
+Social Network | ReverbNation
+Social Network | RSS
+Social Network | SoundCloud
+Social Network | Technorati
+Social Network | TripAdvisor
+Social Network | Twitter
+Social Network | vimeo
+Social Network | VK
+Social Network | Yelp
+Social Network | YouTube
+Link | Website
+Link | Blog
+Date | Anniversary
+Date | Baptism
+Date | Birthday
+Date | Deceased
+Date | Certification
+Date | Employment
+Date | Membership
+Date | Graduate High School
+Date | Graduate College
+Date | Ordination

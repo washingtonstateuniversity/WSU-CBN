@@ -137,7 +137,7 @@ if ( ! class_exists( 'CN_cMap' ) ) {
 		 * @param  (array)  $permittedAtts The shortcode $atts array.
 		 * @return (array)
 		 */
-		public function initShortcodeAtts( $permittedAtts = array() ) {
+		public static function initShortcodeAtts( $permittedAtts = array() ) {
 			global $connections;
 
 			$addressLabel = $connections->options->getDefaultAddressValues();
@@ -514,7 +514,7 @@ if ( ! class_exists( 'CN_cMap' ) ) {
 		 * @param  (array)  $atts The shortcode $atts array.
 		 * @return (array)
 		 */
-		public function setCategory( $atts ) {
+		public static function setCategory( $atts ) {
 
 			if ( $atts['enable_category_multi_select'] ) {
 

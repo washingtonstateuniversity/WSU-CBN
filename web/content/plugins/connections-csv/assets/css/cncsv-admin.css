@@ -1,0 +1,51 @@
+fieldset {
+	border: 1px solid #DFDFDF;
+	margin: 0 3px 10px;
+	padding: 12px 20px;
+}
+
+fieldset legend {
+	padding: 2px 4px;
+}
+
+/* START -->  A few styles to make presentation better for pre Connections 0.8 and WP 3.8 */
+fieldset p label {
+	display: block;
+	margin-bottom: 4px;
+}
+
+fieldset p label input {
+	margin-right: 10px !important;
+	vertical-align: top !important;
+}
+
+fieldset p label.desc {
+	margin-bottom: 10px;
+}
+/* END -->  A few styles to make presentation better for pre Connections 0.8 and WP 3.8 */
+
+.cn-radio-option label {
+	display: inline;
+}
+
+input[type="text"].cn-field-name {
+	min-width: 255px;
+}
+
+input[type="radio"] {
+	vertical-align: bottom;
+}
+
+#cncsv-import-progress {
+	background-color: #888;
+	position: relative;
+}
+
+#cncsv-progress-label {
+	color: #FFF;
+	position: absolute;
+	left: 45%;
+	top: 5px;
+	font-weight: bold;
+	text-shadow: 1px 1px 0 #000;
+}
