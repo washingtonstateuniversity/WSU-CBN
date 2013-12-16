@@ -1,0 +1,335 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Connections Toolbar\n"
+"POT-Creation-Date: 2013-09-16 19:25-0500\n"
+"PO-Revision-Date: 2013-09-16 19:25-0500\n"
+"Last-Translator: Steven A. Zahm <helpdesk@connections-pro.com>\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"X-Poedit-KeywordsList: __;_e;_n;_x;esc_html_e;esc_html__;esc_attr_e;"
+"esc_attr__;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;_x:1,2c\n"
+"X-Poedit-Basepath: ../\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: connections-toolbar.php:218
+msgid "Connections"
+msgstr ""
+
+#: connections-toolbar.php:222
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Connections Dashboard"
+msgstr ""
+
+#: connections-toolbar.php:229
+msgid "Dashboard"
+msgstr ""
+
+#: connections-toolbar.php:232
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Dashboard"
+msgstr ""
+
+#: connections-toolbar.php:239
+msgid "Manage"
+msgstr ""
+
+#: connections-toolbar.php:242
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Manage"
+msgstr ""
+
+#: connections-toolbar.php:249
+msgid "Filter: Approved"
+msgstr ""
+
+#: connections-toolbar.php:252
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Show Only Approved Entries"
+msgstr ""
+
+#: connections-toolbar.php:259
+msgid "Filter: Pending"
+msgstr ""
+
+#: connections-toolbar.php:262
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Show Entries Awaiting Moderation"
+msgstr ""
+
+#: connections-toolbar.php:269
+msgid "Add New Entry"
+msgstr ""
+
+#: connections-toolbar.php:272
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Add New Entry"
+msgstr ""
+
+#: connections-toolbar.php:279
+msgid "Categories"
+msgstr ""
+
+#: connections-toolbar.php:282
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Manage Categories"
+msgstr ""
+
+#: connections-toolbar.php:289 connections-toolbar.php:474
+#: connections-toolbar.php:549
+msgid "Templates"
+msgstr ""
+
+#: connections-toolbar.php:292
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Manage Templates"
+msgstr ""
+
+#: connections-toolbar.php:299
+msgid "Filter: Individual"
+msgstr ""
+
+#: connections-toolbar.php:302
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Show the \"Individual\" Template Type"
+msgstr ""
+
+#: connections-toolbar.php:309
+msgid "Filter: Organization"
+msgstr ""
+
+#: connections-toolbar.php:312
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Show the \"Organization\" Template Type"
+msgstr ""
+
+#: connections-toolbar.php:319
+msgid "Filter: Family"
+msgstr ""
+
+#: connections-toolbar.php:322
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Show the \"Family\" Template Type"
+msgstr ""
+
+#: connections-toolbar.php:329
+msgid "Filter: Anniversary"
+msgstr ""
+
+#: connections-toolbar.php:332
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Show the \"Anniversary\" Template Type"
+msgstr ""
+
+#: connections-toolbar.php:339
+msgid "Filter: Birthday"
+msgstr ""
+
+#: connections-toolbar.php:342
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Show the \"Birthday\" Template Type"
+msgstr ""
+
+#: connections-toolbar.php:355
+msgid "Get More"
+msgstr ""
+
+#: connections-toolbar.php:358 connections-toolbar.php:477
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Purchase Premium Templates"
+msgstr ""
+
+#: connections-toolbar.php:366
+msgid "Settings"
+msgstr ""
+
+#: connections-toolbar.php:369
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Settings"
+msgstr ""
+
+#: connections-toolbar.php:376 connections-toolbar.php:527
+msgid "General"
+msgstr ""
+
+#: connections-toolbar.php:379
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "General Settings"
+msgstr ""
+
+#: connections-toolbar.php:386
+msgid "Display"
+msgstr ""
+
+#: connections-toolbar.php:389
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Display Settings"
+msgstr ""
+
+#: connections-toolbar.php:396
+msgid "Images"
+msgstr ""
+
+#: connections-toolbar.php:399
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Images Settings"
+msgstr ""
+
+#: connections-toolbar.php:406 connections-toolbar.php:630
+msgid "Search"
+msgstr ""
+
+#: connections-toolbar.php:409
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Search Settings"
+msgstr ""
+
+#: connections-toolbar.php:416
+msgid "SEO"
+msgstr ""
+
+#: connections-toolbar.php:419
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "SEO Settings"
+msgstr ""
+
+#: connections-toolbar.php:426
+msgid "Roles"
+msgstr ""
+
+#: connections-toolbar.php:429
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Roles and Capabilities"
+msgstr ""
+
+#: connections-toolbar.php:436
+msgid "Advanced"
+msgstr ""
+
+#: connections-toolbar.php:439
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Advanced Settings"
+msgstr ""
+
+#: connections-toolbar.php:452
+msgid "Extensions &amp; Templates"
+msgstr ""
+
+#: connections-toolbar.php:455
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Extensions &amp; Extensions"
+msgstr ""
+
+#: connections-toolbar.php:463 connections-toolbar.php:538
+msgid "Extensions"
+msgstr ""
+
+#: connections-toolbar.php:466
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Purchase Extensions"
+msgstr ""
+
+#: connections-toolbar.php:494
+msgid "Support Forums"
+msgstr ""
+
+#: connections-toolbar.php:497
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Support Forums"
+msgstr ""
+
+#: connections-toolbar.php:505
+msgid "Feature Requests"
+msgstr ""
+
+#: connections-toolbar.php:508
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Feature Requests"
+msgstr ""
+
+#: connections-toolbar.php:516
+msgid "Pre Sales Questions"
+msgstr ""
+
+#: connections-toolbar.php:519
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Pre Sales Questions"
+msgstr ""
+
+#: connections-toolbar.php:530
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "General"
+msgstr ""
+
+#: connections-toolbar.php:541
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Extensions"
+msgstr ""
+
+#: connections-toolbar.php:552
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Templates"
+msgstr ""
+
+#: connections-toolbar.php:560
+msgid "Plugin Conflicts"
+msgstr ""
+
+#: connections-toolbar.php:563
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Plugin Conflicts"
+msgstr ""
+
+#: connections-toolbar.php:571
+msgid "Theme Conflicts"
+msgstr ""
+
+#: connections-toolbar.php:574
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Theme Conflicts"
+msgstr ""
+
+#: connections-toolbar.php:582
+msgid "Documentation"
+msgstr ""
+
+#: connections-toolbar.php:589
+msgid "FAQs"
+msgstr ""
+
+#: connections-toolbar.php:592
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Frequently Asked Questions"
+msgstr ""
+
+#: connections-toolbar.php:600
+msgid "QuickTips"
+msgstr ""
+
+#: connections-toolbar.php:603
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "QuickTips"
+msgstr ""
+
+#: connections-toolbar.php:611
+msgid "Shortcodes"
+msgstr ""
+
+#: connections-toolbar.php:614
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Shortcodes"
+msgstr ""
+
+#: connections-toolbar.php:622
+msgid "Translation"
+msgstr ""
+
+#: connections-toolbar.php:625
+msgctxt "This is a tooltip shown on mouse hover."
+msgid "Translation"
+msgstr ""
