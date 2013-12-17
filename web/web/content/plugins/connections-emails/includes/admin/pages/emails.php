@@ -34,10 +34,31 @@ function connectionsEmailsPage() {
 			$action = isset( $_REQUEST['action'] ) ? $_REQUEST['action'] : 'start' ;
 
 			switch ( $action ) {
-
 				case 'send_email' :
 					$subject=$_REQUEST['sub'];				
-					$measage=$_REQUEST['mess'];		
+					$measage=str_replace('\"','"',$_REQUEST['mess']);
+
+
+
+					$proccessOutput="";
+					$proccessOutput.="<div> <h3>Visual Output</h3>";
+						$proccessOutput.="<div><strong>Subject</strong>:<br/>".$subject."</div>";
+						$proccessOutput.="<div><strong>Message</strong>:<br/>".$measage."</div>";
+					$proccessOutput.="</div>";
+					$proccessOutput.="<div> <h3>Raw Output</h3>";
+						//using the buffer so we ca do a raw data dump
+						ob_start();
+						var_dump($subject);
+						$result = ob_get_clean();
+						$proccessOutput.="<div><strong>Subject</strong>:<br/>".$result."</div>";
+						
+						ob_start();
+						var_dump($measage);
+						$result = ob_get_clean();
+						$proccessOutput.="<div><strong>Subject</strong>:<br/>".$result."</div>";
+					$proccessOutput.="</div>";
+					
+					$proccessOutput.="<div> <h3>Recipent List</h3>";
 					/* the reason for the one by one is that there is a flaw in 
 					wp_mail where it will die and f the whole email list if the server
 					sends back a 503.5 error.*/
@@ -45,12 +66,11 @@ function connectionsEmailsPage() {
 						$entry = new cnEntry( $connections->retrieve->entry( $id ) );				
 						$email = new cnEmail;
 						// Set email to be sent as HTML.
-						$email->html();
+						$email->html(); // should be optional
 						// Set from whom the email is being sent.
 						$email->from( 'webmaster@wsu.edu', 'Name set in settings' );
 						// Send to multiple email addesses.
 						// Call for each address to which the email is to be sent.
-						
 						$emails=$entry->getEmailAddresses( array(), TRUE, TRUE );
 						$address =  "no email";	
 						if(count($emails)>1){
@@ -71,7 +91,7 @@ function connectionsEmailsPage() {
 						}
 
 						$email->to( $address, $entry->getName( array( 'format' => '%last%, %first%' ) ) );
-						echo "email sent to <strong>".$address."</strong><br/>";
+						$proccessOutput.="<strong>".$address."</strong><br/>";
 						$email->subject( $subject );
 						$email->message( $measage );
 						// Send the email.
@@ -79,7 +99,11 @@ function connectionsEmailsPage() {
 						// The object can be completely reset for reuse to send a completely different email.
 						$email->clear();
 					}
-					echo "<h3>emails sent</h3>";
+					$proccessOutput.="</div>";
+					echo "<h2>Emails sent</h2>";
+					echo "<h3>0 issues found</h3>";//should be a test
+					echo $proccessOutput;
+					
 				break;
 				
 
@@ -96,7 +120,7 @@ function connectionsEmailsPage() {
 
 					?>
 	                Subject: <input type="text" name="sub" /><br/>
-                    Message: <textarea name="mess"></textarea>
+                    Message: <?php wp_editor( ' ', 'mess', array("teeny"=>true,"wpautop"=>false) ); ?>
                     <!--<input type="hidden" name="id[]" value="<?php echo implode(',',$_REQUEST['id'])?>" />-->
                     <p class="submit"><input class="button-primary" type="submit" name="submit_csv" value="send_email" /></p>
 					<hr/>
