@@ -51,17 +51,17 @@
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     
     
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <!--<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>-->
     
     <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>
     
     <script type="text/javascript" src="/content/themes/cbn/js/jquery.defaultvalue.js"></script>
     
     
-    <script type="text/javascript" src="/content/themes/cbn/js/markerclusterer.min.js"></script>
+    <!-- <script type="text/javascript" src="/content/themes/cbn/js/markerclusterer.min.js"></script>
     <script type="text/javascript" src="/content/themes/cbn/js/jquery.ui.map.js"></script>
     <script type="text/javascript" src="/content/themes/cbn/js/infobox.js"></script>
-    <!-- scripts concatenated and minified via build script   -->
+    scripts concatenated and minified via build script   -->
     <script type="text/javascript" src="/content/themes/cbn/js/ini.js"></script>
     
     

@@ -446,6 +446,18 @@ position: relative;
 .col_2{width:50%;float:left;display:inline-block;height: 55px;position:relative}
 .col_2 input[type="submit"],.col_2 input[type="button"]{position:absolute;bottom:0px; right:0px;}
 
+
+body.page.page-id-9 #main-content {
+	background:#ffffff url('img/bkgrd/page-corner.jpg') no-repeat top left;
+	padding-left:146px;
+	padding-top:53px;
+}
+
+
+
+
+
+
 @media screen and (max-width:750px) and (min-width:0px){
 	.col_1{height:75px;}
 	.col_2{height:75px;}
