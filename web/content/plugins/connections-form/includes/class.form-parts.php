@@ -2,17 +2,58 @@
 if (!defined('ABSPATH'))
     exit;
 class cnfmFormParts {
-	
+
+	public static function getDefaultBlocks(){
+		//for now we are hard coding this stuff
+		//it's the defaults, but we would merge_array later
+		$blocks = array(
+						"contact"=>__('Contact Information', 'connections_form'),
+						"category"=>__('Categories', 'connections_form'),
+						"image"=>__('Photos or Logos', 'connections_form'),
+						'address'=>__('Phyiscal addresses', 'connections_form'),
+						'phone'=>__('Phone numbers', 'connections_form'),
+						'email'=>__('Email addresses', 'connections_form'),
+						'messenger'=>__('Messengers', 'connections_form'),
+						'social'=>__('Social', 'connections_form'),
+						'link'=>__('Links', 'connections_form'),
+						"speicalDate"=>__('Anniversary or Birthday information', 'connections_form'),
+						"bio"=>__('Biography', 'connections_form'),
+						"notes"=>__('Notes', 'connections_form')
+				);
+		return $blocks;
+	}
+
+	public static function getRegisteredBlocks(){
+		$registeredblocks = get_option( 'cnfm_registeredblocks', json_encode(self::getDefaultBlocks()) );
+		$blocks = json_decode($registeredblocks);	
+		return $blocks;
+	}
+	public static function registerBlock(){}
 	
 	
 	public static function getFormBlock($name=null, $entry=null, $atts=array()){
-		$out = call_user_func(array(__CLASS__, $name.'Block'),$entry,$atts);
+		$out = call_user_func(array(__CLASS__, $name.'Block'),$entry,$atts);//escaspe failed warning for now, @todo
 		return $out;
 
 	}
 	
-	public static function tokenizeBlock(){
-		// for when it can have stubs and not dbl the code for each block
+	public static function tokenizeBlock($blockStr,$token,$blockObject){
+
+		$valuePatteren = '/(:?value=[\'|"])::(.*?)::(:?[\'|"])/i';
+		$blockStr = preg_replace_callback($valuePatteren, function ($matches,$blockObject) {
+						$prop=$matches[0];
+						return ( isset($blockObject->$prop) ? $blockObject->$prop : "" );
+					}, $blockStr);
+					
+		$valuePatteren = '/::FIELD::/i';
+		$blockStr = preg_replace($valuePatteren, $token, $blockStr);
+					
+		return $blockStr;
+	}
+	public static function cleanseStub($blockStr){
+		$valuePatteren = '/(:?value=[\'|"])::(.*?)::(:?[\'|"])/i';
+		$blockStr = preg_replace($valuePatteren, '', $blockStr);
+		return $blockStr;
 	}
 
 	public static function contactBlock($entry=null, $atts=array()){
@@ -38,28 +79,28 @@ class cnfmFormParts {
 
 				$out .= '<div class="form-field" id="cn-name">' . "\n";
 
-							$out .= '<div id="honorific-prefix" class="cn-float-left"><label>' . __('Prefix' , 'connections_form' ) . ': <input type="text" name="honorific_prefix" value="' . $entry->getHonorificPrefix() . '"></label></div>' . "\n";
-							$out .= '<div id="first-name" class="cn-float-left"><label>' . __('First Name' , 'connections_form' ) . ': <input class="required" type="text" name="first_name" value="' . $entry->getFirstName() . '"></label></div>' . "\n";
-							$out .= '<div id="middle-name" class="cn-float-left"><label>' . __('Middle Name' , 'connections_form' ) . ': <input type="text" name="middle_name" value="' . $entry->getMiddleName() . '"></label></div>' . "\n";
-							$out .= '<div id="last-name" class="cn-float-left"><label>' . __('Last Name' , 'connections_form' ) . ': <input class="required" type="text" name="last_name" value="' . $entry->getLastName() . '"></label></div>' . "\n";
-							$out .= '<div id="honorific-suffix" class="cn-float-left"><label>' . __('Suffix' , 'connections_form' ) . ': <input type="text" name="honorific_suffix" value="' . $entry->getHonorificSuffix() . '"></label></div>' . "\n";
-							$out .= '<div class="cn-clear"></div>' . "\n";
-							$out .= '<div id="title"><label>' . __('Title' , 'connections_form' ) . ': <input type="text" name="title" value="' . $entry->getTitle() . '"></label></div>' . "\n";
+					$out .= '<div id="honorific-prefix" class="cn-float-left"><label>' . __('Prefix' , 'connections_form' ) . ': <input type="text" name="honorific_prefix" value="' . $entry->getHonorificPrefix() . '"></label></div>' . "\n";
+					$out .= '<div id="first-name" class="cn-float-left"><label>' . __('First Name' , 'connections_form' ) . ': <input class="required" type="text" name="first_name" value="' . $entry->getFirstName() . '"></label></div>' . "\n";
+					$out .= '<div id="middle-name" class="cn-float-left"><label>' . __('Middle Name' , 'connections_form' ) . ': <input type="text" name="middle_name" value="' . $entry->getMiddleName() . '"></label></div>' . "\n";
+					$out .= '<div id="last-name" class="cn-float-left"><label>' . __('Last Name' , 'connections_form' ) . ': <input class="required" type="text" name="last_name" value="' . $entry->getLastName() . '"></label></div>' . "\n";
+					$out .= '<div id="honorific-suffix" class="cn-float-left"><label>' . __('Suffix' , 'connections_form' ) . ': <input type="text" name="honorific_suffix" value="' . $entry->getHonorificSuffix() . '"></label></div>' . "\n";
+					$out .= '<div class="cn-clear"></div>' . "\n";
+					$out .= '<div id="title"><label>' . __('Title' , 'connections_form' ) . ': <input type="text" name="title" value="' . $entry->getTitle() . '"></label></div>' . "\n";
 
 				$out .= '</div>' . "\n";
 
 				$out .= '<div class="form-field" id="cn-org-unit">';
 
-							$out .= '<label>' . __('Organization' , 'connections_form' ) . ': <input class="required" type="text" name="organization" value="' . $entry->getOrganization() . '"></label>' . "\n";
+					$out .= '<label>' . __('Organization' , 'connections_form' ) . ': <input class="required" type="text" name="organization" value="' . $entry->getOrganization() . '"></label>' . "\n";
 
-							$out .= '<label>' . __('Department' , 'connections_form' ) . ': <input type="text" name="department" value="' . $entry->getDepartment() . '"></label>' . "\n";
+					$out .= '<label>' . __('Department' , 'connections_form' ) . ': <input type="text" name="department" value="' . $entry->getDepartment() . '"></label>' . "\n";
 
-							$out .= '<div id="cn-contact-name">' . "\n";
-								$out .= '<div class="cn-float-left cn-half-width" id="contact-first-name"><label>' . __('Contact First Name' , 'connections_form' ) . ': <input type="text" name="contact_first_name" value="' . $entry->getContactFirstName() . '"></label></div>';
-								$out .= '<div class="cn-float-left cn-half-width" id="contact-last-name"><label>' . __('Contact Last Name' , 'connections_form' ) . ': <input type="text" name="contact_last_name" value="' . $entry->getContactLastName() . '"></label></div>';
+					$out .= '<div id="cn-contact-name">' . "\n";
+						$out .= '<div class="cn-float-left cn-half-width" id="contact-first-name"><label>' . __('Contact First Name' , 'connections_form' ) . ': <input type="text" name="contact_first_name" value="' . $entry->getContactFirstName() . '"></label></div>';
+						$out .= '<div class="cn-float-left cn-half-width" id="contact-last-name"><label>' . __('Contact Last Name' , 'connections_form' ) . ': <input type="text" name="contact_last_name" value="' . $entry->getContactLastName() . '"></label></div>';
 
-								$out .= '<div class="cn-clear"></div>' . "\n";
-							$out .= '</div>' . "\n";
+						$out .= '<div class="cn-clear"></div>' . "\n";
+					$out .= '</div>' . "\n";
 
 				$out .= '</div>' . "\n";
 				$out .=  '<div class="cn-clear"></div>' . "\n";
@@ -122,185 +163,22 @@ class cnfmFormParts {
 
 				// --> Start template <-- \\
 				$out .=  '<textarea id="address-template" style="display: none;">' . "\n";
-
-					$out .= '<div class="widget-top">' . "\n";
-						$out .= '<div class="widget-title-action"><a class="widget-action"></a></div>' . "\n";
-
-						$out .= '<div class="widget-title"><h4>' . "\n";
-							$out .= __('Address Type' , 'connections_form' ) . ': ' . $form->buildSelect('address[::FIELD::][type]', $connections->options->getDefaultAddressValues() ) . "\n";
-							$out .= '<label><input type="radio" name="address[preferred]" value="::FIELD::"> ' . __('Preferred' , 'connections_form' ) . '</label>' . "\n";
-							$out .= '<input type="hidden" name="address[::FIELD::][visibility]" value="public">';
-						$out .= '</h4></div>'  . "\n";
-					$out .= '</div>' . "\n";
-					$out .= '<div class="widget-inside">';
-						$out .= '<div class="address-local">';
-							$out .= '<div class="address-line">';
-								$out .=  '<label for="address">' . __('Address Line 1' , 'connections_form' ) . ':</label>';
-								$out .=  '<input type="text" name="address[::FIELD::][line_1]" value="">';
-							$out .=  '</div>';
-
-							$out .= '<div class="address-line">';
-								$out .=  '<label for="address">' . __('Address Line 2' , 'connections_form' ) . ':</label>';
-								$out .=  '<input type="text" name="address[::FIELD::][line_2]" value="">';
-							$out .=  '</div>';
-
-							$out .= '<div class="address-line">';
-								$out .=  '<label for="address">' . __('Address Line 3' , 'connections_form' ) . ':</label>';
-								$out .=  '<input type="text" name="address[::FIELD::][line_3]" value="">';
-							$out .=  '</div>';
-
-						$out .=  '</div>';
-
-						$out .= '<div class="address-region">';
-							$out .=  '<div class="address-city cn-float-left">';
-								$out .=  '<label for="address">' . __('City' , 'connections_form' ) . ':</label>';
-								$out .=  '<input type="text" name="address[::FIELD::][city]" value="">';
-							$out .=  '</div>';
-							$out .=  '<div class="address-state cn-float-left">';
-								$out .=  '<label for="address">' . __('State' , 'connections_form' ) . ':</label><br/>';
-								//$out .=  '<input type="text" name="address[::FIELD::][state]" value="">';
-								$display_code = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_regions_display_code' );
-								$out .=  '<select name="address[::FIELD::][state]">';
-								foreach(cnDefaultValues::getRegions() as $code=>$regions){
-									$lable = $display_code?$code:$regions;
-									$out .=  '<option value="'.$code.'">'.$lable.'</option>';
-								}
-								$out .=  '</select>';
-							$out .=  '</div>';
-							$out .=  '<div class="address-zipcode cn-float-left">';
-								$out .=  '<label for="address">' . __('Zipcode' , 'connections_form' ) . ':</label>';
-								$out .=  '<input type="text" name="address[::FIELD::][zipcode]" value="">';
-							$out .=  '</div>';
-						$out .=  '</div>';
-
-						$out .= '<div class="address-country">';
-							$out .=  '<label for="address">' . __('Country' , 'connections_form' ) . '</label>';
-							//$out .=  '<input type="text" name="address[::FIELD::][country]" value="">';
-								$display_code = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_countries_display_code' );
-								$out .=  '<select name="address[::FIELD::][country]">';
-								$enabled = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_show_countries' );
-								
-								foreach(cnDefaultValues::getCountries() as $code=>$country){
-									if(in_array($code,$enabled)){
-										$lable = $display_code?$code:$country['name'];
-										$out .=  '<option value="'.$code.'">'.$lable.'</option>';
-									}
-								}
-								$out .=  '</select>';
-						$out .=  '</div>';
-
-						$out .= '<div class="address-geo">';
-							$out .=  '<div class="address-latitude cn-float-left">';
-								$out .=  '<label for="latitude">' . __('Latitude' , 'connections_form' ) . '</label>';
-								$out .=  '<input type="text" name="address[::FIELD::][latitude]" value="">';
-							$out .=  '</div>';
-							$out .=  '<div class="address-longitude cn-float-left">';
-								$out .=  '<label for="longitude">' . __('Longitude' , 'connections_form' ) . '</label>';
-								$out .=  '<input type="text" name="address[::FIELD::][longitude]" value="">';
-							$out .=  '</div>';
-							$out .=  '<a class="geocode button" data-uid="::FIELD::" href="#">'. __( 'Geocode', 'connections' ).'</a>';
-						$out .=  '</div>';
-
-						$out .=  '<div class="map" id="map-::FIELD::" data-map-id="::FIELD::" style="display: none; height: 400px;">'.__( 'Geocoding Address.', 'connections' ).'</div>';
-
-						$out .=  '<div class="cn-clear"></div>';
-						$out .=  '<p class="cn-remove-button"><span class="cn-button-shell red"><a class="cn-remove cn-button" href="#" data-type="address" data-token="::FIELD::">' . __('Remove' , 'connections_form' ) . '</a></span></p>' . "\n";
-
-					$out .=  '</div>' . "\n";
-
+					$out .= self::cleanseStub( self::addressBlockStub( array(
+								'type'=>'work',
+								'country'=>'US',
+								'state'=>'WA'
+							) ) );
 				$out .=  '</textarea>' . "\n";
 				// --> End template <-- \\
 
-				if ( ! empty($addresses) )
-				{
-					foreach ( $addresses as $address )
-					{
-						//$token = $form->token( $entry->getId() );
-						$selectName = 'address['  . $token . '][type]';
-						( $address->preferred ) ? $preferredAddress = 'CHECKED' : $preferredAddress = '';
-
+				if ( ! empty($addresses) ) {
+					foreach ( $addresses as $address ) {
 						$out .= '<div class="widget address" id="address_row_'  . $token . '">' . "\n";
-							$out .= '<div class="widget-top">' . "\n";
-								$out .= '<div class="widget-title-action"><a class="widget-action"></a></div>' . "\n";
-
-								$out .= '<div class="widget-title"><h4>' . "\n";
-									$out .= 'Address Type: ' . $form->buildSelect($selectName, $connections->options->getDefaultAddressValues(), $address->type) . "\n";
-									$out .= '<label><input type="radio" name="address[preferred]" value="' . $token . '" ' . $preferredAddress . '> ' . __('Preferred' , 'connections_form' ) . '</label>' . "\n";
-									//$out .= '<span class="visibility">Visibility: ' . $form->buildRadio('address[' . $token . '][visibility]', 'address_visibility_'  . $token . $this->visibiltyOptions, $address->visibility) . '</span>' . "\n";
-									$out .= '<input type="hidden" name="address[' . $token . '][visibility]" value="public">';
-								$out .= '</h4></div>'  . "\n";
-
-							$out .= '</div>' . "\n";
-
-							$out .= '<div class="widget-inside">' . "\n";
-
-								$out .= '<div class="address-local">' . "\n";
-									$out .= '<div class="address-line">' . "\n";
-										$out .=  '<label for="address">' . __('Address Line 1' , 'connections_form' ) . ':</label>' . "\n";
-										$out .=  '<input type="text" name="address[' . $token . '][line_1]" value="' . $address->line_1 . '">' . "\n";
-									$out .= '</div>' . "\n";
-
-									$out .= '<div class="address-line">' . "\n";
-										$out .=  '<label for="address">' . __('Address Line 2' , 'connections_form' ) . ':</label>' . "\n";
-										$out .=  '<input type="text" name="address[' . $token . '][line_2]" value="' . $address->line_2 . '">' . "\n";
-									$out .= '</div>' . "\n";
-
-									$out .= '<div class="address-line">' . "\n";
-										$out .=  '<label for="address">' . __('Address Line 3' , 'connections_form' ) . ':</label>' . "\n";
-										$out .=  '<input type="text" name="address[' . $token . '][line_3]" value="' . $address->line_3 . '">' . "\n";
-									$out .= '</div>' . "\n";
-								$out .= '</div>' . "\n";
-
-								$out .= '<div class="address-region">' . "\n";
-									$out .=  '<div class="address-city cn-float-left">' . "\n";
-										$out .=  '<label for="address">' . __('City' , 'connections_form' ) . ':</label>';
-										$out .=  '<input type="text" name="address[' . $token . '][city]" value="' . $address->city . '">' . "\n";
-									$out .=  '</div>' . "\n";
-									$out .=  '<div class="address-state cn-float-left">' . "\n";
-										$out .=  '<label for="address">' . __('State' , 'connections_form' ) . ':</label>' . "\n";
-										$out .=  '<input type="text" name="address[' . $token . '][state]" value="' . $address->state . '">' . "\n";
-									$out .=  '</div>' . "\n";
-									$out .=  '<div class="address-zipcode cn-float-left">' . "\n";
-										$out .=  '<label for="address">' . __('Zipcode' , 'connections_form' ) . ':</label>' . "\n";
-										$out .=  '<input type="text" name="address[' . $token . '][zipcode]" value="' . $address->zipcode . '">' . "\n";
-									$out .=  '</div>' . "\n";
-								$out .=  '</div>' . "\n";
-
-								$out .= '<div class="address-country">' . "\n";
-									$out .=  '<label for="address">' . __('Country' , 'connections_form' ) . '</label>' . "\n";
-									//$out .=  '<input type="text" name="address[' . $token . '][country]" value="' . $address->country . '">' . "\n";
-									$display_code = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_countries_display_code' );
-									$out .=  '<select name="address[' . $token . '][country]">';
-									$enabled = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_show_countries' );
-									foreach(cnDefaultValues::getCountries() as $code=>$country){
-										if(in_array($code,$enabled)){
-											$lable = $display_code?$code:$country['name'];
-											$out .=  '<option value="'.$code.'"  '.selected($address->country, $code).' >'.$lable.'</option>';
-										}
-									}
-									$out .=  '</select>';
-								$out .=  '</div>' . "\n";
-
-								$out .= '<div class="address-geo">' . "\n";
-									$out .=  '<div class="address-latitude cn-float-left">' . "\n";
-										$out .=  '<label for="latitude">' . __('Latitude' , 'connections_form' ) . '</label>' . "\n";
-										$out .=  '<input type="text" name="address[' . $token . '][latitude]" value="' . $address->latitude . '">' . "\n";
-									$out .=  '</div>' . "\n";
-									$out .=  '<div class="address-longitude cn-float-left">' . "\n";
-										$out .=  '<label for="longitude">' . __('Longitude' , 'connections_form' ) . '</label>' . "\n";
-										$out .=  '<input type="text" name="address[' . $token . '][longitude]" value="' . $address->longitude . '">' . "\n";
-									$out .=  '</div>' . "\n";
-									$out .=  '<a class="geocode button" data-uid="' . $token . '" href="#">'. __( 'Geocode', 'connections' ).'</a>';
-								$out .=  '</div>' . "\n";
-
-								$out .=  '<input type="hidden" name="address[' . $token . '][id]" value="' . $address->id . '">' . "\n";
-								$out .=  '<div class="map" id="map-'.$token.'" data-map-id="'.$token.'" style="display: none; height: 400px;">'.__( 'Geocoding Address.', 'connections' ).'</div>';
-
-								$out .=  '<div class="cn-clear"></div>' . "\n";
-
-								$out .=  '<p class="cn-remove-button"><span class="cn-button-shell red"><a class="cn-remove cn-button" href="#" data-type="address" data-token="' . $token . '">' . __('Remove' , 'connections_form' ) . '</a></span></p>' . "\n";
-
-							$out .=  '</div>' . "\n";
+							$out .= self::tokenizeBlock(self::addressBlockStub(array(
+								'type'=>$address->type,
+								'country'=>$address->country,
+								'state'=>$address->state
+							)),$token,$address);
 						$out .=  '</div>' . "\n";
 
 					}
@@ -315,6 +193,119 @@ class cnfmFormParts {
 		$out .=  '</div>';	
 		return $out;
 	}
+	public static function addressBlockStub($directValues=array()){
+		global $connections;
+		$form = new cnFormObjects();
+		$out = '<div class="widget-top">' . "\n";
+			$out .= '<div class="widget-title-action"><a class="widget-action"></a></div>' . "\n";
+
+			$out .= '<div class="widget-title"><h4>' . "\n";
+				$out .= __('Address Type' , 'connections_form' ) . ': ' . $form->buildSelect('address[::FIELD::][type]', $connections->options->getDefaultAddressValues() , isset($directValues['type'])?$directValues['type']:"") . "\n";
+				$out .= '<label><input type="radio" name="address[preferred]" value="::FIELD::"> ' . __('Preferred' , 'connections_form' ) . '</label>' . "\n";
+				$out .= '<input type="hidden" name="address[::FIELD::][visibility]" value="public">';
+			$out .= '</h4></div>'  . "\n";
+		$out .= '</div>' . "\n";
+		$out .= '<div class="widget-inside">';
+			$out .= '<div class="address-local">';
+				$out .= '<div class="address-line">';
+					$out .=  '<label for="address">' . __('Address Line 1' , 'connections_form' ) . ':</label>';
+					$out .=  '<input type="text" name="address[::FIELD::][line_1]" value="::line_1::" />';
+				$out .=  '</div>';
+
+				$out .= '<div class="address-line">';
+					$out .=  '<label for="address">' . __('Address Line 2' , 'connections_form' ) . ':</label>';
+					$out .=  '<input type="text" name="address[::FIELD::][line_2]" value="::line_2::" />';
+				$out .=  '</div>';
+
+				$out .= '<div class="address-line">';
+					$out .=  '<label for="address">' . __('Address Line 3' , 'connections_form' ) . ':</label>';
+					$out .=  '<input type="text" name="address[::FIELD::][line_3]" value="::line_3::" />';
+				$out .=  '</div>';
+			$out .=  '</div>';
+			$out .= '<div class="address-region">';
+				$out .=  '<div class="address-city cn-float-left">';
+					$out .=  '<label for="address">' . __('City' , 'connections_form' ) . ':</label>';
+					$out .=  '<input type="text" name="address[::FIELD::][city]" value="::city::">';
+				$out .=  '</div>';
+				$out .=  '<div class="address-state cn-float-left">';
+					$out .=  '<label for="address">' . __('State' , 'connections_form' ) . ':</label><br/>';
+					/*$display_code = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_regions_display_code' );
+					$out .=  '<select name="address[::FIELD::][state]">';
+					foreach(cnDefaultValues::getRegions() as $code=>$regions){
+						$lable = $display_code?$code:$regions;
+						$out .=  '<option value="'.$code.'">'.$lable.'</option>';
+					}
+					$out .=  '</select>';*/
+					$out .=  self::makeRegionsDropdown("::FIELD::",isset($directValues['state'])?$directValues['state']:"");
+				$out .=  '</div>';
+				$out .=  '<div class="address-zipcode cn-float-left">';
+					$out .=  '<label for="address">' . __('Zipcode' , 'connections_form' ) . ':</label>';
+					$out .=  '<input type="text" name="address[::FIELD::][zipcode]" value="::zipcode::">';
+				$out .=  '</div>';
+			$out .=  '</div>';
+			$out .= '<div class="address-country">';
+				$out .=  '<label for="address">' . __('Country' , 'connections_form' ) . '</label>';
+				//$out .=  '<input type="text" name="address[::FIELD::][country]" value="">';
+					/*$display_code = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_countries_display_code' );
+					$out .=  '<select name="address[::FIELD::][country]">';
+					$enabled = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_show_countries' );
+					
+					foreach(cnDefaultValues::getCountries() as $code=>$country){
+						if(in_array($code,$enabled)){
+							$lable = $display_code?$code:$country['name'];
+							$out .=  '<option value="'.$code.'">'.$lable.'</option>';
+						}
+					}
+					$out .=  '</select>';*/
+					$out .=  self::makeCountriesDropdown("::FIELD::",isset($directValues['country'])?$directValues['country']:"");
+			$out .=  '</div>';
+			$out .= '<div class="address-geo">';
+				$out .=  '<div class="address-latitude cn-float-left">';
+					$out .=  '<label for="latitude">' . __('Latitude' , 'connections_form' ) . '</label>';
+					$out .=  '<input type="text" name="address[::FIELD::][latitude]" value="::latitude::">';
+				$out .=  '</div>';
+				$out .=  '<div class="address-longitude cn-float-left">';
+					$out .=  '<label for="longitude">' . __('Longitude' , 'connections_form' ) . '</label>';
+					$out .=  '<input type="text" name="address[::FIELD::][longitude]" value="::longitude::">';
+				$out .=  '</div>';
+				$out .=  '<a class="geocode button" data-uid="::FIELD::" href="#">'. __( 'Geocode', 'connections' ).'</a>';
+			$out .=  '</div>';
+			$out .=  '<div class="map" id="map-::FIELD::" data-map-id="::FIELD::" style="display: none; height: 400px;">'.__( 'Geocoding Address.', 'connections' ).'</div>';
+			$out .=  '<div class="cn-clear"></div>';
+			$out .=  '<p class="cn-remove-button"><span class="cn-button-shell red"><a class="cn-remove cn-button" href="#" data-type="address" data-token="::FIELD::">' . __('Remove' , 'connections_form' ) . '</a></span></p>' . "\n";
+		$out .=  '</div>' . "\n";
+		return $out;
+	}
+	public static function makeCountriesDropdown($token="::FIELD::",$selected){
+		global $connections;
+		$form = new cnFormObjects();
+		$display_code = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_countries_display_code' );
+		$out =  '<select name="address['.$token.'][country]">';
+		$enabled = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_show_countries' );
+		foreach(cnDefaultValues::getCountries() as $code=>$country){
+			if(in_array($code,$enabled)){
+				$lable = $display_code?$code:$country['name'];
+				$out .=  '<option value="'.$code.'" '.selected($selected, $code,false).' >'.$lable.'</option>';
+			}
+		}
+		$out .=  '</select>';
+		return $out;
+	}
+	public static function makeRegionsDropdown($token="::FIELD::",$selected){
+		global $connections;
+		$form = new cnFormObjects();
+
+		$display_code = $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_regions_display_code' );
+		$out =  '<select name="address['.$token.'][state]">';
+		foreach(cnDefaultValues::getRegions() as $code=>$regions){
+			$lable = $display_code?$code:$regions;
+			$out .=  '<option value="'.$code.'" '.selected($selected, $code,false).' >'.$lable.'</option>';
+		}
+		$out .=  '</select>';
+		
+		return $out;
+	}
+
 	
 	
 	public static function phoneBlock($entry=null, $atts=array()){

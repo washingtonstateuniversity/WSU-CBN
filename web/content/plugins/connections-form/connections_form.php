@@ -458,6 +458,25 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 									),
 				'default'   => 'null'
 			);
+			$fields[] = array(
+				'plugin_id' => 'connections_form',
+				'id'        => 'form_preference_use_blocks',
+				'position'  => 50,
+				'page_hook' => $settings,
+				'tab'       => 'form',
+				'section'   => 'connections_form_preferences',
+				'title'     => __('Choose Blocks to Use ', 'connections_form'),
+				'desc'      => __('Any registered blocks choosen will show up in the order selected', 'connections_form'),
+				'help'      => __('Use the handle on the right to drag and reorder blocks', 'connections_form'),
+				'type'      => 'multiselect',
+				'options'   => cnfmFormParts::getRegisteredBlocks(),
+				'default'   => 'null'
+			);
+
+
+
+//
+
 
 			return $fields;
 		}
@@ -690,6 +709,7 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 					'rte'              => TRUE,
 					'bio'              => TRUE,
 					'notes'            => FALSE,
+					'use_blocks'       => $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_use_blocks' ),
 					'open_blocks'      => $connections->settings->get( 'connections_form' , 'connections_form_preferences' , 'form_preference_open_block' ),
 					'str_contact_name' => __( 'Entry Name' , 'connections_form' ),
 					'str_bio'          => __( 'Biography' , 'connections_form' ),
@@ -724,115 +744,36 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 
 			$out .= '<div id="cn-form-container">' . "\n";
 
-			$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
-
-			$out .= '<form id="cn-form" method="POST" enctype="multipart/form-data">' . "\n";
-
-			//( $entry->getVisibility() ) ? $visibility = $entry->getVisibility() : $visibility = 'unlisted';
-			
-
-
-			/*
-			 * Name Field
-			 */
-				$out .= cnfmFormParts::getFormBlock("contact",$entry, $atts);
-				
-			/*
-			 * Image Field
-			 */
-			if ( $atts['photo'] || $atts['logo'] ) {
-				$out .= cnfmFormParts::getFormBlock("image",$entry, $atts);
-			}
-
-			/*
-			 * Address Field
-			 */
-			if ( $atts{'address'} ) {
-				$out .= cnfmFormParts::getFormBlock("address",$entry, $atts);
-			}
-
-			/*
-			 * Phone Field
-			 */
-			if ( $atts['phone'] ) {
-				$out .= cnfmFormParts::getFormBlock("phone",$entry, $atts);
-			}
-
-
-			/*
-			 * Email Field
-			 */
-			if ( $atts['email'] ) {
-				$out .= cnfmFormParts::getFormBlock("email",$entry, $atts);
-			}
-
-
-			/*
-			 * Messenger Field
-			 */
-			if ( $atts['messenger'] ) {
-				$out .= cnfmFormParts::getFormBlock("messenger",$entry, $atts);
-			}
-
-
-			/*
-			 * Social Media Field
-			 */
-			if ( $atts['social'] ) {
-				$out .= cnfmFormParts::getFormBlock("social",$entry, $atts);
-			}
-
-			/*
-			 * Links Field
-			 */
-			if ( $atts['link'] ) {
-				$out .= cnfmFormParts::getFormBlock("link",$entry, $atts);
-			}
-
-			/*
-			 * Date Field
-			 */
-			if ( $atts['anniversary'] || $atts['birthday'] ) {
-				$out .= cnfmFormParts::getFormBlock("speicalDate",$entry, $atts);
-			}
-
-			/*
-			 * Category Field
-			 */
-			if ( $atts['category'] ) {
-				$out .= cnfmFormParts::getFormBlock("category",$entry, $atts);
-			}
-
-			/*
-			 * Bio Field
-			 */
-			if ( $atts['bio'] ) {
-				$out .= cnfmFormParts::getFormBlock("bio",$entry, $atts);
-			}
-
-			/*
-			 * Notes Field
-			 */
-			if ( $atts['notes'] ) {
-				$out .= cnfmFormParts::getFormBlock("notes",$entry, $atts);
-			}
-
-
-			// Hidden Field -- 'action' required to trigger the registered action.
-			$out .= '<input type="hidden" name="action" value="cn-form-new-submit" />';
-
-			// Hidden Field -- to create a WP nonce to be used to validate before processing the form submission.
-			ob_start();
-			$form->tokenField('add_entry');
-			$out .= ob_get_contents();
-			ob_end_clean();
-
-			// Hidden Field -- set the default entry visibilty to unlisted.
-			$out .= '<input id="visibility" type="hidden" name="visibility" value="unlisted">';
-
-			$out .=  '<p class="cn-add"><input class="cn-button-shell cn-button green" id="cn-form-submit-new" type="submit" name="save" value="' . __('Submit' , 'connections_form' ) . '" /></p>' . "\n";
-
-			$out .= '</form>';
+				$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
+	
+				$out .= '<form id="cn-form" method="POST" enctype="multipart/form-data">' . "\n";
+	
+					//( $entry->getVisibility() ) ? $visibility = $entry->getVisibility() : $visibility = 'unlisted';
+	
+					//Loop over all the blocks and add it to the output string
+					foreach($atts['use_blocks'] as $code){
+						//do_action( 'cnfm_block_creation_before-'.$code, $entry, $atts);
+						$blockStr = apply_filters( 'cnfm_block_creation_before-'.$code, "");
+						$blockStr .= cnfmFormParts::getFormBlock($code,$entry, $atts);
+						$blockStr = apply_filters( 'cnfm_block_creation_after-'.$code, $blockStr);
+						$out .= $blockStr;
+					}
+	
+					// Hidden Field -- 'action' required to trigger the registered action.
+					$out .= '<input type="hidden" name="action" value="cn-form-new-submit" />';
+		
+					// Hidden Field -- to create a WP nonce to be used to validate before processing the form submission.
+					ob_start();
+					$form->tokenField('add_entry');
+					$out .= ob_get_contents();
+					ob_end_clean();
+		
+					// Hidden Field -- set the default entry visibilty to unlisted.
+					$out .= '<input id="visibility" type="hidden" name="visibility" value="unlisted">';
+		
+					$out .=  '<p class="cn-add"><input class="cn-button-shell cn-button green" id="cn-form-submit-new" type="submit" name="save" value="' . __('Submit' , 'connections_form' ) . '" /></p>' . "\n";
+	
+				$out .= '</form>';
 			$out .= '</div>';
 
 			return $out;

@@ -2,6 +2,10 @@
 if (!defined('ABSPATH'))
     exit;
 class cnDefaultValues {
+
+	
+
+
 	
 	public static function getRegions($country="US"){
 		$region_list=array();

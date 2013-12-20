@@ -549,6 +549,29 @@ function twentythirteen_customize_preview_js() {
 add_action( 'customize_preview_init', 'twentythirteen_customize_preview_js' );
 
 
+/*------------------------------------------------------------
+Custom site functions
+--------------------------------------------------------------*/
+function CNFM_NoteImageBlock($blockStr) {
+	$blockStr.="<h1>Noting: the block</h1>";
+	return $blockStr;
+}
+add_filter( 'cnfm_block_creation_after-image', 'CNFM_NoteImageBlock' );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
