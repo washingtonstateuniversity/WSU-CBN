@@ -6,12 +6,13 @@
  * theme as custom template tags. Others are attached to action and filter
  * hooks in WordPress to change core functionality.
  *
- * When using a child theme (see http://codex.wordpress.org/Theme_Development
- * and http://codex.wordpress.org/Child_Themes), you can override certain
- * functions (those wrapped in a function_exists() call) by defining them first
- * in your child theme's functions.php file. The child theme's functions.php
- * file is included before the parent theme's file, so the child theme
- * functions would be used.
+ * When using a child theme you can override certain functions (those wrapped
+ * in a function_exists() call) by defining them first in your child theme's
+ * functions.php file. The child theme's functions.php file is included before
+ * the parent theme's file, so the child theme functions would be used.
+ *
+ * @link http://codex.wordpress.org/Theme_Development
+ * @link http://codex.wordpress.org/Child_Themes
  *
  * Functions that are not pluggable (not wrapped in function_exists()) are
  * instead attached to a filter or action hook.
@@ -27,7 +28,7 @@
 /**
  * Set up the content width value based on the theme's design.
  *
- * @link twentyfourteen_content_width()
+ * @see twentyfourteen_content_width()
  *
  * @since Twenty Fourteen 1.0
  */
@@ -138,6 +139,13 @@ add_action( 'template_redirect', 'twentyfourteen_content_width' );
  * @return array An array of WP_Post objects.
  */
 function twentyfourteen_get_featured_posts() {
+	/**
+	 * Filter the featured posts to return in Twenty Fourteen.
+	 *
+	 * @since Twenty Fourteen 1.0
+	 *
+	 * @param array|bool $posts Array of featured posts, otherwise false.
+	 */
 	return apply_filters( 'twentyfourteen_get_featured_posts', array() );
 }
 
@@ -149,11 +157,11 @@ function twentyfourteen_get_featured_posts() {
  * @return bool Whether there are featured posts.
  */
 function twentyfourteen_has_featured_posts() {
-	return ! is_paged() && (bool) apply_filters( 'twentyfourteen_get_featured_posts', false );
+	return ! is_paged() && (bool) twentyfourteen_get_featured_posts();
 }
 
 /**
- * Register two widget areas.
+ * Register three Twenty Fourteen widget areas.
  *
  * @since Twenty Fourteen 1.0
  *
@@ -214,7 +222,7 @@ function twentyfourteen_font_url() {
 }
 
 /**
- * Enqueue scripts and styles for front end.
+ * Enqueue scripts and styles for the front end.
  *
  * @since Twenty Fourteen 1.0
  *
@@ -228,10 +236,10 @@ function twentyfourteen_scripts() {
 	wp_enqueue_style( 'genericons', get_template_directory_uri() . '/genericons/genericons.css', array(), '3.0.2' );
 
 	// Load our main stylesheet.
-	wp_enqueue_style( 'twentyfourteen-style', get_stylesheet_uri() );
+	wp_enqueue_style( 'twentyfourteen-style', get_stylesheet_uri(), array( 'genericons' ) );
 
 	// Load the Internet Explorer specific stylesheet.
-	wp_enqueue_style( 'twentyfourteen-ie', get_template_directory_uri() . '/css/ie.css', array( 'twentyfourteen-style' ), '20131110' );
+	wp_enqueue_style( 'twentyfourteen-ie', get_template_directory_uri() . '/css/ie.css', array( 'twentyfourteen-style', 'genericons' ), '20131205' );
 	wp_style_add_data( 'twentyfourteen-ie', 'conditional', 'lt IE 9' );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
@@ -247,14 +255,14 @@ function twentyfourteen_scripts() {
 	}
 
 	if ( is_front_page() && 'slider' == get_theme_mod( 'featured_content_layout' ) ) {
-		wp_enqueue_script( 'twentyfourteen-slider', get_template_directory_uri() . '/js/slider.js', array( 'jquery' ), '20131109', true );
+		wp_enqueue_script( 'twentyfourteen-slider', get_template_directory_uri() . '/js/slider.js', array( 'jquery' ), '20131205', true );
 		wp_localize_script( 'twentyfourteen-slider', 'featuredSliderDefaults', array(
 			'prevText' => __( 'Previous', 'twentyfourteen' ),
 			'nextText' => __( 'Next', 'twentyfourteen' )
 		) );
 	}
 
-	wp_enqueue_script( 'twentyfourteen-script', get_template_directory_uri() . '/js/functions.js', array( 'jquery' ), '20131102', true );
+	wp_enqueue_script( 'twentyfourteen-script', get_template_directory_uri() . '/js/functions.js', array( 'jquery' ), '20131209', true );
 }
 add_action( 'wp_enqueue_scripts', 'twentyfourteen_scripts' );
 
@@ -266,7 +274,7 @@ add_action( 'wp_enqueue_scripts', 'twentyfourteen_scripts' );
  * @return void
  */
 function twentyfourteen_admin_fonts() {
-	wp_enqueue_style( 'twentyfourteen-lato' );
+	wp_enqueue_style( 'twentyfourteen-lato', twentyfourteen_font_url(), array(), null );
 }
 add_action( 'admin_print_scripts-appearance_page_custom-header', 'twentyfourteen_admin_fonts' );
 
@@ -280,7 +288,19 @@ if ( ! function_exists( 'twentyfourteen_the_attached_image' ) ) :
  */
 function twentyfourteen_the_attached_image() {
 	$post                = get_post();
-	$attachment_size     = apply_filters( 'twentyfourteen_attachment_size', array( 1200, 1200 ) );
+	/**
+	 * Filter the default Twenty Fourteen attachment size.
+	 *
+	 * @since Twenty Fourteen 1.0
+	 *
+	 * @param array $dimensions {
+	 *     An array of height and width dimensions.
+	 *
+	 *     @type int $height Height of the image in pixels. Default 810.
+	 *     @type int $width  Width of the image in pixels. Default 810.
+	 * }
+	 */
+	$attachment_size     = apply_filters( 'twentyfourteen_attachment_size', array( 810, 810 ) );
 	$next_attachment_url = wp_get_attachment_url();
 
 	/*
@@ -339,6 +359,7 @@ function twentyfourteen_list_authors() {
 	$contributor_ids = get_users( array(
 		'fields'  => 'ID',
 		'orderby' => 'post_count',
+		'order'   => 'DESC',
 		'who'     => 'authors',
 	) );
 

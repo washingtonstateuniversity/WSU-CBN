@@ -16,6 +16,7 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 	/**
 	 * The supported post formats.
 	 *
+	 * @access private
 	 * @since Twenty Fourteen 1.0
 	 *
 	 * @var array
@@ -25,6 +26,7 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 	/**
 	 * Pluralized post format strings.
 	 *
+	 * @access private
 	 * @since Twenty Fourteen 1.0
 	 *
 	 * @var array
@@ -56,38 +58,19 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 			'link'    => __( 'Links',     'twentyfourteen' ),
 			'gallery' => __( 'Galleries', 'twentyfourteen' ),
 		);
-
-		add_action( 'save_post',    array( $this, 'flush_widget_cache' ) );
-		add_action( 'deleted_post', array( $this, 'flush_widget_cache' ) );
-		add_action( 'switch_theme', array( $this, 'flush_widget_cache' ) );
 	}
 
 	/**
 	 * Output the HTML for this widget.
 	 *
+	 * @access public
 	 * @since Twenty Fourteen 1.0
 	 *
-	 * @param array $args An array of standard parameters for widgets in this theme.
+	 * @param array $args     An array of standard parameters for widgets in this theme.
 	 * @param array $instance An array of settings for this widget instance.
 	 * @return void Echoes its output.
 	 */
 	public function widget( $args, $instance ) {
-		// If called directly, assign an unique index for caching.
-		if ( -1 == $this->number ) {
-			static $num = -1;
-			$this->_set( --$num );
-		}
-
-		$content = get_transient( $this->id );
-
-		if ( false !== $content ) {
-			echo $content;
-			return;
-		}
-
-		ob_start();
-		extract( $args, EXTR_SKIP );
-
 		$format = $instance['format'];
 		$number = empty( $instance['number'] ) ? 2 : absint( $instance['number'] );
 		$title  = apply_filters( 'widget_title', empty( $instance['title'] ) ? $this->format_strings[ $format ] : $instance['title'], $instance, $this->id_base );
@@ -112,7 +95,7 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 			$tmp_content_width = $GLOBALS['content_width'];
 			$GLOBALS['content_width'] = 306;
 
-			echo $before_widget;
+			echo $args['before_widget'];
 			?>
 			<h1 class="widget-title <?php echo esc_attr( $format ); ?>">
 				<a class="entry-format" href="<?php echo esc_url( get_post_format_link( $format ) ); ?>"><?php echo $title; ?></a>
@@ -184,7 +167,7 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 									the_title( '<h1 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h1>' );
 								endif;
 
-								printf( ( '<span class="entry-date"><a href="%1$s" rel="bookmark"><time class="entry-date" datetime="%2$s">%3$s</time></a></span> <span class="byline"><span class="author vcard"><a class="url fn n" href="%4$s" rel="author">%5$s</a></span></span>' ),
+								printf( '<span class="entry-date"><a href="%1$s" rel="bookmark"><time class="entry-date" datetime="%2$s">%3$s</time></a></span> <span class="byline"><span class="author vcard"><a class="url fn n" href="%4$s" rel="author">%5$s</a></span></span>',
 									esc_url( get_permalink() ),
 									esc_attr( get_the_date( 'c' ) ),
 									esc_html( get_the_date() ),
@@ -206,7 +189,7 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 			<a class="post-format-archive-link" href="<?php echo esc_url( get_post_format_link( $format ) ); ?>"><?php printf( __( 'More %s <span class="meta-nav">&rarr;</span>', 'twentyfourteen' ), $this->format_strings[ $format ] ); ?></a>
 			<?php
 
-			echo $after_widget;
+			echo $args['after_widget'];
 
 			// Reset the post globals as this query will have stomped on it.
 			wp_reset_postdata();
@@ -214,19 +197,18 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 			$GLOBALS['content_width'] = $tmp_content_width;
 
 		endif; // End check for ephemeral posts.
-
-		set_transient( $this->id, ob_get_flush() );
 	}
 
 	/**
-	 * Deal with the settings when they are saved by the admin. Here is where
-	 * any validation should happen.
+	 * Deal with the settings when they are saved by the admin.
+	 *
+	 * Here is where any validation should happen.
 	 *
 	 * @since Twenty Fourteen 1.0
 	 *
-	 * @param array $new_instance
-	 * @param array $instance
-	 * @return array
+	 * @param array $new_instance New widget instance.
+	 * @param array $instance     Original widget instance.
+	 * @return array Updated widget instance.
 	 */
 	function update( $new_instance, $instance ) {
 		$instance['title']  = strip_tags( $new_instance['title'] );
@@ -235,20 +217,7 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 			$instance['format'] = $new_instance['format'];
 		}
 
-		$this->flush_widget_cache();
-
 		return $instance;
-	}
-
-	/**
-	 * Delete the transient.
-	 *
-	 * @since Twenty Fourteen 1.0
-	 *
-	 * @return void
-	 */
-	function flush_widget_cache() {
-		delete_transient( $this->id );
 	}
 
 	/**
@@ -265,10 +234,10 @@ class Twenty_Fourteen_Ephemera_Widget extends WP_Widget {
 		$format = isset( $instance['format'] ) && in_array( $instance['format'], $this->formats ) ? $instance['format'] : 'aside';
 		?>
 			<p><label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>"><?php _e( 'Title:', 'twentyfourteen' ); ?></label>
-			<input id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" /></p>
+			<input id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>"></p>
 
 			<p><label for="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>"><?php _e( 'Number of posts to show:', 'twentyfourteen' ); ?></label>
-			<input id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" type="text" value="<?php echo esc_attr( $number ); ?>" size="3" /></p>
+			<input id="<?php echo esc_attr( $this->get_field_id( 'number' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'number' ) ); ?>" type="text" value="<?php echo esc_attr( $number ); ?>" size="3"></p>
 
 			<p><label for="<?php echo esc_attr( $this->get_field_id( 'format' ) ); ?>"><?php _e( 'Post format to show:', 'twentyfourteen' ); ?></label>
 			<select id="<?php echo esc_attr( $this->get_field_id( 'format' ) ); ?>" class="widefat" name="<?php echo esc_attr( $this->get_field_name( 'format' ) ); ?>">

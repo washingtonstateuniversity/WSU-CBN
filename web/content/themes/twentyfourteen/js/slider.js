@@ -37,6 +37,7 @@
 				slider.container = $( slider.containerSelector, slider );
 				slider.count = slider.slides.length;
 				slider.prop = 'marginLeft';
+				slider.isRtl = $( 'body' ).hasClass( 'rtl' );
 				slider.args = {};
 				// TOUCH
 				slider.transitions = ( function() {
@@ -75,9 +76,9 @@
 						var keycode = event.keyCode,
 							target = false;
 						if ( ! slider.animating && ( keycode === 39 || keycode === 37 ) ) {
-							if (keycode === 39){
+							if ( keycode === 39 ) {
 								target = slider.getTarget( 'next' );
-							} else if (keycode === 37) {
+							} else if ( keycode === 37 ) {
 								target = slider.getTarget( 'prev' );
 							}
 
@@ -242,8 +243,11 @@
 						localX = e.touches[0].pageX;
 						localY = e.touches[0].pageY;
 
-						offset = ( slider.animatingTo === slider.last ) ? 0 :
-								( slider.currentSlide === slider.last ) ? slider.limit : ( slider.currentSlide + slider.cloneOffset ) * cwidth;
+						offset = ( slider.currentSlide + slider.cloneOffset ) * cwidth;
+						if ( slider.animatingTo === slider.last && slider.direction !== 'next' ) {
+							offset = 0;
+						}
+
 						startX = localX;
 						startY = localY;
 
@@ -260,9 +264,7 @@
 					dx = startX - localX;
 					scrolling = Math.abs( dx ) < Math.abs( localY - startY );
 
-					var fxms = 500;
-
-					if ( ! scrolling || Number( new Date() ) - startT > fxms ) {
+					if ( ! scrolling ) {
 						e.preventDefault();
 						if ( slider.transitions ) {
 							slider.setProps( offset + dx, 'setTouch' );
@@ -297,7 +299,10 @@
 						accDx = 0;
 						cwidth = slider.w;
 						startT = Number( new Date() );
-						offset = ( slider.animatingTo === slider.last ) ? 0 : ( slider.currentSlide === slider.last ) ? slider.limit : ( slider.currentSlide + slider.cloneOffset ) * cwidth;
+						offset = ( slider.currentSlide + slider.cloneOffset ) * cwidth;
+						if ( slider.animatingTo === slider.last && slider.direction !== 'next' ) {
+							offset = 0;
+						}
 					}
 				}
 
@@ -319,7 +324,7 @@
 					scrolling = Math.abs( accDx ) < Math.abs( -transY );
 
 					if ( e.detail === e.MSGESTURE_FLAG_INERTIA ) {
-						setImmediate( function () {  // MSFT specific.
+						setImmediate( function () { // MSFT specific.
 							el._gesture.stop();
 						} );
 
@@ -445,6 +450,12 @@
 
 		slider.getTarget = function( dir ) {
 			slider.direction = dir;
+
+			// Swap for RTL.
+			if ( slider.isRtl ) {
+				dir = 'next' === dir ? 'prev' : 'next';
+			}
+
 			if ( dir === 'next' ) {
 				return ( slider.currentSlide === slider.last ) ? 0 : slider.currentSlide + 1;
 			} else {

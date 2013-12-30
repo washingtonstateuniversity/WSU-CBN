@@ -751,12 +751,16 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 					//( $entry->getVisibility() ) ? $visibility = $entry->getVisibility() : $visibility = 'unlisted';
 	
 					//Loop over all the blocks and add it to the output string
-					foreach($atts['use_blocks'] as $code){
-						//do_action( 'cnfm_block_creation_before-'.$code, $entry, $atts);
-						$blockStr = apply_filters( 'cnfm_block_creation_before-'.$code, "");
-						$blockStr .= cnfmFormParts::getFormBlock($code,$entry, $atts);
-						$blockStr = apply_filters( 'cnfm_block_creation_after-'.$code, $blockStr);
-						$out .= $blockStr;
+					if(!empty($atts['use_blocks'])){
+						foreach($atts['use_blocks'] as $code){
+							//do_action( 'cnfm_block_creation_before-'.$code, $entry, $atts);
+							$blockStr = apply_filters( 'cnfm_block_creation_before-'.$code, "");
+							$blockStr .= cnfmFormParts::getFormBlock($code,$entry, $atts);
+							$blockStr = apply_filters( 'cnfm_block_creation_after-'.$code, $blockStr);
+							$out .= $blockStr;
+						}
+					}else{
+						$out.="<h2>".__('No blocks were choosen' , 'connections_form' )."</h2>";	
 					}
 	
 					// Hidden Field -- 'action' required to trigger the registered action.

@@ -15,9 +15,10 @@ See http://codex.wordpress.org/Right_to_Left_Language_Support
  * 4.0 - Header
  * 5.0 - Navigation
  * 6.0 - Content
+ *   6.3 - Entry Meta
  *   6.4 - Entry Content
  *   6.5 - Galleries
- *   6.7 - Post/Paging Navigation
+ *   6.7 - Post/Image/Paging Navigation
  *   6.10 - Contributor Page
  *   6.14 - Comments
  * 7.0 - Sidebar
@@ -97,8 +98,8 @@ td {
 }
 
 .search-toggle .screen-reader-text {
-	right: auto;
-	left: 0;
+	right: 5px; /* Avoid a horizontal scrollbar when the site has a long menu */
+	left: auto;
 }
 
 
@@ -128,23 +129,23 @@ td {
  * -----------------------------------------------------------------------------
  */
 
-.tag-links a {
+.entry-meta .tag-links a {
 	margin: 0 10px 4px 4px;
 }
 
-.tag-links a:before {
+.entry-meta .tag-links a:before {
 	border-right: 0;
 	border-left: 8px solid #767676;
 	right: -7px;
 	left: auto;
 }
 
-.tag-links a:hover:before,
-.tag-links a:focus:before {
+.entry-meta .tag-links a:hover:before,
+.entry-meta .tag-links a:focus:before {
 	border-left-color: #41a62a;
 }
 
-.tag-links a:after {
+.entry-meta .tag-links a:after {
 	right: -2px;
 	left: auto;
 }
@@ -167,7 +168,7 @@ td {
 
 
 /**
- * 6.5 Gallery
+ * 6.5 Galleries
  * -----------------------------------------------------------------------------
  */
 
@@ -256,6 +257,16 @@ td {
 .comment-reply-login:before {
 	margin-left: auto;
 	margin-right: 2px;
+}
+
+.comment-reply-link:before,
+.comment-reply-login:before,
+.comment-edit-link:before {
+	-webkit-transform: scaleX(-1);
+	-moz-transform:    scaleX(-1);
+	-ms-transform:     scaleX(-1);
+	-o-transform:      scaleX(-1);
+	transform:         scaleX(-1);
 }
 
 .comment-content ul,
@@ -451,6 +462,15 @@ td {
 		margin-right: auto;
 		margin-left: 1px;
 	}
+
+	.entry-content .edit-link a:before,
+	.entry-meta .edit-link a:before {
+		-webkit-transform: scaleX(-1);
+		-moz-transform:    scaleX(-1);
+		-ms-transform:     scaleX(-1);
+		-o-transform:      scaleX(-1);
+		transform:         scaleX(-1);
+	}
 }
 
 @media screen and (min-width: 594px) {
@@ -520,7 +540,7 @@ td {
 	}
 }
 
-@media screen and (min-width: 782px) {
+@media screen and (min-width: 783px) {
 	.header-main {
 		padding-right: 30px;
 		padding-left: 0;
@@ -533,7 +553,7 @@ td {
 
 	.primary-navigation {
 		float: left;
-		margin: 0 -10px 0 1px;
+		margin: 0 -12px 0 1px;
 	}
 
 	.primary-navigation ul ul {
@@ -551,13 +571,39 @@ td {
 	.primary-navigation ul li:hover > ul,
 	.primary-navigation ul li.focus > ul {
 		right: auto;
-		left: auto;
 	}
 
 	.primary-navigation ul ul li:hover > ul,
 	.primary-navigation ul ul li.focus > ul {
 		right: 100%;
 		left: auto;
+	}
+
+	.primary-navigation .menu-item-has-children > a,
+	.primary-navigation .page_item_has_children > a {
+		padding-right: 12px;
+		padding-left: 26px;
+	}
+
+	.primary-navigation .menu-item-has-children > a:after,
+	.primary-navigation .page_item_has_children > a:after {
+		right: auto;
+		left: 12px;
+	}
+
+	.primary-navigation li .menu-item-has-children > a,
+	.primary-navigation li .page_item_has_children > a {
+		padding-right: 12px;
+		padding-left: 20px;
+	}
+
+	.primary-navigation .menu-item-has-children li.menu-item-has-children > a:after,
+	.primary-navigation .menu-item-has-children li.page_item_has_children > a:after,
+	.primary-navigation .page_item_has_children li.menu-item-has-children > a:after,
+	.primary-navigation .page_item_has_children li.page_item_has_children > a:after {
+		content: "\f503";
+		right: auto;
+		left: 8px;
 	}
 }
 
@@ -658,6 +704,19 @@ td {
 	.secondary-navigation ul li.focus > ul {
 		right: 162px;
 		left: auto;
+	}
+
+	.secondary-navigation .menu-item-has-children > a {
+		padding-right: 30px;
+		padding-left: 38px;
+	}
+
+	.secondary-navigation .menu-item-has-children > a:after {
+		border-right-color: #fff;
+		border-left-color: transparent;
+		right: auto;
+		left: 26px;
+		content: "\f503";
 	}
 
 	.footer-sidebar .widget {

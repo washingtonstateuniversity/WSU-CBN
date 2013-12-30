@@ -1,13 +1,14 @@
 /*
 Theme Name: Twenty Fourteen
-Theme URI: http://wordpress.org/themes/
+Theme URI: http://wordpress.org/themes/twentyfourteen
 Author: the WordPress team
 Author URI: http://wordpress.org/
-Description: In 2014, our default theme lets you create a responsive magazine website with a sleek, modern design. Feature your favorite homepage content in either a grid or a slider. Use the three widget areas to customize your website, and change your content's layout with a full width page template and a contributor page to show of your authors. Creating a magazine website with WordPress has never been easier.
-Version: 0.1
+Description: In 2014, our default theme lets you create a responsive magazine website with a sleek, modern design. Feature your favorite homepage content in either a grid or a slider. Use the three widget areas to customize your website, and change your content's layout with a full-width page template and a contributor page to show off your authors. Creating a magazine website with WordPress has never been easier.
+Version: 1.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-Tags: black, green, white, light, dark, two-columns, three-columns, left-sidebar, right-sidebar, fixed-width, flexible-width, custom-background, custom-colors, custom-header, custom-menu, editor-style, featured-images, flexible-header, full-width-template, microformats, post-formats, rtl-language-support, sticky-post, theme-options, translation-ready
+Tags: black, green, white, light, dark, two-columns, three-columns, left-sidebar, right-sidebar, fixed-layout, responsive-layout, custom-background, custom-header, custom-menu, editor-style, featured-images, flexible-header, full-width-template, microformats, post-formats, rtl-language-support, sticky-post, theme-options, translation-ready, accessibility-ready
+Text Domain: twentyfourteen 
 
 This theme, like WordPress, is licensed under the GPL.
 Use it to make something cool, have fun, and share what you've learned with others.
@@ -28,7 +29,7 @@ Use it to make something cool, have fun, and share what you've learned with othe
  *   6.4 - Entry Content
  *   6.5 - Galleries
  *   6.6 - Post Formats
- *   6.7 - Post/Paging Navigation
+ *   6.7 - Post/Image/Paging Navigation
  *   6.8 - Attachments
  *   6.9 - Archives
  *   6.10 - Contributor Page
@@ -89,6 +90,7 @@ audio,
 canvas,
 video {
 	display: inline-block;
+	max-width: 100%;
 }
 
 html {
@@ -705,14 +707,14 @@ img.aligncenter,
 
 .screen-reader-text {
 	clip: rect(1px, 1px, 1px, 1px);
-	position: absolute !important;
+	position: absolute;
 }
 
 .screen-reader-text:focus {
 	background-color: #f1f1f1;
 	border-radius: 3px;
 	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
-	clip: auto !important;
+	clip: auto;
 	color: #21759b;
 	display: block;
 	font-size: 14px;
@@ -816,6 +818,12 @@ span + .edit-link:before,
  * -----------------------------------------------------------------------------
  */
 
+/* Ensure that there is no gap between the header and
+   the admin bar for WordPress versions before 3.8. */
+#wpadminbar {
+	min-height: 32px;
+}
+
 #site-header {
 	position: relative;
 	z-index: 3;
@@ -871,6 +879,10 @@ span + .edit-link:before,
 	margin-top: 14px;
 }
 
+.search-toggle .screen-reader-text {
+	left: 5px; /* Avoid a horizontal scrollbar when the site has a long menu */
+}
+
 .search-box-wrapper {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing:    border-box;
@@ -894,10 +906,6 @@ span + .edit-link:before,
 	font-size: 16px;
 	padding: 2px 2px 3px 6px;
 	width: 100%;
-}
-
-.search-toggle .screen-reader-text {
-	right: 0; /* This makes sure a horizontal scrollbar won't appear */
 }
 
 
@@ -940,7 +948,6 @@ span + .edit-link:before,
 /* Primary Navigation */
 
 .primary-navigation {
-	background-color: #000;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing:    border-box;
 	box-sizing:         border-box;
@@ -969,12 +976,12 @@ span + .edit-link:before,
 
 .secondary-navigation {
 	border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-	font-size: 11px;
+	font-size: 12px;
 	margin: 48px 0;
 }
 
 .secondary-navigation a {
-	padding: 10px 0;
+	padding: 9px 0;
 }
 
 .menu-toggle {
@@ -982,6 +989,7 @@ span + .edit-link:before,
 	font-size: 0;
 	height: 48px;
 	margin: 0;
+	overflow: hidden;
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -1144,7 +1152,7 @@ a.post-thumbnail:hover {
 
 /* Tag links style */
 
-.tag-links a {
+.entry-meta .tag-links a {
 	background-color: #767676;
 	border-radius: 0 2px 2px 0;
 	color: #fff;
@@ -1163,7 +1171,7 @@ a.post-thumbnail:hover {
 	color: #fff;
 }
 
-.tag-links a:before {
+.entry-meta .tag-links a:before {
 	border-top: 10px solid transparent;
 	border-right: 8px solid #767676;
 	border-bottom: 10px solid transparent;
@@ -1175,11 +1183,11 @@ a.post-thumbnail:hover {
 	width: 0;
 }
 
-.tag-links a:hover:before {
+.entry-meta .tag-links a:hover:before {
 	border-right-color: #41a62a;
 }
 
-.tag-links a:after {
+.entry-meta .tag-links a:after {
 	background-color: #fff;
 	border-radius: 50%;
 	content: "";
@@ -1311,7 +1319,7 @@ a.post-thumbnail:hover {
 
 .hentry .mejs-controls .mejs-time-rail .mejs-time-total,
 .hentry .mejs-controls .mejs-horizontal-volume-slider .mejs-horizontal-volume-total {
-	background: #595959;
+	background: rgba(255,255,255,.33);
 }
 
 .hentry .mejs-container .mejs-controls .mejs-time {
@@ -1518,7 +1526,12 @@ a.post-thumbnail:hover {
  */
 
 .nav-links {
+	-webkit-hyphens: auto;
+	-moz-hyphens:    auto;
+	-ms-hyphens:     auto;
 	border-top: 1px solid rgba(0, 0, 0, 0.1);
+	hyphens:         auto;
+	word-wrap: break-word;
 }
 
 .post-navigation,
@@ -1638,18 +1651,32 @@ a.post-thumbnail:hover {
 	margin: 0;
 }
 
-.taxonomy-description {
+.taxonomy-description,
+.author-description {
 	color: #767676;
 	font-size: 14px;
 	line-height: 1.2857142857;
+	padding-top: 18px;
 }
 
-.taxonomy-description p {
+.taxonomy-description p,
+.author-description p {
 	margin-bottom: 18px;
 }
 
-.taxonomy-description p:last-child {
+.taxonomy-description p:last-child,
+.author-description p:last-child {
 	margin-bottom: 0;
+}
+
+.taxonomy-description a,
+.author-description a {
+	text-decoration: underline;
+}
+
+.taxonomy-description a:hover,
+.author-description a:hover {
+	text-decoration: none;
 }
 
 
@@ -1813,7 +1840,7 @@ a.post-thumbnail:hover {
 .comment-list > li:first-child > article,
 .comment-list > .pingback:first-child,
 .comment-list > .trackback:first-child {
-	border-top: 0
+	border-top: 0;
 }
 
 .comment-author {
@@ -1882,7 +1909,7 @@ a.post-thumbnail:hover {
 }
 
 .comment-content > :last-child {
-	margin-bottom: 0
+	margin-bottom: 0;
 }
 
 .comment-list .children {
@@ -1911,6 +1938,13 @@ a.post-thumbnail:hover {
 .form-allowed-tags,
 .form-allowed-tags code {
 	color: #767676;
+}
+
+.comment-notes,
+.comment-awaiting-moderation,
+.logged-in-as {
+	font-size: 14px;
+	line-height: 1.7142857142;
 }
 
 .no-comments {
@@ -1943,7 +1977,6 @@ a.post-thumbnail:hover {
 
 .comment-reply-title small a {
 	color: #2b2b2b;
-	display: inline-block;
 	float: right;
 	height: 24px;
 	overflow: hidden;
@@ -2376,15 +2409,16 @@ a.post-thumbnail:hover {
 	border-top: 0;
 }
 
-.widget_archive li li,
-.widget_categories li li,
-.widget_links li li,
-.widget_meta li li,
-.widget_nav_menu li li,
-.widget_pages li li,
-.widget_recent_comments li li,
-.widget_recent_entries li li {
-	border-top: 0;
+.widget_categories li ul,
+.widget_nav_menu li ul,
+.widget_pages li ul {
+	border-top: 1px solid rgba(255, 255, 255, 0.2);
+	margin-top: 9px;
+}
+
+.widget_categories li li:last-child,
+.widget_nav_menu li li:last-child,
+.widget_pages li li:last-child {
 	padding-bottom: 0;
 }
 
@@ -2546,7 +2580,10 @@ a.post-thumbnail:hover {
 .content-sidebar .widget_nav_menu li,
 .content-sidebar .widget_pages li,
 .content-sidebar .widget_recent_comments li,
-.content-sidebar .widget_recent_entries li {
+.content-sidebar .widget_recent_entries li,
+.content-sidebar .widget_categories li ul,
+.content-sidebar .widget_nav_menu li ul,
+.content-sidebar .widget_pages li ul {
 	border-color: rgba(0, 0, 0, 0.1);
 }
 
@@ -2857,8 +2894,8 @@ a.post-thumbnail:hover {
 }
 
 .slider-direction-nav a:before {
-	content: "\f430";
 	color: #fff;
+	content: "\f430";
 	font-size: 32px;
 	line-height: 46px;
 }
@@ -3143,7 +3180,7 @@ a.post-thumbnail:hover {
 	}
 
 	.search-box .search-field {
-		width: 50%
+		width: 50%;
 	}
 
 	.content-area {
@@ -3173,7 +3210,7 @@ a.post-thumbnail:hover {
 	}
 
 	.singular .site-content .hentry.has-post-thumbnail {
-		margin-top: 0
+		margin-top: 0;
 	}
 
 	.full-width .site-content {
@@ -3266,7 +3303,7 @@ a.post-thumbnail:hover {
 	}
 }
 
-@media screen and (min-width: 782px) {
+@media screen and (min-width: 783px) {
 	.header-main {
 		padding-right: 0;
 	}
@@ -3278,7 +3315,6 @@ a.post-thumbnail:hover {
 	/* Fixed Header */
 
 	.masthead-fixed .site-header {
-		box-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
 		position: fixed;
 		top: 0;
 	}
@@ -3305,7 +3341,7 @@ a.post-thumbnail:hover {
 	.primary-navigation {
 		float: right;
 		font-size: 11px;
-		margin: 0 1px 0 -10px;
+		margin: 0 1px 0 -12px;
 		padding: 0;
 		text-transform: uppercase;
 	}
@@ -3336,7 +3372,7 @@ a.post-thumbnail:hover {
 
 	.primary-navigation a {
 		display: inline-block;
-		padding: 0 10px;
+		padding: 0 12px;
 		white-space: nowrap;
 	}
 
@@ -3387,6 +3423,38 @@ a.post-thumbnail:hover {
 	.primary-navigation ul ul li:hover > ul,
 	.primary-navigation ul ul li.focus > ul {
 		left: 100%;
+	}
+
+	.primary-navigation .menu-item-has-children > a,
+	.primary-navigation .page_item_has_children > a {
+		padding-right: 26px;
+	}
+
+	.primary-navigation .menu-item-has-children > a:after,
+	.primary-navigation .page_item_has_children > a:after {
+		-webkit-font-smoothing: antialiased;
+		content: "\f502";
+		display: inline-block;
+		font: normal 8px/1 Genericons;
+		position: absolute;
+		right: 12px;
+		top: 22px;
+		vertical-align: text-bottom;
+	}
+
+	.primary-navigation li .menu-item-has-children > a,
+	.primary-navigation li .page_item_has_children > a {
+		padding-right: 20px;
+		width: 168px;
+	}
+
+	.primary-navigation .menu-item-has-children li.menu-item-has-children > a:after,
+	.primary-navigation .menu-item-has-children li.page_item_has_children > a:after,
+	.primary-navigation .page_item_has_children li.menu-item-has-children > a:after,
+	.primary-navigation .page_item_has_children li.page_item_has_children > a:after {
+		content: "\f501";
+		right: 8px;
+		top: 20px;
 	}
 }
 
@@ -3481,7 +3549,7 @@ a.post-thumbnail:hover {
 	}
 
 	.featured-content {
-		margin-bottom: 0
+		margin-bottom: 0;
 	}
 }
 
@@ -3544,12 +3612,17 @@ a.post-thumbnail:hover {
 		margin: -3px 0 21px;
 	}
 
+	.site-description:empty {
+		margin: 0;
+	}
+
 	.secondary-navigation {
+		font-size: 11px;
 		margin: 0 -30px 48px;
 		width: 182px;
 	}
 
-	.secondary-navigation  li {
+	.secondary-navigation li {
 		border-top: 1px solid rgba(255, 255, 255, 0.2);
 		position: relative;
 	}
@@ -3567,7 +3640,7 @@ a.post-thumbnail:hover {
 		z-index: 99999;
 	}
 
-	.secondary-navigation  li li {
+	.secondary-navigation li li {
 		border-top: 0;
 	}
 
@@ -3585,6 +3658,21 @@ a.post-thumbnail:hover {
 	.secondary-navigation ul li:hover > ul,
 	.secondary-navigation ul li.focus > ul {
 		left: 162px;
+	}
+
+	.secondary-navigation .menu-item-has-children > a {
+		padding-right: 38px;
+	}
+
+	.secondary-navigation .menu-item-has-children > a:after {
+		-webkit-font-smoothing: antialiased;
+		content: "\f501";
+		display: inline-block;
+		font: normal 8px/1 Genericons;
+		position: absolute;
+		right: 26px;
+		top: 14px;
+		vertical-align: text-bottom;
 	}
 
 	.footer-sidebar .widget,
@@ -3722,12 +3810,36 @@ a.post-thumbnail:hover {
 	.primary-sidebar .widget_recent_comments li,
 	.primary-sidebar .widget_recent_entries li {
 		border-top: 0;
+		padding: 0 0 6px;
+	}
+
+	.footer-sidebar .widget_archive li:last-child,
+	.footer-sidebar .widget_categories li:last-child,
+	.footer-sidebar .widget_links li:last-child,
+	.footer-sidebar .widget_meta li:last-child,
+	.footer-sidebar .widget_nav_menu li:last-child,
+	.footer-sidebar .widget_pages li:last-child,
+	.footer-sidebar .widget_recent_comments li:last-child,
+	.footer-sidebar .widget_recent_entries li:last-child,
+	.primary-sidebar .widget_archive li:last-child,
+	.primary-sidebar .widget_categories li:last-child,
+	.primary-sidebar .widget_links li:last-child,
+	.primary-sidebar .widget_meta li:last-child,
+	.primary-sidebar .widget_nav_menu li:last-child,
+	.primary-sidebar .widget_pages li:last-child,
+	.primary-sidebar .widget_recent_comments li:last-child,
+	.primary-sidebar .widget_recent_entries li:last-child {
 		padding: 0;
 	}
 
-	.footer-sidebar .widget_recent_entries li,
-	.primary-sidebar .widget_recent_entries li {
-		margin-bottom: 18px;
+	.footer-sidebar .widget_categories li ul,
+	.footer-sidebar .widget_nav_menu li ul,
+	.footer-sidebar .widget_pages li ul,
+	.primary-sidebar .widget_categories li ul,
+	.primary-sidebar .widget_nav_menu li ul,
+	.primary-sidebar .widget_pages li ul {
+		border-top: 0;
+		margin-top: 6px;
 	}
 
 	#supplementary {
@@ -3841,7 +3953,7 @@ a.post-thumbnail:hover {
 	}
 
 	.slider-control-paging li {
-		margin: 12px 12px 12px 0
+		margin: 12px 12px 12px 0;
 	}
 
 	.slider-control-paging a {
@@ -3923,7 +4035,7 @@ a.post-thumbnail:hover {
 
 @media print {
 	body {
-		background: none !important;
+		background: none !important; /* Brute force since user agents all print differently. */
 		color: #2b2b2b;
 		font-size: 12pt;
 	}
@@ -4019,7 +4131,7 @@ a.post-thumbnail:hover {
 		margin: 24px auto;
 	}
 
-	.tag-links a {
+	.entry-meta .tag-links a {
 		color: #fff;
 	}
 
@@ -4045,7 +4157,7 @@ a.post-thumbnail:hover {
 
 	.featured-content .post-thumbnail,
 	.slider .featured-content .post-thumbnail {
-		padding-top: 0
+		padding-top: 0;
 	}
 
 	.featured-content .post-thumbnail img {
