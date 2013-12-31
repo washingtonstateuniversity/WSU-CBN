@@ -53,6 +53,13 @@
 				// Hide the "+" button that was clicked.
 				// $( this ).toggle();
 
+				// If all period except the base period has been removed;
+				// show the "+" button so a new period can be added.
+				// if ( data.count == 1 ) {
+
+				// 	row.find('.button.cnbh-remove-period').toggle();
+				// }
+
 				// After adding a row, the periods need to be reindexed.
 				CNBH_Period.reindex( day );
 			});
@@ -71,7 +78,7 @@
 				// show the "+" button so a new period can be added.
 				// if ( data.count == 0 ) {
 
-				// 	row.prev().find('.button.cnbh-add-period').toggle();
+				// 	row.prev().find('.button.cnbh-remove-period').toggle();
 				// }
 
 				row.remove();

@@ -656,10 +656,11 @@ if ( ! class_exists('cnSettingsAPI') ) {
 				case 'multiselect':
 					if ( isset($field['desc']) && ! empty($field['desc']) ) $out .= sprintf( '<span class="description">%s</span><br />', $field['desc'] );
 
-					$out .= '<span style="background-color: white; border-color: #DFDFDF; border-radius: 3px; border-width: 1px; border-style: solid; display: block; height: 90px; padding: 0 3px; overflow: auto; width: 25em;">';	
+					$out .= '<span style="background-color: white; border-color: #DFDFDF; border-radius: 3px; border-width: 1px; border-style: solid; display: block; height: 90px; padding: 0 3px; overflow: auto; width: 25em;">';
+
 					foreach ( $field['options'] as $key => $label )
 					{
-						$checked = checked( TRUE , in_array($key, is_array($value)?$value:explode(',',$value)) , FALSE );
+						$checked = checked( TRUE , in_array($key, $value) , FALSE );
 
 						$out .= sprintf( '<label><input type="checkbox" class="checkbox" id="%1$s[%2$s]" name="%1$s[]" value="%2$s" %3$s/> %4$s</label><br />', $name, $key, $checked, $label );
 					}

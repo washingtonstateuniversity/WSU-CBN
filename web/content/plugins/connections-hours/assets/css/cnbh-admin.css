@@ -19,11 +19,14 @@
 
 /* The add/remove periond buttons. */
 #business-hours .button {
+	border-radius: 50%;
 	display: inline-block;
-	font-size: 18px;
+	font-size: 1.5em;
 	font-weight: 600;
 	height: 24px;
-	width: 34px;
+	line-height: 1em;
+	padding: 0 5px;
+	width: 24px;
 }
 
 /* For timepicker. */

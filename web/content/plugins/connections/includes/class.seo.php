@@ -372,8 +372,7 @@ class cnSEO {
 		if ( get_query_var( 'cn-cat' ) ) {
 
 			// If the category slug is a descendant, use the last slug from the URL for the query.
-			$cncat=get_query_var( 'cn-cat' );
-			$categorySlug = is_array($cncat)?$cncat:explode( '/' , $cncat );
+			$categorySlug = explode( '/' , get_query_var( 'cn-cat' ) );
 
 			if ( isset( $categorySlug[ count( $categorySlug ) - 1 ] ) ) $categorySlug = $categorySlug[ count( $categorySlug ) - 1 ];
 

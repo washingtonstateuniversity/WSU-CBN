@@ -260,7 +260,7 @@ class cnUser
 			$user_meta = get_usermeta( $this->ID, 'connections' );
 		}
 
-		if ( !$user_meta==NULL && isset($user_meta['filter']) && isset($user_meta['filter']['category']) ) {
+		if ( ! $user_meta == NULL && isset( $user_meta['filter'] ) ) {
 			return $user_meta['filter']['category'];
 		} else {
 			return '';

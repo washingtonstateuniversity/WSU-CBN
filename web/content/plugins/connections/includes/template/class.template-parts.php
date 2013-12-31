@@ -819,22 +819,28 @@ class cnTemplatePart {
 		$atts = wp_parse_args( $atts, $defaults );
 
 		switch ( $atts['type'] ) {
-			case 'select' || 'multiselect':
-				self::categorySelect( $atts );
+			case 'select':
+				$out = self::categorySelect( $atts );
+				break;
+
+			case 'multiselect':
+				$out = self::categorySelect( $atts );
 				break;
 
 			case 'radio':
-				self::categoryInput( $atts );
+				$out = self::categoryInput( $atts );
 				break;
 
 			case 'checkbox':
-				self::categoryInput( $atts );
+				$out = self::categoryInput( $atts );
 				break;
 
 			case 'link':
-				self::categoryLink( $atts );
+				$out = self::categoryLink( $atts );
 				break;
 		}
+
+		if ( $atts['return'] ) return $out;
 	}
 
 	/**

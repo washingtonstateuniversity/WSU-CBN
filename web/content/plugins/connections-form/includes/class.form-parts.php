@@ -21,8 +21,37 @@ class cnfmFormParts {
         );
         return $blocks;
     }
+	
+    public static function get_meta_boxes( $screen = null, $context = 'advanced' ) {
+		global $connections;
+		global $wp_meta_boxes;
+
+		/*if ( empty( $screen ) )
+			$screen = get_current_screen();
+		elseif ( is_string( $screen ) )
+			$screen = convert_to_screen( $screen );
+	
+		$page = $screen->id;
+	
+		$boxes = $wp_meta_boxes[$page][$context];
+	
+	var_dump($boxes);die();
+		return $wp_meta_boxes[$page][$context];  */
+		return array();        
+	}
+	public static function getAvailableRegisteredBlocks() {
+		global $connections;
+		$blocks = array_merge(
+			self::get_meta_boxes( 'connections_add', 'normal' ),
+			self::get_meta_boxes( 'connections_add', 'side' ), //$connections->pageHook->add ??
+			self::getDefaultBlocks()
+		);
+		return json_encode( $blocks  );
+	}
+	
+	
     public static function getRegisteredBlocks() {
-        $registeredblocks = get_option('cnfm_registeredblocks', json_encode(self::getDefaultBlocks()));
+        $registeredblocks = get_option('cnfm_registeredblocks', self::getAvailableRegisteredBlocks());
         $blocks           = json_decode($registeredblocks);
         return $blocks;
     }

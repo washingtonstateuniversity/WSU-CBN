@@ -21,8 +21,12 @@ if (!class_exists('Connections_Emails')) {
 
 				// Business Hours uses a custom field type, so let's add the action to add it.
 				add_action( 'cn_meta_field-last_emailed', array( __CLASS__, 'field' ), 10, 2 );
-				// Business Hours uses a custom field type, so let's add the action to add it.
-				add_action( 'cn_meta_field-level', array( __CLASS__, 'field' ), 10, 2 );
+				// Since we're using a custom field, we need to add our own sanitization method.
+				add_filter( 'cn_meta_sanitize_field-last_emailed', array( __CLASS__, 'sanitize') );
+				
+
+				
+				
             }
 			add_action( 'cn_meta_output_field-cnemail', array( __CLASS__, 'block' ), 10, 3 );
         }
@@ -126,8 +130,6 @@ if (!class_exists('Connections_Emails')) {
 						),
 				);
 			$metabox::add( $atts );
-			
-			
 		}
 
 		
@@ -192,6 +194,65 @@ if (!class_exists('Connections_Emails')) {
             );
             return $fields;
         }
+		
+		
+		
+		
+		
+		
+		public static function field( $field, $value ) {
+			cnHTML::field(
+				array(
+					'type'     => 'text',
+					'class'    => '',
+					'id'       => $field['id'] ,
+					'required' => false,
+					'label'    => '',
+					'before'   => '',
+					'after'    => '',
+					'return'   => false,
+				)
+			);
+		}
+
+		/**
+		 * Sanitize the times as a text input using the cnSanitize class.
+		 *
+		 * @access  private
+		 * @since  1.0
+		 * @param  array $value   The opening/closing hours.
+		 *
+		 * @return array
+		 */
+		public static function sanitize( $value ) {
+
+			/*foreach ( $value as $key => $day ) {
+
+				foreach ( $day as $period => $time ) {
+
+					// Save all time values in 24hr format.
+					$time['open']  = self::formatTime( $time['open'], 'H:i' );
+					$time['close'] = self::formatTime( $time['close'], 'H:i' );
+
+					$value[ $key ][ $period ]['open']  = cnSanitize::string( 'text', $time['open'] );
+					$value[ $key ][ $period ]['close'] = cnSanitize::string( 'text', $time['close'] );
+
+				}
+			}*/
+
+			return $value;
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
     }
     /**
      * Start up the extension.

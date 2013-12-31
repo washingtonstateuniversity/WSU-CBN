@@ -160,7 +160,12 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 				 * Register the admin menu and functions. These must hooked and run before the `init` hook.
 				 */
 				add_action( 'admin_menu', array( 'cnAdminMenu' , 'init' ) );
+				add_action( 'admin_init', array( 'cnMetaboxAPI', 'init' ) ); // cnMetaboxAPI has to load before cnAdminFunction otherwise the action to save the meta is not added in time to run.
 				add_action( 'admin_init', array( 'cnAdminFunction', 'init' ) );
+
+				// Register the core metaboxes use the Metabox API.
+				add_action( 'cn_metabox', array( 'cnEntryMetabox', 'init' ), 1 );
+				add_action( 'cn_metabox', array( 'cnDashboardMetabox', 'init' ), 1 );
 
 				/*
 				 * Add the filter to update the user settings when the "Apply" button is clicked.
@@ -343,15 +348,25 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 			//date objects
 			require_once CN_PATH . 'includes/class.date.php'; // Required for activation, entry list, add entry
 			//entry objects
-			require_once CN_PATH . 'includes/class.entry.php'; // Required for activation, entry list
+			require_once CN_PATH . 'includes/class.entry-data.php'; // Required for activation, entry list
 			require_once CN_PATH . 'includes/class.entry-actions.php';
+
+			// HTML elements class.
+			require_once CN_PATH . 'includes/class.html.php';
+
+			// meta API
+			require_once CN_PATH . 'includes/class.meta.php';
 
 			//plugin utility objects
 			require_once CN_PATH . 'includes/class.utility.php'; // Required for activation, entry list
+
+			// sanitization class
+			require_once CN_PATH . 'includes/class.sanitize.php';
+
 			//plugin template objects
-			require_once CN_PATH . 'includes/class.output.php'; // Required for activation, entry list
+			require_once CN_PATH . 'includes/class.entry-output.php'; // Required for activation, entry list
 			//builds vCard
-			require_once CN_PATH . 'includes/class.vcard.php'; // Required for front end
+			require_once CN_PATH . 'includes/class.entry-vcard.php'; // Required for front end
 
 			// geocoding
 			require_once CN_PATH . 'includes/class.geo.php'; // Required
@@ -428,6 +443,15 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 				// The class for registering general admin actions.
 				require_once CN_PATH . 'includes/admin/class.functions.php';
+
+				// The class for adding the metaboxes.
+				require_once CN_PATH . 'includes/admin/class.metabox-api.php';
+
+				// The class for registering the core metabox and fields for the add/edit entry admin pages.
+				require_once CN_PATH . 'includes/admin/class.metabox-entry.php';
+
+				// The class for registering the core metabox and fields for the dashboard admin page.
+				require_once CN_PATH . 'includes/admin/class.metabox-dashboard.php';
 
 			} else {
 
