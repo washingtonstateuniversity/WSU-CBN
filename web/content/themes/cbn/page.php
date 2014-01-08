@@ -60,5 +60,13 @@ get_header(); ?>
     
     
 <?php get_sidebar(); ?>
+
+<?php if ( !is_front_page() ) { ?>
 <div style="clear:both;"></div>
+<div id="details">
+    <hr>    <p><strong>PLEASE NOTE:</strong></p>
+    <p>
+     Cougar-owned or -managed businesses are defined as businesses clearly owned by alumni or friends of WSU, or a business where alumni are the principal executive(s) in a leadership role. Businesses in question will be reviewed and considered by the WSUAA Executive Committee. The WSUAA reserves the right to determine if a business is deemed appropriate for the WSU alumni audience.</p>
+</div>
+<?php }  // This is a homepage  ?>
 <?php get_footer(); ?>

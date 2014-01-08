@@ -66,6 +66,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$atts = shortcode_atts(
 				array(
 					'default_type'     => 'individual',
+					'show_label'		=> TRUE,
 					'select_type'      => TRUE,
 					'photo'            => FALSE,
 					'logo'             => FALSE,
@@ -118,29 +119,50 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			
 					$atts = wp_parse_args( $atts, $defaults );	
 					$searchValue = ( get_query_var('cn-s') ) ? get_query_var('cn-s') : '';
-					$out .= cnTemplatePartExended::test();//test for now.. where state will be
-					$out .= cnTemplatePart::category( array(
+
+					$out .= '<div>';
+					$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(),array(
 						'type'            => 'select',
 						'group'           => FALSE,
-						'default'         => __('Select Category', 'connections'),
+						'default'         => __('Select state', 'connections'),
+						'label'           => __('Search by category', 'connections'),
 						'show_select_all' => TRUE,
-						'select_all'      => __('Show All Categories', 'connections'),
+						'select_all'      => __('Any', 'connections'),
 						'show_empty'      => TRUE,
 						'show_count'      => FALSE,
 						'depth'           => 0,
 						'parent_id'       => array(),
 						'exclude'         => array(),
-						'return'          => FALSE,
-					) );
+						'return'          => TRUE,
+						'class'				=>'search-select'
+					));
+					$out .= '<hr/></div>';
 
+					$out .= '<div>';
+					$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(),array(
+						'type'            => 'select',
+						'group'           => FALSE,
+						'default'         => __('Select state', 'connections'),
+						'label'           => __('Search by state', 'connections'),
+						'show_select_all' => TRUE,
+						'select_all'      => __('Any', 'connections'),
+						'show_empty'      => TRUE,
+						'show_count'      => FALSE,
+						'depth'           => 0,
+						'parent_id'       => array(),
+						'exclude'         => array(),
+						'return'          => TRUE,
+						'class'				=>'search-select'
+					));
+					$out .= '<hr/></div>';
 
-					$out .= '<span class="cn-search">';
-						if ( $atts['show_label'] ) $out .= '<label for="cn-s">Search Directory</label>';
+					
+					$out .= '<label for="cn-s"><strong>Keywords:</strong></label><br/>';
+					$out .= '<span class="cn-search" style="width:50%; display:inline-block">';
 						$out .= '<input type="text" id="cn-search-input" name="cn-s" value="' . esc_attr( $searchValue ) . '" placeholder="' . __('Search', 'connections') . '"/>';
-						$out .= '<input type="submit" name="" id="cn-search-submit" class="cn-search-button" value="" tabindex="-1" />';
 					$out .= '</span>';
 
-					$out .=  '<p class="cn-add"><input class="cn-button-shell cn-button green" id="cn-form-submit-new" type="submit" name="save" value="' . __('Submit' , 'connections_form' ) . '" /></p>' . "\n";
+					$out .=  '<hr/><br/><p class="cn-add"><input class="cn-button-shell cn-button red" id="cn-form-submit-new" type="submit" name="save" value="' . __('Submit' , 'connections_form' ) . '" /></p><br/>' . "\n";
 	
 				$out .= '</form>';
 			$out .= '</div>';

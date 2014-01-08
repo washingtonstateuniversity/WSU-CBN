@@ -454,8 +454,8 @@ body.page.page-id-9 #main-content {
 }
 
 
-
-
+.search-select{margin-bottom:15px;display:inline-block;}
+.searchbox{padding: 5px 15px;}
 
 
 @media screen and (max-width:750px) and (min-width:0px){

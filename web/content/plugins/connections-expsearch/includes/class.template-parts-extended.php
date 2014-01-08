@@ -3,10 +3,10 @@ if (!defined('ABSPATH'))
     exit;
 class cnTemplatePartExended {
     public static function test() {
-        return "hello cnTemplatePartExended";
+        return "hello cnTemplatePartExended ";
     }
     //note later
-    public static function flexSelect($atts) {
+    public static function flexSelect($selectObj,$atts) {
         global $connections;
         $selected = array();
         if (get_query_var('cn-cat')) {
@@ -24,7 +24,7 @@ class cnTemplatePartExended {
         }
         $level      = 1;
         $out        = '';
-        $categories = $connections->retrieve->categories();
+        $categories = $selectObj;
         $defaults   = array(
             'type' => 'select',
             'group' => FALSE,
@@ -51,10 +51,15 @@ class cnTemplatePartExended {
             // Convert to array.
             $atts['exclude'] = explode(',', $atts['exclude']);
         }
-        $out .= "\n" . '<select class="cn-cat-select" name="' . (($atts['type'] == 'multiselect') ? 'cn-cat[]' : 'cn-cat') . '"' . (($atts['type'] == 'multiselect') ? ' MULTIPLE ' : '') . (($atts['type'] == 'multiselect') ? '' : ' onchange="this.form.submit()" ') . 'data-placeholder="' . esc_attr($atts['default']) . '">';
+		$out .= "\n" . '<label class="'.$atts['class'].'"><strong>'.$atts['label'].':</strong></label><br/>';
+		
+        $out .= "\n" . '<select class="cn-cat-select " name="'.(($atts['type'] == 'multiselect') ? 'cn-cat[]' : 'cn-cat').'" ' 
+					. (($atts['type'] == 'multiselect') ? ' MULTIPLE ' : '') 
+					. (($atts['type'] == 'multiselect') ? '' : ' onchange="this.form.submit()" ') 
+					. ' data-placeholder="' . esc_attr($atts['default']) . '" >';
         $out .= "\n" . '<option value=""></option>';
         if ($atts['show_select_all'])
-            $out .= "\n" . '<option value="">' . esc_attr($atts['select_all']) . '</option>';
+            $out .= "\n" . '<option value="" selected >'.esc_attr($atts['select_all']).'</option>';
         foreach ($categories as $key => $category) {
             // Limit the category tree to only the supplied root parent categories.
             if (!empty($atts['parent_id']) && !in_array($category->term_id, $atts['parent_id']))
