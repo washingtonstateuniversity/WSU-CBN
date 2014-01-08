@@ -49,21 +49,24 @@ if ( ! class_exists('Connections_Business_Hours') ) {
 			 */
 			add_action( 'init', array( __CLASS__ , 'loadTextdomain' ) );
 
+			// Register CSS and JavaScript.
+			add_action( 'init', array( __CLASS__ , 'registerScripts' ) );
+
 			if ( is_admin() ) {
 
 				// Enqueue the admin CSS and JS
 				add_action( 'admin_enqueue_scripts', array( __CLASS__, 'adminStyles' ) );
-				add_action( 'admin_enqueue_scripts', array( __CLASS__, 'adminScripts') );
-
-				// Register the metabox and fields.
-				add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
-
-				// Business Hours uses a custom field type, so let's add the action to add it.
-				add_action( 'cn_meta_field-business_hours', array( __CLASS__, 'field' ), 10, 2 );
+				// add_action( 'admin_enqueue_scripts', array( __CLASS__, 'adminScripts') );
 
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-business_hours', array( __CLASS__, 'sanitize') );
 			}
+
+			// Register the metabox and fields.
+			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
+
+			// Business Hours uses a custom field type, so let's add the action to add it.
+			add_action( 'cn_meta_field-business_hours', array( __CLASS__, 'field' ), 10, 2 );
 
 			// Enqueue the public CSS
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueueScripts' ), 11 );
@@ -144,6 +147,21 @@ if ( ! class_exists('Connections_Business_Hours') ) {
 			load_plugin_textdomain( $textdomain, FALSE, $languagesDirectory );
 		}
 
+		public static function registerScripts() {
+
+			// Register CSS.
+			wp_register_style( 'cnbh-admin' , CNBH_URL . 'assets/css/cnbh-admin.css', array( 'cn-admin', 'cn-admin-jquery-ui' ) , '1.0' );
+			wp_register_style( 'cnbh-public', CNBH_URL . 'assets/css/cnbh-public.css', array(), '1.0' );
+			wp_register_style( 'cnbh-public-jquery-ui', CN_URL . 'assets/css/jquery-ui-fresh.css', array( 'cnbh-public' ), CN_CURRENT_VERSION );
+
+			// Register JavaScript.
+			wp_register_script( 'jquery-timepicker' , CNBH_URL . 'assets/js/jquery-ui-timepicker-addon.js', array( 'jquery', 'jquery-ui-datepicker', 'jquery-ui-slider' ) , '1.4.3' );
+			wp_register_script( 'cnbh-ui-js' , CNBH_URL . 'assets/js/cnbh-admin.js', array( 'jquery-timepicker' ) , '1.0', true );
+
+			wp_localize_script( 'cnbh-ui-js', 'cnbhDateTimePickerOptions', Connections_Business_Hours::dateTimePickerOptions() );
+
+		}
+
 		/**
 		 * Enqueues the CSS on the Connections admin pages only.
 		 *
@@ -161,7 +179,7 @@ if ( ! class_exists('Connections_Business_Hours') ) {
 
 			if ( in_array( $pageHook, $editorPages ) ) {
 
-				wp_enqueue_style( 'cnbh-admin' , CNBH_URL . 'assets/css/cnbh-admin.css', array( 'cn-admin', 'cn-admin-jquery-ui' ) , '1.0' );
+				wp_enqueue_style( 'cnbh-admin' );
 			}
 		}
 
@@ -182,16 +200,14 @@ if ( ! class_exists('Connections_Business_Hours') ) {
 
 			if ( in_array( $pageHook, $editorPages ) ) {
 
-				wp_enqueue_script( 'jquery-timepicker' , CNBH_URL . 'assets/js/jquery-ui-timepicker-addon.js', array( 'jquery', 'jquery-ui-datepicker', 'jquery-ui-slider' ) , '1.4.3' );
-				wp_enqueue_script( 'cnbh-ui-admin-js' , CNBH_URL . 'assets/js/cnbh-admin.js', array( 'jquery-timepicker' ) , '1.0', true );
-
-				wp_localize_script( 'cnbh-ui-admin-js', 'cnbhDateTimePickerOptions', Connections_Business_Hours::dateTimePickerOptions() );
+				wp_enqueue_script( 'cnbh-ui-js' );
 			}
+
 		}
 
 		public static function enqueueScripts() {
 
-			wp_enqueue_style( 'cnbh-public', CNBH_URL . 'assets/css/cnbh-public.css', array(), '1.0' );
+			wp_enqueue_style( 'cnbh-public-jquery-ui' );
 		}
 
 		public static function dateTimePickerOptions() {
@@ -429,6 +445,9 @@ if ( ! class_exists('Connections_Business_Hours') ) {
 			<?php
 
 			printf( '<p>%s</p>', __( 'To create a closed day or closed period within a day, leave both the open and close hours blank.', 'connections_hours' ) );
+
+			// Enqueue the JS required for the metabox.
+			wp_enqueue_script( 'cnbh-ui-js' );
 		}
 
 		/**

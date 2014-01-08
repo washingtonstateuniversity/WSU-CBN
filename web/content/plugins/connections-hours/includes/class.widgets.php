@@ -107,6 +107,18 @@ class cnbhHoursWidget extends WP_Widget {
 		cnHTML::checkbox(
 			array(
 				'prefix'  => '',
+				'id'      => $this->get_field_id('highlight_open_period'),
+				'name'    => $this->get_field_name('highlight_open_period'),
+				'label'   => __( 'Highlight the current open period within the operating hours.', 'connections_cnbh' ),
+				'before'  => '<p>',
+				'after'   => '</p>',
+				),
+			$highlightOpenPeriod
+		);
+
+		cnHTML::checkbox(
+			array(
+				'prefix'  => '',
 				'id'      => $this->get_field_id('header'),
 				'name'    => $this->get_field_name('header'),
 				'label'   => __( 'Show Open/Close Header', 'connections_cnbh' ),
@@ -164,18 +176,6 @@ class cnbhHoursWidget extends WP_Widget {
 			$show
 		);
 
-		cnHTML::checkbox(
-			array(
-				'prefix'  => '',
-				'id'      => $this->get_field_id('highlight_open_period'),
-				'name'    => $this->get_field_name('highlight_open_period'),
-				'label'   => __( 'Highlight the current open period within the operating hours.', 'connections_cnbh' ),
-				'before'  => '<p>',
-				'after'   => '</p>',
-				),
-			$highlightOpenPeriod
-		);
-
 		cnHTML::select(
 			array(
 				'id'      => $this->get_field_name('day_name'),
@@ -219,6 +219,9 @@ class cnbhHoursWidget extends WP_Widget {
 
 			// Query the entry meta.
 			$metadata = $entry->getMeta( array( 'key' => 'cnbh', 'single' => TRUE ) );
+
+			// If there is no meta; bail.
+			if ( $metadata === FALSE ) return;
 
 			// Extract $before_widget, $after_widget, $before_title and $after_title.
 			extract( $args );

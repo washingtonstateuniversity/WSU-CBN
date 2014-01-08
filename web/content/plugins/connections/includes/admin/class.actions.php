@@ -151,7 +151,7 @@ class cnAdminActions {
 		 */
 
 		// Process user selected filters
-		if ( isset( $_POST['filter'] ) || isset( $_GET['filter'] ) ) self::saveUserFilters();
+		self::saveUserFilters();
 
 		// Grab the bulk action requesteed by user.
 		$action = isset( $_POST['bulk_action'] ) && ( isset( $_POST['action'] ) && ! empty( $_POST['action'] ) ) ? $_POST['action'] : 'none';
@@ -240,7 +240,7 @@ class cnAdminActions {
 		$entry = new cnEntry();
 		$form = new cnFormObjects();
 
-		$action = $_GET['cn-action'] ? $_GET['cn-action'] : $_POST['cn-action'];
+		$action = isset( $_GET['cn-action'] ) ? $_GET['cn-action'] : $_POST['cn-action'];
 
 		// Setup the redirect URL.
 		$redirect = isset( $_POST['redirect'] ) ? $_POST['redirect'] : 'admin.php?page=connections_add';
@@ -305,8 +305,8 @@ class cnAdminActions {
 				break;
 		}
 
-		do_action( 'cn_process_meta-entry', $action, $id );
-		do_action( 'cn_process_meta-' . $action, $action, $id );
+		// do_action( 'cn_process_meta-entry', $action, $id );
+		// do_action( 'cn_process_meta-entry-' . $action, $action, $id );
 
 		wp_redirect( get_admin_url( get_current_blog_id(), $redirect) );
 
@@ -327,11 +327,14 @@ class cnAdminActions {
 
 		if ( ! $id = absint( $id ) ) return FALSE;
 
-		$metaIDs = array();
+		$meta       = array();
+		$newmeta    = array();
+		$metaSelect = array();
+		$metaIDs    = array();
 
 		switch ( $action ) {
 
-			case 'add_entry':
+			case 'add':
 
 				if ( isset( $_POST['newmeta'] ) || ! empty( $_POST['newmeta'] ) ) {
 
@@ -346,14 +349,14 @@ class cnAdminActions {
 
 				if ( isset( $_POST['metakeyselect'] ) && $_POST['metakeyselect'] !== '-1' ) {
 
-					$metaSelect = cnMeta::add( 'entry', $id, $_POST['metakeyselect'], $_POST['newmeta']['0']['value'] );
+					$metaSelect = cnMeta::add( 'entry', $id, $_POST['metakeyselect'], $_POST['newmeta']['99']['value'] );
 				}
 
 				$metaIDs['added'] = array_merge( $newmeta, $metaSelect );
 
 				break;
 
-			case 'copy_entry':
+			case 'copy':
 
 				// Copy any meta associated with the source entry to the new entry.
 				if ( isset( $_POST['meta'] ) || ! empty( $_POST['meta'] ) ) {
@@ -379,19 +382,19 @@ class cnAdminActions {
 						$metaIDs[] = cnMeta::add( 'entry', $id, $row['key'], $row['value'] );
 					}
 
-					// $newmeta = cnMeta::add( 'entry', $id, $_POST['newmeta']['0']['key'], $_POST['newmeta']['0']['value'] );
+					// $newmeta = cnMeta::add( 'entry', $id, $_POST['newmeta']['0']['key'], $_POST['newmeta']['99']['value'] );
 				}
 
 				if ( isset( $_POST['metakeyselect'] ) && $_POST['metakeyselect'] !== '-1' ) {
 
-					$metaSelect = cnMeta::add( 'entry', $id, $_POST['metakeyselect'], $_POST['newmeta']['0']['value'] );
+					$metaSelect = cnMeta::add( 'entry', $id, $_POST['metakeyselect'], $_POST['newmeta']['99']['value'] );
 				}
 
 				$metaIDs['added'] = array_merge( $meta, $newmeta, $metaSelect );
 
 				break;
 
-			case 'update_entry':
+			case 'update':
 
 				// Query the meta associated to the entry.
 				$results = cnMeta::get( 'entry', $id );
@@ -413,7 +416,7 @@ class cnAdminActions {
 						$metaIDs['updated'] = $metaID;
 					}
 
-					if ( $_POST['meta'][ $metaID ]['value'] === '::DELETED::' ) {
+					if ( isset( $_POST['meta'] ) && $_POST['meta'][ $metaID ]['value'] === '::DELETED::' ) {
 
 						// Record entry meta to be deleted.
 						cnMeta::delete( 'entry', $id, $metaID );
@@ -434,12 +437,12 @@ class cnAdminActions {
 						$metaIDs[] = cnMeta::add( 'entry', $id, $row['key'], $row['value'] );
 					}
 
-					// $newmeta = cnMeta::add( 'entry', $id, $_POST['newmeta']['0']['key'], $_POST['newmeta']['0']['value'] );
+					// $newmeta = cnMeta::add( 'entry', $id, $_POST['newmeta']['0']['key'], $_POST['newmeta']['99']['value'] );
 				}
 
 				if ( isset( $_POST['metakeyselect'] ) && $_POST['metakeyselect'] !== '-1' ) {
 
-					$metaSelect = cnMeta::add( 'entry', $id, $_POST['metakeyselect'], $_POST['newmeta']['0']['value'] );
+					$metaSelect = cnMeta::add( 'entry', $id, $_POST['metakeyselect'], $_POST['newmeta']['99']['value'] );
 				}
 
 				$metaIDs['added'] = array_merge( $newmeta, $metaSelect );

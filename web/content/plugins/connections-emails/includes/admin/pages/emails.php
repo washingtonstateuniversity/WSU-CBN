@@ -98,6 +98,10 @@ function connectionsEmailsPage() {
 						$email->send();
 						// The object can be completely reset for reuse to send a completely different email.
 						$email->clear();
+						cnEntry_Action::meta( 'update', $entry->getId(), array( array('key' => "cnemail", 'value' =>  "".strtotime("now")) ) );
+						//cnMeta::update( 'entry', $entry->id, 'cnemail', strtotime("now") );
+						//$entry->setMeta( array( 'key' => 'cnemail', 'single' => TRUE ) );
+						//do_action( 'cn_process_meta-entry-' . $action, $action, $entryID );
 					}
 					$proccessOutput.="</div>";
 					echo "<h2>Emails sent</h2>";
@@ -444,7 +448,7 @@ function connectionsEmailsPage() {
 								<!--<th class="col" style="width:10%;"></th>-->
 								<th scope="col" colspan="2" style="width:40%;"><?php _e( 'Name', 'connections' ); ?></th>
 								<th scope="col" style="width:30%;"><?php _e( 'Categories', 'connections' ); ?></th>
-								<th scope="col" style="width:20%;"><?php _e( 'Last Modified', 'connections' ); ?></th>
+								<th scope="col" style="width:20%;"><?php _e( 'Last Contacted', 'connections' ); ?></th>
 				            </tr>
 						</thead>
 						<tfoot>
@@ -453,7 +457,7 @@ function connectionsEmailsPage() {
 								<!--<th class="col" style="width:10%;"></th>-->
 								<th scope="col" colspan="2" style="width:40%;"><?php _e( 'Name', 'connections' ); ?></th>
 								<th scope="col" style="width:30%;"><?php _e( 'Categories', 'connections' ); ?></th>
-								<th scope="col" style="width:20%;"><?php _e( 'Last Modified', 'connections' ); ?></th>
+								<th scope="col" style="width:20%;"><?php _e( 'Last Contacted', 'connections' ); ?></th>
 				            </tr>
 						</tfoot>
 						<tbody>
@@ -519,18 +523,14 @@ function connectionsEmailsPage() {
 							$statusClass = '';
 							break;
 					}
-
+					$metadata = $entry->getMeta( array( 'key' => 'cnemail', 'single' => TRUE ) );
+					//var_dump($metadata);
 					echo '<tr id="row-' , $entry->getId() , '" class="parent-row' . $statusClass .' '.( ($email==false)?"disable":"" ).'"  '.( ($email==false)?" style='background:#e2e2e2;opacity: 0.35;' ":"" ).'>';
 					echo "<th class='check-column' scope='row'>";
 					echo ( ($email==false) ? "no email" : "<input type='checkbox' value='" . $entry->getId() . "' name='id[]' ".( ($email==false)?"disabled":"" )."/>" );
 					echo "</th> \n";
-					/*echo '<td>';
-					$entry->getImage( array( 'image' => 'photo' , 'preset' => 'thumbnail' , 'height' => 54 , 'width' => 80 , 'zc' => 2 , 'fallback' => array( 'type' => 'block' , 'string' => __( 'No Photo Available', 'connections' ) ) ) );
-					echo '</td>';*/
 					echo '<td  colspan="2">';
 					if ( $setAnchor ) echo $setAnchor;
-					//echo '<div style="float:right"><a href="#wphead" title="Return to top."><img src="' . CN_URL . 'assets/images/uparrow.gif" /></a></div>';
-
 					if ( current_user_can( 'connections_edit_entry' ) || current_user_can( 'connections_edit_entry_moderated' ) ) {
 						echo '<a class="row-title" title="Edit ' . $entry->getName( array( 'format' => '%last%, %first%' ) ) . '" href="' . $editTokenURL . '"> ' . $entry->getName( array( 'format' => '%last%, %first%' ) ) . '</a><br />';
 					}
@@ -588,7 +588,10 @@ function connectionsEmailsPage() {
 
 					echo "</td> \n";
 					echo '<td >';
-						echo '<strong>' . __( 'On', 'connections' ) . ':</strong> ' . $entry->getFormattedTimeStamp( 'm/d/Y g:ia' ) . '<br />';
+						$metadata = $entry->getMeta( array( 'key' => 'cnemail', 'single' => TRUE ) );
+						$t = strtotime($metadata);
+						$last_emailed = date('m/d/Y g:ia' ,$t);
+						echo '<strong>' . __( 'On', 'connections' ) . ':</strong> ' . $last_emailed . '<br />';
 						//echo '<strong>' . __( 'By', 'connections' ) . ':</strong> ' . $entry->getEditedBy() . '<br />';
 						//echo '<strong>' . __( 'Visibility', 'connections' ) . ':</strong> ' . $entry->displayVisibiltyType() . '<br />';
 

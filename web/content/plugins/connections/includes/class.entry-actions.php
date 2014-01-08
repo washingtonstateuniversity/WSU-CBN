@@ -404,7 +404,10 @@ class cnEntry_Action {
 		}
 
 		// Run any registered post process actions.
-		do_action( "cn_post_process_{ $action }-entry", $entry );
+		do_action( "cn_post_process_$action-entry", $entry );
+
+		do_action( 'cn_process_meta-entry', $action, $entryID );
+		do_action( 'cn_process_meta-entry-' . $action, $action, $entryID );
 
 		return $entryID;
 	}
