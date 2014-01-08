@@ -589,12 +589,8 @@ function connectionsEmailsPage() {
 					echo "</td> \n";
 					echo '<td >';
 						$metadata = $entry->getMeta( array( 'key' => 'cnemail', 'single' => TRUE ) );
-						$t = strtotime($metadata);
-						$last_emailed = date('m/d/Y g:ia' ,$t);
+						$last_emailed = date('m/d/Y g:ia' ,$metadata);
 						echo '<strong>' . __( 'On', 'connections' ) . ':</strong> ' . $last_emailed . '<br />';
-						//echo '<strong>' . __( 'By', 'connections' ) . ':</strong> ' . $entry->getEditedBy() . '<br />';
-						//echo '<strong>' . __( 'Visibility', 'connections' ) . ':</strong> ' . $entry->displayVisibiltyType() . '<br />';
-
 						$user = $entry->getUser() ? get_userdata( $entry->getUser() ) : FALSE;
 
 						/**
@@ -604,16 +600,11 @@ function connectionsEmailsPage() {
 						 * @TODO Use get_edit_user_link() to simplify this code when WP hits >= 3.9.
 						 */
 						if ( $user ) {
-
 							if ( get_current_user_id() == $user->ID ) {
-
 								$editUserLink = get_edit_profile_url( $user->ID );
-
 							} else {
-
 								$editUserLink = add_query_arg( 'user_id', $user->ID, self_admin_url( 'user-edit.php' ) );
 							}
-
 							echo '<strong>' . __( 'Linked to:', 'connections' ) . '</strong> ' . '<a href="'. $editUserLink .'">'. esc_attr( $user->display_name ) .'</a>';
 						}
 

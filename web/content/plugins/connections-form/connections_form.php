@@ -758,7 +758,7 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 							$blockStr .= cnfmFormParts::getFormBlock($code,$entry, $atts);
 							$blockStr = apply_filters( 'cnfm_block_creation_after-'.$code, $blockStr);
 							$out .= $blockStr;
-						}
+						} 
 					}else{
 						$out.="<h2>".__('No blocks were choosen' , 'connections_form' )."</h2>";	
 					}

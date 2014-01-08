@@ -140,8 +140,8 @@ if (!class_exists('Connections_Emails')) {
 			$metabox::add( $atts );
 		}
 		public static function field( $field, $value ) {
-			printf( '<label>%s</label><p><strong>%s</strong></p><input type="hidden" value="%s" name="cnemail" />', __( 'Last Sent', 'connections_emails' ), ($value!=NULL && !empty($value))?$value: "Never sent", $value);
-
+			printf( '<label>%s</label><p><strong>%s</strong></p><input type="hidden" value="%s" name="cnemail" />', __( 'Last Sent', 'connections_emails' ), ($value!=NULL && !empty($value))?date("m/d/Y h:i:s a",$value): "Never sent", $value);
+ 
 		}
 
 		/**
