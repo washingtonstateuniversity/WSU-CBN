@@ -66,6 +66,8 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'id'                    => NULL,
 				'slug'                  => NULL,
 				'category'              => isset($_POST['cn-cat'])&& !empty($_POST['cn-cat']) ?$_POST['cn-cat']:NULL,
+				'enable_category_select'	=>false,
+				'enable_search'			=> false,
 				/*'category_in'           => NULL,
 				'exclude_category'      => NULL,
 				'category_name'         => NULL,
