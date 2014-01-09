@@ -1,5 +1,5 @@
 <?php
-function connectionsEmailsPage() {
+function connectionsLevelsPage() {
     if (!current_user_can('connections_add_entry')) {
         wp_die('<p id="error-page" style="-moz-background-clip:border;
 				-moz-border-radius:11px;
@@ -14,7 +14,7 @@ function connectionsEmailsPage() {
 				text-align:center;
 				width:700px">You do not have sufficient permissions to access this page.</p>');
     } else {
-        global $wpdb, $connections, $connectionsEmails;
+        global $wpdb, $connections, $connectionsLevels;
         // Grab an instance of the Connections object.
         $instance  = Connections_Directory();
         $queryVars = array();
@@ -24,7 +24,7 @@ function connectionsEmailsPage() {
 <div class="wrap">
   <div id="icon-connections" class="icon32"> <br />
   </div>
-  <h2>Connections : Emails</h2>
+  <h2>Connections : Levels</h2>
   <?php
         $action = isset($_REQUEST['action']) ? $_REQUEST['action'] : 'start';
         switch ($action) {
@@ -87,24 +87,24 @@ function connectionsEmailsPage() {
                     $email->clear();
                     cnEntry_Action::meta('update', $entry->getId(), array(
                         array(
-                            'key' => "cnemail",
+                            'key' => "cnlevels",
                             'value' => "" . strtotime("now")
                         )
                     ));
                 }
                 $proccessOutput .= "</div>";
-                echo "<h2>Emails sent</h2>";
+                echo "<h2>Levels sent</h2>";
                 echo "<h3>0 issues found</h3>"; //should be a test
                 echo $proccessOutput;
                 break;
             case 'set_up_email':
                 $attr = array(
-                    'action' => 'admin.php?page=connections_emails&action=send_email',
+                    'action' => 'admin.php?page=connections_levels&action=send_email',
                     'method' => 'post',
                     'enctype' => 'multipart/form-data'
                 );
                 $form->open($attr);
-                wp_nonce_field('cnemails-nonce-send_email', 'cncsv_nonce');
+                wp_nonce_field('cnlevelss-nonce-send_email', 'cncsv_nonce');
 					?>
 					  Subject:
 					  <input type="text" name="sub" />
@@ -198,7 +198,7 @@ function connectionsEmailsPage() {
                 $offset          = ($page->current - 1) * $page->limit;
                 echo '<div class="wrap">';
                 echo get_screen_icon('connections');
-                echo '<h2>Connections : ', __('Emails', 'connections'), '</h2>';
+                echo '<h2>Connections : ', __('Levels', 'connections'), '</h2>';
                 /*
                  * Check whether user can view the entry list
                  */
@@ -259,21 +259,6 @@ function connectionsEmailsPage() {
 								echo $categoryObjects->buildCategoryRow('option', $connections->retrieve->categories(), 0, 
 																		$connections->currentUser->getFilterCategory());
 								echo '</select>';
-								
-								echo '<select class="postform" id="category" name="metabox[\'levels\']">';
-								echo '<option value="-1">', __('Show All Levels', 'connections'), '</option>';
-								$levels = array(
-									'pending'=>__('Pending', 'connections_levels' ),
-									'member'=>__('Member', 'connections_levels' ),
-									'affiliate'=>__('Affiliate', 'connections_levels' )
-								);
-								foreach($levels as $slug=>$label){
-									echo '<option value="'.$slug.'" '.selected($value, $slug, false).'>'.$label.'</option>';	
-								}
-								echo '</select>';
-								
-								
-								
 								echo $form->buildSelect('entry_type', array(
 									'all' => __('Show All Entries', 'connections'),
 									'individual' => __('Show Individuals', 'connections'),
@@ -452,7 +437,7 @@ function connectionsEmailsPage() {
 											break;
 									}
 									$metadata = $entry->getMeta(array(
-										'key' => 'cnemail',
+										'key' => 'cnlevels',
 										'single' => TRUE
 									));
 									echo '<tr id="row-', $entry->getId(), '" class="parent-row' . $statusClass . ' ' . (($email == false) ? "disable" : "") . '"  ' . (($email == false) ? " style='background:#e2e2e2;opacity: 0.35;' " : "") . '>';
@@ -493,11 +478,11 @@ function connectionsEmailsPage() {
 									echo "</td> \n";
 									echo '<td >';
 									$metadata     = $entry->getMeta(array(
-										'key' => 'cnemail',
+										'key' => 'cnlevels',
 										'single' => TRUE
 									));
-									$last_emailed = !empty($metadata) ? date('m/d/Y g:ia', $metadata) : __('Yet to contact', 'connections');
-									echo '<strong>' . __('On', 'connections') . ':</strong> ' . $last_emailed . '<br />';
+									$entry_level = date('m/d/Y g:ia', $metadata);
+									echo '<strong>' . __('On', 'connections') . ':</strong> ' . $entry_level . '<br />';
 									$user = $entry->getUser() ? get_userdata($entry->getUser()) : FALSE;
 									/**
 									 * NOTE: WP 3.5 introduced get_edit_user_link()

@@ -409,14 +409,14 @@ class cnAdminActions {
 						 ( $_POST['meta'][ $metaID ]['value'] !== '::DELETED::' ) ) {
 
 						// If the key begins with an underscore, remove it because those are private.
-						//if ( cnMeta::isPrivate( $row['key'] ) ) $row['key'] = substr( $row['key'], 1 );
-						if ( '_' == $row['key'][0] ) $row['key'] = substr( $row['key'], 1 );
+						if ( cnMeta::isPrivate( $row['key'] ) ) $row['key'] = substr( $row['key'], 1 );
+
 						cnMeta::update( 'entry', $id, $_POST['meta'][ $metaID ]['key'], $_POST['meta'][ $metaID ]['value'], $row['meta_value'], $row['meta_key'], $metaID );
 
 						$metaIDs['updated'] = $metaID;
 					}
-					if ( isset( $_POST['meta'] ) && isset($metaID) && isset($_POST['meta'][ $metaID ]) && $_POST['meta'][ $metaID ]['value'] === '::DELETED::' ) {
-					//if ( isset( $_POST['meta'] ) && $_POST['meta'][ $metaID ]['value'] === '::DELETED::' ) {
+
+					if ( isset( $_POST['meta'] ) && $_POST['meta'][ $metaID ]['value'] === '::DELETED::' ) {
 
 						// Record entry meta to be deleted.
 						cnMeta::delete( 'entry', $id, $metaID );
