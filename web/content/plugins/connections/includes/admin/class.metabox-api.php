@@ -20,7 +20,7 @@ class cnMetaboxAPI {
 	 *
 	 * @access private
 	 * @since 0.8
-	 * @var (object)
+	 * @var object
 	*/
 	private static $instance;
 
@@ -29,7 +29,7 @@ class cnMetaboxAPI {
 	 *
 	 * @access private
 	 * @since 0.8
-	 * @var (array)
+	 * @var array
 	 */
 	private static $metaboxes = array();
 
@@ -56,23 +56,19 @@ class cnMetaboxAPI {
 
 			self::$instance = new self;
 
-			// Action for extensions to hook into to add custom metaboxes/fields.
-			do_action( 'cn_metabox', self::$instance );
+			// Process the registered metaboxes. This has to be run on the `admin_init` hook
+			// because the admin menu pages must be registered so we can use the page hooks.
+			// In the front end, just hook into the `init` hook since the page hooks are not needed.
 
-			// Process the metaboxes added via the `cn_metabox` action.
-			foreach ( self::$metaboxes as $id => $metabox ) {
+			if ( is_admin() ) {
 
-				foreach ( $metabox['pages'] as $page ){
+				add_action( 'admin_init', array( __CLASS__, 'process' ) );
 
-					// Add the actions to show the metaboxes on the registered pages.
-					add_action( 'load-' . $page, array( __CLASS__, 'register' ) );
-				}
+			} else {
 
-				// Add action to save the field metadata.
-				add_action( 'cn_process_meta-entry', array( new cnMetabox_Process( $metabox ), 'process' ), 10, 2 );
+				add_action( 'init', array( __CLASS__, 'process' ) );
 			}
 
-			add_filter( 'cn_is_private_meta', array( __CLASS__, 'isPrivate' ), 10, 3 );
 		}
 	}
 
@@ -81,7 +77,8 @@ class cnMetaboxAPI {
 	 *
 	 * @access public
 	 * @since 0.8
-	 * @return (object) cnMetabox
+	 *
+	 * @return object cnMetabox
 	 */
 	public static function getInstance() {
 
@@ -91,9 +88,24 @@ class cnMetaboxAPI {
 	/**
 	 * Public method to add metaboxes.
 	 *
+	 * Accepted option for the $atts property are:
+	 * 	id (string) The metabox ID. This value MUST be unique.
+	 * 	title (string) The metabox title that is presented.
+	 * 	callback (mixed) string | array [optional] The function name or class method to be used for custom metabox output.
+	 * 	page_hook (string) string The admin page hooks the metabox is to be rendered on.
+	 * 	context (string) [optional] The part of the admin page the metabox should be rendered. Valid options: 'normal', 'advanced', or 'side'. NOTE: note used on the frontend.
+	 * 	priority (string) [optional] The priority within the context the metabox should be rendered. Valid options: 'high', 'core', 'default' or 'low'. NOTE: note used on the frontend.
+	 * 	section (array) [optional] An array of sections and its fields to be to be rendered. NOTE: If sections are not required, use the fields option.
+	 * 		name (string) The section name that is presented.
+	 * 		desc (string) The description of the section that is presented.
+	 * 		fields (array) The fields to be rendered. NOTE: Valid field options, @see cnMetabox_Render::fields().
+	 * 	fields (array) The fields to be rendered. NOTE: Valid field options, @see cnMetabox_Render::fields().
+	 *
 	 * @access public
 	 * @since 0.8
-	 * @param (array) $metabox
+	 * @param array $metabox
+	 *
+	 * return void
 	 */
 	public static function add( array $metabox ) {
 
@@ -104,10 +116,22 @@ class cnMetaboxAPI {
 		 * meta_box_prefs function.
 		 */
 
-		// Grab an instance of Connections.
-		$instance = Connections_Directory();
+		if ( is_admin() ) {
 
-		$metabox['pages']    = empty( $metabox['pages'] ) ? array( $instance->pageHook->add, $instance->pageHook->manage ) : $metabox['pages'];
+			// Grab an instance of Connections.
+			$instance = Connections_Directory();
+
+			// Define the core pages and use them by default if no page where defined.
+			// Check if doing AJAX because the page hooks are not defined when doing an AJAX request which cause undefined property errors.
+			$pages = defined('DOING_AJAX') && DOING_AJAX ? array() : array( $instance->pageHook->add, $instance->pageHook->manage );
+
+			$metabox['pages'] = empty( $metabox['pages'] ) ? $pages : $metabox['pages'];
+
+		} else {
+
+			$metabox['pages'] = 'public';
+		}
+
 		$metabox['context']  = empty( $metabox['context'] ) ? 'normal' : $metabox['context'];
 		$metabox['priority'] = empty( $metabox['priority'] ) ? 'default' : $metabox['priority'];
 
@@ -134,8 +158,9 @@ class cnMetaboxAPI {
 	 *
 	 * @access public
 	 * @since 0.8
-	 * @param  (string) $id The metabox id to remove.
-	 * @return (bool)
+	 * @param  string $id The metabox id to remove.
+	 *
+	 * @return bool
 	 */
 	public static function remove( string $id ) {
 
@@ -149,14 +174,67 @@ class cnMetaboxAPI {
 	}
 
 	/**
+	 * Method responsible for processing the registered metaboxes.
+	 * This is a private method that is ran on the `admin_init` action
+	 * if is_admin() or the `init` if not is_admin().
+	 *
+	 * Extensions should hook into the `cn_metabox` action to register
+	 * their metaboxes.
+	 *
+	 * @access private
+	 * @since 0.8
+	 * @uses add_action()
+	 *
+	 * @return void
+	 */
+	public static function process() {
+
+		// Action for extensions to hook into to add custom metaboxes/fields.
+		do_action( 'cn_metabox', self::$instance );
+
+		// Store the registered metaboxes in the options table that way the data can be used
+		// even if this API is not loaded; for example in the frontend to check if a field ID
+		// is private so it will not be rendered.
+		//
+		// NOTE: All fields registered via this API are considered private. The expectation is
+		// an action will be called to render the metadata.
+		// Do not update table when doing an AJAX request.
+		if ( ! defined('DOING_AJAX') /*&& ! DOING_AJAX*/ ) update_option( 'connections_metaboxes', self::$metaboxes );
+
+		// Process the metaboxes added via the `cn_metabox` action.
+		foreach ( self::$metaboxes as $id => $metabox ) {
+
+			if ( is_admin() ) {
+
+				foreach ( $metabox['pages'] as $page ){
+
+					// Add the actions to show the metaboxes on the registered pages.
+					add_action( 'load-' . $page, array( __CLASS__, 'register' ) );
+				}
+
+			} else {
+
+				// Add the metabox so it can be used on the site frontend.
+				cnMetabox_Render::add( 'public', $metabox );
+			}
+
+			// Add action to save the field metadata.
+			add_action( 'cn_process_meta-entry', array( new cnMetabox_Process( $metabox ), 'process' ), 10, 2 );
+
+		}
+
+	}
+
+	/**
 	 * Register the metaboxes.
 	 *
 	 * @access private
 	 * @since 0.8
-	 * @return (void)
+	 * @global $hook_suffix	The current admin page hook.
+	 *
+	 * @return void
 	 */
 	public static function register() {
-
 		global $hook_suffix;
 
 		foreach ( self::$metaboxes as $metabox ) {
@@ -174,6 +252,7 @@ class cnMetaboxAPI {
 	 * @param  bool    $private Passed by the `cn_is_private_meta` filter.
 	 * @param  string  $key     The key name.
 	 * @param  string  $type    The object type.
+	 *
 	 * @return boolean
 	 */
 	public static function isPrivate( $private, $key, $type ) {
@@ -220,10 +299,24 @@ class cnMetaboxAPI {
 class cnMetabox_Render {
 
 	/**
-	 * The array containing the registered metaboxes.
+	 * The metaboxes that were registered to render.
+	 *
+	 * NOTE: This array will only be used to render
+	 * the metaboxes on the frontend.
 	 *
 	 * @access private
 	 * @since 0.8
+	 *
+	 * @var array
+	 */
+	private static $metaboxes = array();
+
+	/**
+	 * The array containing the registered metabox attributes.
+	 *
+	 * @access private
+	 * @since 0.8
+	 *
 	 * @var array
 	 */
 	private $metabox = array();
@@ -233,6 +326,7 @@ class cnMetabox_Render {
 	 *
 	 * @access private
 	 * @since 0.8
+	 *
 	 * @var array
 	 */
 	// private $sections = array();
@@ -242,6 +336,7 @@ class cnMetabox_Render {
 	 *
 	 * @access private
 	 * @since 0.8
+	 *
 	 * @var object
 	 */
 	private $object;
@@ -251,6 +346,7 @@ class cnMetabox_Render {
 	 *
 	 * @access private
 	 * @since 0.8
+	 *
 	 * @var array
 	 */
 	private $meta = array();
@@ -260,6 +356,7 @@ class cnMetabox_Render {
 	 *
 	 * @access private
 	 * @since 0.8
+	 *
 	 * @var array
 	 */
 	private static $quickTagIDs = array();
@@ -269,29 +366,37 @@ class cnMetabox_Render {
 	 *
 	 * @access private
 	 * @since 0.8
+	 *
 	 * @var array
 	 */
 	private static $slider = array();
 
-	public function __construct() {
-
-		/* Intentially left blank. */
-	}
+	public function __construct() { /* Intentially left blank. */ }
 
 	/**
 	 * Register the metaboxes with WordPress.
 	 *
-	 * @access private
+	 * NOTE: This method can be used to "late" register a metabox.
+	 * Meaning if you need to register a metabox right before render.
+	 * See the `manage.php` admin page file for a working example.
+	 *
+	 * @access public
 	 * @since 0.8
 	 * @uses add_meta_box()
 	 * @param string $pageHook The page hood / post type in which to add the metabox.
-	 * @param array  $metabox  The array of metaboxes to add.
+	 * @param array  $metabox  The array of metaboxes to add. NOTE: Valid field options, @see cnMetaboxAPI::add().
+	 *
+	 * @return void
 	 */
-	public static function add( $pageHook = '', array $metabox = array() ) {
+	public static function add( $pageHook, array $metabox ) {
 
-		if ( ! empty( $pageHook ) && ! empty( $metabox ) ) {
+		// Bail if params are empty.
+		if ( empty( $pageHook ) || empty( $metabox ) ) return;
 
-			$callback = isset( $metabox['callback'] ) && ! empty( $metabox['callback'] ) ? $metabox['callback'] : array( new cnMetabox_Render(), 'render' );
+		// Use the core metabox API to render the metabox unless the metabox was registered with a custom callback to be used to render the metabox.
+		$callback = isset( $metabox['callback'] ) && ! empty( $metabox['callback'] ) ? $metabox['callback'] : array( new cnMetabox_Render(), 'render' );
+
+		if ( is_admin() ) {
 
 			add_meta_box(
 				$metabox['id'],
@@ -303,7 +408,81 @@ class cnMetabox_Render {
 				$metabox
 			);
 
+		} else {
+
+			self::$metaboxes[ $metabox['id'] ] = array(
+				'id'        => $metabox['id'],
+				'title'     => $metabox['title'],
+				'callback'  => $callback,
+				'page_hook' => $pageHook,
+				'context'   => $metabox['context'],
+				'priority'  => $metabox['priority'],
+				'args'      => $metabox
+				);
 		}
+
+	}
+
+	/**
+	 * Use to render the registered metaboxes on the frontend.
+	 * NOTE: To render the metaboxes on an admin page use do_meta_boxes().
+	 *
+	 * Accepted option for the $atts property are:
+	 * 	id (array) The metabox ID to render.
+	 * 	order (array) An indexed array of metabox IDs that should be rendered in the order in the array.
+	 * 	exclude (array) An indexed array of metabox IDs that should be excluded from being rendered.
+	 *
+	 * @access public
+	 * @since 0.8
+	 * @param  array  $atts   The attributes array.
+	 * @param  object $object An instance the the cnEntry object.
+	 *
+	 * @return string         The HTML output of the registered metaboxes.
+	 */
+	public static function metaboxes( array $atts = array(), $object ) {
+
+		$defaults = array(
+			'id'      => '',
+			'order'   => array(),
+			'exclude' => array(),
+			);
+
+		$atts = wp_parse_args( $atts, $defaults );
+
+		// If the metabox order has been supplied, sort them as supplied.
+		if ( ! empty( $atts['order'] ) ) {
+
+			// array_multisort( $atts['order'], self::$metaboxes );
+		}
+
+		// echo '<div id="cn-form-container">' . "\n";
+
+		// echo '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
+
+			// echo '<form id="cn-form" method="POST" enctype="multipart/form-data">' . "\n";
+
+			foreach ( self::$metaboxes as $id => $metabox ) {
+
+				// Exclude the metaboxes that have been requested to exclude.
+				if ( in_array( $id, $atts['exclude'] ) ) continue;
+
+				$box = new cnMetabox_Render();
+
+				echo '<div id="cn-' . $metabox['id'] . '" class="postbox">';
+					echo '<h3 class="hndle"><span>' . $metabox['title'] . '</span></h3>';
+					echo '<div class="cnf-inside">';
+						echo '<div class="form-field">';
+
+						call_user_func( $metabox['callback'], $object, $metabox );
+
+						echo '</div>';
+					echo '<div class="cn-clear"></div>';
+					echo '</div>';
+				echo '</div>';
+			}
+
+			// echo '</form>';
+		// echo '</div>';
 	}
 
 	/**
@@ -311,6 +490,7 @@ class cnMetabox_Render {
 	 *
 	 * @access private
 	 * @since 0.8
+	 *
 	 * @return void
 	 */
 	public function render( $object, $metabox ) {
@@ -353,6 +533,7 @@ class cnMetabox_Render {
 	 * @access private
 	 * @since 0.8
 	 * @param  array $section An array containing the sections of the metabox.
+	 *
 	 * @return string
 	 */
 	private function section( $section ) {
@@ -389,10 +570,42 @@ class cnMetabox_Render {
 	/**
 	 * Render the fields registered to the metabox.
 	 *
+	 * The $fields preperty is an indexed array of fields and their properties.
+	 * Accepted option for are:
+	 * 	id (string) The field ID. This value MUST be unique.
+	 * 	desc (string) [optional] The field description.
+	 * 	type (string) The type of field which should be registered. This can be any of the supported field types or a custom field type.
+	 * 		Core supported field types are:
+	 * 			checkbox
+	 * 			checkboxgroup
+	 * 			radio
+	 * 			radio_inline
+	 * 			select
+	 * 			text (input)
+	 * 			textarea
+	 * 			datepicker
+	 * 			slider
+	 * 			quicktag
+	 * 			rte
+	 * 	value (mixed) string | array [optional] The function name or class method to be used retrieve a value for the field.
+	 * 	size (string) [optional] The size if the text input and textarea field types.
+	 * 		NOTE: Only used for the `text` field type. Valid options: small', 'regular' or 'large'
+	 * 		NOTE: Only used for the `textarea` field type. Valid options: small' or 'large'
+	 * 	options (mixed) string | array [optional] Valid value depend on the field type being rendered.
+	 * 		Field type / valid value for options
+	 * 			checkboxgroup (array) An associative array where the key is the checkbox value and the value is the checkbox label.
+	 * 			radio / radio_inline (array) An associative array where the key is the radio value and the value is the radio label.
+	 * 			select (array) An associative array where the key is the option value and the value is the option name.
+	 * 			slider (array) The slider options.
+	 * 				min (int) The minimum slider step.
+	 * 				max (int) The maximim slider step.
+	 * 				step (int) The step the slider steps at.
+	 *
 	 * @access private
 	 * @since 0.8
 	 * @global $wp_version
-	 * @param $fields	array 	Render the metabox section fields.
+	 * @param $fields	array 	An indexed array of fields to render..
+	 *
 	 * @return string
 	 */
 	private function fields( $fields ) {
@@ -404,7 +617,7 @@ class cnMetabox_Render {
 
 		foreach ( $fields as $field ) {
 
-			// If the meta field has a specific method defined call the method  and set the field value.
+			// If the meta field has a specific method defined call the method and set the field value.
 			// Otherwise, assume pulling from the meta table of the supplied object.
 			if ( isset( $field['value'] ) && ! empty( $field['value'] ) ) {
 
@@ -639,6 +852,7 @@ class cnMetabox_Render {
 
 					wp_enqueue_script('jquery-ui-datepicker');
 					add_action( 'admin_print_footer_scripts' , array( __CLASS__ , 'datepickerJS' ) );
+					add_action( 'wp_print_footer_scripts' , array( __CLASS__ , 'datepickerJS' ) );
 
 					break;
 
@@ -670,6 +884,7 @@ class cnMetabox_Render {
 
 					wp_enqueue_script('jquery-ui-slider');
 					add_action( 'admin_print_footer_scripts' , array( __CLASS__ , 'sliderJS' ) );
+					add_action( 'wp_footer' , array( __CLASS__ , 'sliderJS' ) );
 
 					break;
 
@@ -697,7 +912,9 @@ class cnMetabox_Render {
 
 					self::$quickTagIDs[] = esc_attr( $field['id'] );
 
+					wp_enqueue_script('jquery');
 					add_action( 'admin_print_footer_scripts' , array( __CLASS__ , 'quickTagJS' ) );
+					add_action( 'wp_print_footer_scripts' , array( __CLASS__ , 'quickTagJS' ) );
 
 					break;
 
@@ -748,7 +965,9 @@ class cnMetabox_Render {
 
 						self::$quickTagIDs[] = esc_attr( $field['id'] );
 
+						wp_enqueue_script('jquery');
 						add_action( 'admin_print_footer_scripts' , array( __CLASS__ , 'quickTagJS' ) );
+						add_action( 'wp_print_footer_scripts' , array( __CLASS__ , 'quickTagJS' ) );
 					}
 
 					break;
@@ -929,6 +1148,18 @@ foreach ( self::$slider as $id => $option ) {
 
 }
 
+/**
+ * Class for sanitizing and saving the user input from registered metaboxes.
+ *
+ * NOTE: This is a private class and should not be accessed directly.
+ *
+ * @package     Connections
+ * @subpackage  Metabox Processing
+ * @copyright   Copyright (c) 2013, Steven A. Zahm
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * @since       0.8
+ */
+
 class cnMetabox_Process {
 
 	/**
@@ -950,7 +1181,8 @@ class cnMetabox_Process {
 	 * and save or update the meta data according to the current
 	 * action being performed.
 	 *
-	 *
+	 * @access private
+	 * @since 0.8
 	 * @param  string $action The action being performed.
 	 * @param  int    $id     The object ID.
 	 *
@@ -981,7 +1213,8 @@ class cnMetabox_Process {
 	 * Save and or update the objects meta data
 	 * based on the action being performed to the object.
 	 *
-	 *
+	 * @access private
+	 * @since 0.8
 	 * @param  string $action The action being performed.
 	 * @param  int    $id     The object ID.
 	 * @param  array  $fields An array of the registered fields to save and or update.
@@ -994,6 +1227,10 @@ class cnMetabox_Process {
 
 			if ( ! $id = absint( $id ) ) return FALSE;
 
+			// If the field is not in POST, bail.
+			// This will likely be a checkbox field which is not sent if not checked by the user.
+			if ( ! isset( $_POST[ $field['id'] ] ) ) return FALSE;
+
 			$value = $this->sanitize(
 				$field['type'],
 				$_POST[ $field['id'] ],
@@ -1003,19 +1240,19 @@ class cnMetabox_Process {
 
 			switch ( $action ) {
 
-				case 'add_entry':
+				case 'add':
 
 					cnMeta::add( 'entry', $id, $field['id'], $_POST[ $field['id'] ] );
 
 					break;
 
-				case 'copy_entry':
+				case 'copy':
 
 					cnMeta::add( 'entry', $id, $field['id'], $_POST[ $field['id'] ] );
 
 					break;
 
-				case 'update_entry':
+				case 'update':
 
 					cnMeta::update( 'entry', $id, $field['id'], $value );
 
@@ -1025,8 +1262,12 @@ class cnMetabox_Process {
 	}
 
 	/**
-	 * @todo
-	 * @return [type] [description]
+	 * Sanitize use input based in field type.
+	 *
+	 * @access private
+	 * @since 0.8
+	 *
+	 * @return mixed
 	 */
 	public function sanitize( $type, $value, $options = array(), $default = NULL ) {
 
@@ -1091,3 +1332,6 @@ class cnMetabox_Process {
 		return $value;
 	}
 }
+
+// cnMetaboxAPI has to load before cnAdminFunction otherwise the action to save the meta is not added in time to run.
+cnMetaboxAPI::init();

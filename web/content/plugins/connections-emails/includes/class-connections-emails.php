@@ -16,18 +16,17 @@ if (!class_exists('Connections_Emails')) {
                 add_action('plugins_loaded', array( $this, 'start' ));
                 add_filter('cn_submenu', array(  __CLASS__, 'addMenu' ));
 				
-				// Register the metabox and fields.
-				add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
-
-				// Business Hours uses a custom field type, so let's add the action to add it.
-				add_action( 'cn_meta_field-last_emailed', array( __CLASS__, 'field' ), 10, 2 );
+				
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-last_emailed', array( __CLASS__, 'sanitize') );
-				
 
-				
-				
             }
+			// Register the metabox and fields.
+			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
+			
+			// Business Hours uses a custom field type, so let's add the action to add it.
+			add_action( 'cn_meta_field-last_emailed', array( __CLASS__, 'field' ), 10, 2 );
+			
 			add_action( 'cn_meta_output_field-cnemail', array( __CLASS__, 'block' ), 10, 3 );
         }
         public function start() {
@@ -53,7 +52,29 @@ if (!class_exists('Connections_Emails')) {
         }
         public function init() {
         }
-		public static function loadTextdomain() {//come back to 
+		
+		public static function loadTextdomain() {
+
+			// Plugin's unique textdomain string.
+			$textdomain = 'connections_emails';
+
+			// Filter for the plugin languages folder.
+			$languagesDirectory = apply_filters( 'connections_lang_dir', CNBH_DIR_NAME . '/languages/' );
+
+			// The 'plugin_locale' filter is also used by default in load_plugin_textdomain().
+			$locale = apply_filters( 'plugin_locale', get_locale(), $textdomain );
+
+			// Filter for WordPress languages directory.
+			$wpLanguagesDirectory = apply_filters(
+				'connections_wp_lang_dir',
+				WP_LANG_DIR . '/connections-emails/' . sprintf( '%1$s-%2$s.mo', $textdomain, $locale )
+			);
+
+			// Translations: First, look in WordPress' "languages" folder = custom & update-secure!
+			load_textdomain( $textdomain, $wpLanguagesDirectory );
+
+			// Translations: Secondly, look in plugin's "languages" folder = default.
+			load_plugin_textdomain( $textdomain, FALSE, $languagesDirectory );
 		}
         /**
          * Adds the menu as a sub item of Connections.
@@ -64,7 +85,7 @@ if (!class_exists('Connections_Emails')) {
          * @return array
          */
         public static function addMenu($menu) {
-            $menu[70] = array(
+            $menu[71] = array(
                 'hook' => 'emails',
                 'page_title' => 'Connections : Emails',
                 'menu_title' => 'Emails',
@@ -117,128 +138,24 @@ if (!class_exists('Connections_Emails')) {
 						),
 				);
 			$metabox::add( $atts );
-			$atts = array(
-				'id'       => 'level',
-				'title'    => __( 'Level', 'level' ),
-				'context'  => 'side',
-				'priority' => 'core',
-				'fields'   => array(
-						array(
-								'id'    => 'cnemail',
-								'type'  => 'level',
-								),
-						),
-				);
-			$metabox::add( $atts );
 		}
-
-		
-		
-		
-        /**
-         * Register the settings sections.
-         *
-         * @param array $sections
-         * @return array
-         */
-        public function registerSettingsSections($sections) {
-            global $connections;
-            $settings   = 'connections_page_connections_settings';
-            // Register the core setting sections.
-            $sections[] = array(
-                'tab' => 'emails',
-                'id' => 'connections_emails_login',
-                'position' => 10,
-                'title' => __('Require Login', 'connections_emails'),
-                'callback' => '',
-                'page_hook' => $settings
-            );
-            $sections[] = array(
-                'tab' => 'emails',
-                'id' => 'connections_emails_email_notifications',
-                'position' => 20,
-                'title' => __('Email Notifications', 'connections_emails'),
-                'callback' => '',
-                'page_hook' => $settings
-            );
-            return $sections;
-        }
-        /**
-         * Add the Form settings tab on the Connections : Settings admin page.
-         */
-        public function registerSettingsTab($tabs) {
-            global $connections;
-            $tabs[] = array(
-                'id' => 'emails',
-                'position' => 35,
-                'title' => __('Emails', 'connections'),
-                'page_hook' => 'connections_page_connections_settings'
-            );
-            return $tabs;
-        }
-        public function registerSettingsFields($fields) {
-            $current_user = wp_get_current_user();
-            $settings     = 'connections_page_connections_settings';
-            $fields[]     = array(
-                'plugin_id' => 'connections_emails',
-                'id' => 'required',
-                'position' => 10,
-                'page_hook' => $settings,
-                'tab' => 'emails',
-                'section' => 'connections_emails_login',
-                'title' => __('Login Required', 'connections_emails'),
-                'desc' => __('Require registered users to login before showing the entry submission form.', 'connections_emails'),
-                'help' => __('Check this option if you wish to only allow registered users to submit entries for your review and approval.', 'connections_emails'),
-                'type' => 'checkbox',
-                'default' => 0
-            );
-            return $fields;
-        }
-		
-		
-		
-		
-		
-		
 		public static function field( $field, $value ) {
-			cnHTML::field(
-				array(
-					'type'     => 'text',
-					'class'    => '',
-					'id'       => $field['id'] ,
-					'required' => false,
-					'label'    => '',
-					'before'   => '',
-					'after'    => '',
-					'return'   => false,
-				)
-			);
+			printf( '<label>%s</label><p><strong>%s</strong></p><input type="hidden" value="%s" name="cnemail" />', __( 'Last Sent', 'connections_emails' ), ($value!=NULL && !empty($value))?date("m/d/Y h:i:s a",$value): "Never sent", $value);
+ 
 		}
 
 		/**
-		 * Sanitize the times as a text input using the cnSanitize class.
+		 * Sanitize the value as a text input using the cnSanitize class.
 		 *
 		 * @access  private
 		 * @since  1.0
-		 * @param  array $value   The opening/closing hours.
+		 * @param  text $value   date string.
 		 *
-		 * @return array
+		 * @return text
 		 */
 		public static function sanitize( $value ) {
 
-			/*foreach ( $value as $key => $day ) {
-
-				foreach ( $day as $period => $time ) {
-
-					// Save all time values in 24hr format.
-					$time['open']  = self::formatTime( $time['open'], 'H:i' );
-					$time['close'] = self::formatTime( $time['close'], 'H:i' );
-
-					$value[ $key ][ $period ]['open']  = cnSanitize::string( 'text', $time['open'] );
-					$value[ $key ][ $period ]['close'] = cnSanitize::string( 'text', $time['close'] );
-
-				}
-			}*/
+			$value=cnSanitize::string( 'text', $value );
 
 			return $value;
 		}
@@ -247,13 +164,18 @@ if (!class_exists('Connections_Emails')) {
 		
 		
 		
-		
-		
-		
-		
-		
-		
     }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
     /**
      * Start up the extension.
      *

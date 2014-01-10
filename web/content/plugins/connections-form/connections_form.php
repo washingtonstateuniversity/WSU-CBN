@@ -758,7 +758,7 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 							$blockStr .= cnfmFormParts::getFormBlock($code,$entry, $atts);
 							$blockStr = apply_filters( 'cnfm_block_creation_after-'.$code, $blockStr);
 							$out .= $blockStr;
-						}
+						} 
 					}else{
 						$out.="<h2>".__('No blocks were choosen' , 'connections_form' )."</h2>";	
 					}
@@ -768,9 +768,11 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 		
 					// Hidden Field -- to create a WP nonce to be used to validate before processing the form submission.
 					ob_start();
+					cnMetabox_Render::metaboxes( array( 'exclude' => array( 'submitdiv', 'categorydiv', 'metabox-meta' ) ), $entry );
 					$form->tokenField('add_entry');
 					$out .= ob_get_contents();
 					ob_end_clean();
+
 		
 					// Hidden Field -- set the default entry visibilty to unlisted.
 					$out .= '<input id="visibility" type="hidden" name="visibility" value="unlisted">';
