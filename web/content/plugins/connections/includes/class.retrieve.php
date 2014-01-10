@@ -286,8 +286,11 @@ class cnRetrieve {
 		 */
 		if ( ! empty( $atts['exclude_category'] ) ) {
 
+			if ( ! isset( $categoryIDs ) ) $categoryIDs = array();
+
 			// If value is a string, string the white space and covert to an array.
 			if ( ! is_array( $atts['exclude_category'] ) ) {
+
 				$atts['exclude_category'] = str_replace( ' ', '', $atts['exclude_category'] );
 
 				$atts['exclude_category'] = explode( ',', $atts['exclude_category'] );
@@ -302,7 +305,7 @@ class cnRetrieve {
 
 				// Retrieve the children categories
 				$results = $this->categoryChildren( 'term_id', $categoryID );
-				//print_r($results);
+				// var_dump($results);
 
 				foreach ( (array) $results as $term ) {
 
@@ -349,7 +352,7 @@ class cnRetrieve {
 			 */
 		}
 
-		if ( ! empty( $categoryIDs ) || ! empty( $categoryNames ) || ! empty( $categorySlugs ) ) {
+		if ( ! empty( $categoryIDs ) || ! empty( $categoryExcludeIDs ) || ! empty( $categoryNames ) || ! empty( $categorySlugs ) ) {
 			// Set the query string to INNER JOIN the term relationship and taxonomy tables.
 			$join[] = 'INNER JOIN ' . CN_TERM_RELATIONSHIP_TABLE . ' ON ( ' . CN_ENTRY_TABLE . '.id = ' . CN_TERM_RELATIONSHIP_TABLE . '.entry_id )';
 			$join[] = 'INNER JOIN ' . CN_TERM_TAXONOMY_TABLE . ' ON ( ' . CN_TERM_RELATIONSHIP_TABLE . '.term_taxonomy_id = ' . CN_TERM_TAXONOMY_TABLE . '.term_taxonomy_id )';
@@ -367,7 +370,7 @@ class cnRetrieve {
 			if ( ! empty( $categoryExcludeIDs ) ) {
 				$where[] = 'AND ' . CN_TERM_TAXONOMY_TABLE . '.term_id NOT IN (\'' . implode( "', '", $categoryExcludeIDs ) . '\')';
 
-				unset( $categoryIDs );
+				unset( $categoryExcludeIDs );
 			}
 
 			if ( ! empty( $categoryNames ) ) {
@@ -833,6 +836,43 @@ class cnRetrieve {
 		global $wpdb;
 
 		return $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM ' . CN_ENTRY_TABLE . ' WHERE id="%d"' , $id ) );
+	}
+
+	public static function individuals( $atts = array() ) {
+		global $wpdb;
+
+		$out = array();
+		$where[] = 'WHERE 1=1';
+
+		$defaults = array(
+			'status'                => array( 'approved' ),
+			'visibility'            => array(),
+			'allow_public_override' => FALSE,
+			'private_override'      => FALSE
+		);
+
+		$atts = wp_parse_args( $atts, $defaults );
+
+		// Limit the results to the "individual" entry type.
+		$where[] = 'AND `entry_type` = \'individual\'';
+
+		// Limit the characters that are queried based on if the current user can view public, private or unlisted entries.
+		$where = self::setQueryVisibility( $where, $atts );
+
+		// Limit the characters that are queried based on if the current user can view approved and/or pending entries.
+		$where = self::setQueryStatus( $where, $atts );
+
+		// Create the "Last Name, First Name".
+		$select = '`id`, CONCAT( `last_name`, \', \', `first_name` ) as name';
+
+		$results = $wpdb->get_results( 'SELECT DISTINCT ' . $select . ' FROM ' . CN_ENTRY_TABLE . ' '  . implode( ' ', $where ) . ' ORDER BY `last_name`' );
+
+		foreach ( $results as $row ) {
+
+			$out[ $row->id ] = $row->name;
+		}
+
+		return $out;
 	}
 
 	/**

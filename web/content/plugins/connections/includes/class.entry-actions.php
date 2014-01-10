@@ -56,6 +56,22 @@ class cnEntry_Action {
 		return self::process( 'add', $data, $id );
 	}
 
+	private static function copyImage( $image ) {
+		// Uses the upload.class.php to handle file uploading and image manipulation.
+		// GPL PHP upload class from http://www.verot.net/php_class_upload.htm
+		require_once CN_PATH . '/includes/php_class_upload/class.upload.php';
+
+		$source = CN_IMAGE_PATH . $image;
+
+		$process_image = new Upload( $source );
+		$process_image->Process( CN_IMAGE_PATH );
+		$process_image->file_safe_name  = true;
+		$process_image->file_auto_rename = true;
+		$image = $process_image->file_dst_name;
+
+		return $image;
+	}
+
 	/**
 	 * Add / Edit / Update / Copy an entry.
 	 *
@@ -144,7 +160,7 @@ class cnEntry_Action {
 			if ( $action !== 'update' ) {
 				// If an entry is being copied and there is a logo, the logo will be duplicated for the new entry.
 				// That way if an entry is deleted, only the entry specific logo will be deleted.
-				if ( $entry->getLogoName() != NULL ) $entry->setLogoName( copyImage( $entry->getLogoName() ) );
+				if ( $entry->getLogoName() != NULL ) $entry->setLogoName( self::copyImage( $entry->getLogoName() ) );
 			}
 		}
 		/*
@@ -241,10 +257,10 @@ class cnEntry_Action {
 			if ( $action !== 'update' ) {
 				// If an entry is being copied and there is an image, the image will be duplicated for the new entry.
 				// That way if an entry is deleted, only the entry specific images will be deleted.
-				if ( $entry->getImageNameOriginal() != NULL ) $entry->setImageNameOriginal( copyImage( $entry->getImageNameOriginal() ) );
-				if ( $entry->getImageNameThumbnail() != NULL ) $entry->setImageNameThumbnail( copyImage( $entry->getImageNameThumbnail() ) );
-				if ( $entry->getImageNameCard() != NULL ) $entry->setImageNameCard( copyImage( $entry->getImageNameCard() ) );
-				if ( $entry->getImageNameProfile() != NULL ) $entry->setImageNameProfile( copyImage( $entry->getImageNameProfile() ) );
+				if ( $entry->getImageNameOriginal() != NULL ) $entry->setImageNameOriginal( self::copyImage( $entry->getImageNameOriginal() ) );
+				if ( $entry->getImageNameThumbnail() != NULL ) $entry->setImageNameThumbnail( self::copyImage( $entry->getImageNameThumbnail() ) );
+				if ( $entry->getImageNameCard() != NULL ) $entry->setImageNameCard( self::copyImage( $entry->getImageNameCard() ) );
+				if ( $entry->getImageNameProfile() != NULL ) $entry->setImageNameProfile( self::copyImage( $entry->getImageNameProfile() ) );
 			}
 		}
 
@@ -388,9 +404,12 @@ class cnEntry_Action {
 		}
 
 		// Run any registered post process actions.
-		$entry = do_action( 'cn_post_process_' . $action . '-entry', $entry );
+		do_action( "cn_post_process_$action-entry", $entry );
 
-		return TRUE;
+		do_action( 'cn_process_meta-entry', $action, $entryID );
+		do_action( 'cn_process_meta-entry-' . $action, $action, $entryID );
+
+		return $entryID;
 	}
 
 	/**
@@ -504,9 +523,97 @@ class cnEntry_Action {
 
 			$entry = new cnEntry( $instance->retrieve->entry( $id ) );
 			$entry->delete( $id );
+
+			// Delete any meta data associated with the entry.
+			self::meta( 'delete', $id );
 		}
 
 		return TRUE;
+	}
+
+	/**
+	 * Geocode the supplied address.
+	 *
+	 * @access public
+	 * @since  0.8
+	 * @param  array $address An associative array containing the address to geocode.
+	 * @return array          The address that has been geocoded.
+	 */
+	public static function geoCode( $address ) {
+
+		if ( empty( $address['latitude'] ) || empty( $address['longitude'] ) ) {
+
+			//$geocode = new cnGeo();
+			$result = cnGeo::address( $address );
+
+			if ( ! empty( $result ) ) {
+
+				$address['latitude']  = $result->latitude;
+				$address['longitude'] = $result->longitude;
+			}
+
+		}
+
+		return $address;
+	}
+
+	/**
+	 * Add, update or delete the meta of the specified entry ID.
+	 *
+	 * @access public
+	 * @since 0.8
+	 * @param  string $action The action to be performed.
+	 * @param  int    $id     The entry ID.
+	 * @param  array  $meta   [optional] An array of meta data the action is to be performed on.
+	 *
+	 * @return array          The meta IDs of the meta data the action was performed on.
+	 */
+	public static function meta( $action, $id, $meta = array() ) {
+
+		$metaIDs = array();
+
+		switch ( $action ) {
+
+			case 'add':
+
+				foreach ( $meta as $row ) {
+
+					$metaIDs[] = cnMeta::add( 'entry', $id, $row['key'], $row['value'] );
+				}
+
+				break;
+
+			case 'update':
+
+				foreach ( $meta as $metaID => $row ) {
+
+					cnMeta::update( 'entry', $id, $row['key'], $row['value'] );
+
+					$metaIDs[] = $metaID;
+				}
+
+				break;
+
+			case 'delete':
+
+				if ( empty( $meta ) ) {
+
+					cnMeta::delete( 'entry', $id );
+
+				} else {
+
+					foreach ( $meta as $metaID => $row ) {
+
+						cnMeta::delete( 'entry', $id, $metaID, $row['key'], $row['value'] );
+
+						$metaIDs[] = $metaID;
+					}
+				}
+
+				break;
+		}
+
+		return $metaIDs;
 	}
 
 }

@@ -257,7 +257,7 @@ class cnMeta {
 
 			if ( count( $results ) == 1 ) {
 
-				$meta = is_array( $results ) ? array_shift( $results ) : $results;
+				$meta = array_shift( $results );
 
 				if ( $meta['meta_value'] === $value ) {
 

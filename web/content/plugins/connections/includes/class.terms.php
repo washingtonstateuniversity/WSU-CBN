@@ -295,48 +295,55 @@ class cnTerms
 	 * 							parent - (int)
 	 * 							description - (string)
 	 *
-	 * @param int $term
+	 * @access public
+	 * @param string $term
 	 * @param string $taxonomy
-	 * @param array $attributes
-	 * @return bool
+	 * @param array  $attributes
+	 * @return int                The term id.
 	 */
-	public function addTerm($term, $taxonomy, $attributes)
-	{
-		global $wpdb, $connections;
+	public function addTerm( $term, $taxonomy, $attributes ) {
+		global $wpdb;
 
-		$slug = $attributes['slug'];
+		$slug        = $attributes['slug'];
 		$description = $attributes['description'];
-		$parent = $attributes['parent'];
+		$parent      = $attributes['parent'];
+		$slug        = $this->getUniqueSlug( $slug, $term );
 
-		$slug = $this->getUniqueSlug($slug, $term);
+		$wpdb->insert(
+			CN_TERMS_TABLE,
+			array(
+				'name'       => $term,
+				'slug'       => $slug,
+				'term_group' => 0,
+				),
+			array(
+				'%s',
+				'%s',
+				'%d',
+				)
+			);
 
-		/**
-		 * @TODO: Make sure the term doesn't exist before adding it.
-		 * If term does exist, only the taxonomy table needs to be updated.
-		 */
-		$sql = "INSERT INTO " . CN_TERMS_TABLE . " SET
-			name    	= '" . $wpdb->escape($term) . "',
-			slug    	= '" . $wpdb->escape($slug) . "',
-			term_group	= '0'";
+		$termID = $wpdb->insert_id;
 
-		// If insert fails return NULL.
-		$wpdb->query($sql);
-		unset($sql);
+		$wpdb->insert(
+			CN_TERM_TAXONOMY_TABLE,
+			array(
+				'term_id'     => $termID,
+				'taxonomy'    => $taxonomy,
+				'description' => $description,
+				'count'       => 0,
+				'parent'      => $parent,
+				),
+			array(
+				'%d',
+				'%s',
+				'%s',
+				'%d',
+				'%d',
+				)
+			);
 
-		$sql = "INSERT INTO " . CN_TERM_TAXONOMY_TABLE . " SET
-			term_id    	= '" . $wpdb->insert_id . "',
-			taxonomy   	= '" . $wpdb->escape($taxonomy) . "',
-			description	= '" . $wpdb->escape($description) . "',
-			count		= '0',
-			parent		= '" . $wpdb->escape($parent) . "'";
-
-		/**
-		 * @TODO: Error check the insert and return error
-		 */
-		$wpdb->query($sql);
-		unset($sql);
-
-		return TRUE;
+		return $termID;
 	}
 
 	/**
@@ -356,7 +363,7 @@ class cnTerms
 	 * @return bool
 	 */
 	public function updateTerm( $termID, $taxonomy, $attributes ) {
-		global $wpdb, $connections;
+		global $wpdb;
 
 		$name        = $attributes['name'];
 		$slug        = $attributes['slug'];
@@ -370,40 +377,46 @@ class cnTerms
 		 * Why can't a row be updated that must have a unique value
 		 * if the slug value isn't being changed??????
 		 */
-		$sql = "UPDATE " . CN_TERMS_TABLE . " SET
-				slug		= ''
-				WHERE term_id = '" . $wpdb->escape( $termID ) . "'";
-
-		// If insert fails return NULL.
-		if ( ! $wpdb->query( $sql ) ) return;
-		unset( $sql );
+		$wpdb->update(
+			CN_TERMS_TABLE,
+			array( 'slug' => '' ),
+			array( 'term_id' => $termID ),
+			'%s',
+			'%d'
+			);
 
 		$slug = $this->getUniqueSlug( $slug, $name );
 
-		$sql = "UPDATE " . CN_TERMS_TABLE . " SET
-			name		= '" . $wpdb->escape( $name ) . "',
-			slug		= '" . $wpdb->escape( $slug ) . "',
-			term_group	= '0'
-			WHERE term_id = '" . $wpdb->escape( $termID ) . "'";
-
-		// If insert fails return NULL.
-		if ( ! $wpdb->query( $sql ) ) return;
-		unset( $sql );
+		$wpdb->update(
+			CN_TERMS_TABLE,
+			array(
+				'name'       => $name,
+				'slug'       => $slug,
+				'term_group' => 0
+				),
+			array( 'term_id' => $termID ),
+			array( '%s', '%s', '%d' ),
+			'%d'
+			);
 
 		$ttID = $wpdb->get_var( $wpdb->prepare( "SELECT tt.term_taxonomy_id FROM " . CN_TERM_TAXONOMY_TABLE . " AS tt INNER JOIN " . CN_TERMS_TABLE . " AS t ON tt.term_id = t.term_id WHERE tt.taxonomy = %s AND t.term_id = %d", $taxonomy, $termID ) );
 
-		$sql = "UPDATE " . CN_TERM_TAXONOMY_TABLE . " SET
-			term_id		= '" . $wpdb->escape( $termID ) . "',
-			taxonomy	= '" . $wpdb->escape( $taxonomy ) . "',
-			description	= '" . $wpdb->escape( $description ) . "',
-			parent		= '" . $wpdb->escape( $parent ) . "'
-			WHERE term_taxonomy_id 	= '" . $wpdb->escape( $ttID ) . "'";
+		$wpdb->update(
+			CN_TERM_TAXONOMY_TABLE,
+			array(
+				'term_id'     => $termID,
+				'taxonomy'    => $taxonomy,
+				'description' => $description,
+				'parent'      => $parent
+				),
+			array( 'term_taxonomy_id' => $ttID ),
+			array( '%d', '%s', '%s', '%d' ),
+			'%d'
+			);
 
 		/**
 		 * @TODO: Error check the insert and return error
 		 */
-		$wpdb->query( $sql );
-		unset( $sql );
 
 		return TRUE;
 	}
@@ -587,7 +600,7 @@ class cnTerms
 				$termCount = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . CN_TERM_RELATIONSHIP_TABLE . " WHERE term_taxonomy_id = %d", $termTaxonomyID) );
 				$wpdb->query( $wpdb->prepare( "UPDATE " . CN_TERM_TAXONOMY_TABLE . " SET count = %d WHERE term_taxonomy_id = %d", $termCount, $termTaxonomyID) );
 
-				$termCount = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . CN_TERM_RELATIONSHIP_TABLE . " WHERE term_taxonomy_id = %d", $termID) );
+				// $termCount = $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM " . CN_TERM_RELATIONSHIP_TABLE . " WHERE term_taxonomy_id = %d", $termID) );
 			}
 		}
 

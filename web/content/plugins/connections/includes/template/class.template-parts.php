@@ -33,7 +33,7 @@ class cnTemplatePart {
 		add_action( 'cn_action_list_before', array( __CLASS__, 'categoryDescription'), 10, 2 );
 
 		add_action( 'cn_action_character_index', array( __CLASS__, 'index' ) );
-		//add_action( 'cn_action_return_to_target', array( __CLASS__, 'returnToTopTarget' ) );
+		add_action( 'cn_action_return_to_target', array( __CLASS__, 'returnToTopTarget' ) );
 	}
 
 	/**
@@ -820,25 +820,27 @@ class cnTemplatePart {
 
 		switch ( $atts['type'] ) {
 			case 'select':
-				self::categorySelect( $atts );
+				$out = self::categorySelect( $atts );
 				break;
 
 			case 'multiselect':
-				self::categorySelect( $atts );
+				$out = self::categorySelect( $atts );
 				break;
 
 			case 'radio':
-				self::categoryInput( $atts );
+				$out = self::categoryInput( $atts );
 				break;
 
 			case 'checkbox':
-				self::categoryInput( $atts );
+				$out = self::categoryInput( $atts );
 				break;
 
 			case 'link':
-				self::categoryLink( $atts );
+				$out = self::categoryLink( $atts );
 				break;
 		}
+
+		if ( $atts['return'] ) return $out;
 	}
 
 	/**
@@ -1497,3 +1499,6 @@ class cnTemplatePart {
 	}
 
 }
+
+// Init the Template Parts API
+cnTemplatePart::init();
