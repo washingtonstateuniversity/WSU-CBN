@@ -118,17 +118,18 @@
         
                         $mapDiv = '<div class="cn-gmap" id="map-container-' . $entry->getRuid() . '" style="display: none;">' . $gMap . '</div>';
         
-                        printf( '<a class="cn-map-anchor toggle-map" id="map-anchor-%1$s" href="#" data-uuid="%1$s" data-str-show="%2$s" data-str-hide="%3$s">%2$s</a> | ',
+                        printf( '<a class="cn-map-anchor toggle-map" id="map-anchor-%1$s" href="#" data-uuid="%1$s" data-str-show="%2$s" data-str-hide="%3$s">%2$s</a> | <a class="cn-map-get-directions" href="#" data-uuid="%1$s">%4$s</a>',
                             $entry->getRuid(),
                             $atts['str_map_show'],
-                            $atts['str_map_hide']
+                            $atts['str_map_hide'],
+							'Get directions'
                         );
                     }
                 }
         
                 ?>
         
-                <span class="cn-return-to-top"><?php cnTemplatePart::returnToTop() ?></span>
+               <!-- <span class="cn-return-to-top"><?php cnTemplatePart::returnToTop() ?></span>-->
             </div>
         
             <div class="cn-clear"></div>
