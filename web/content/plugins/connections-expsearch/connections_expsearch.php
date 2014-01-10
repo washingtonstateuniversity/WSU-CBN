@@ -124,7 +124,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$format =& $convert;
 			$entry = new cnEntry();
 			$out = '';
-
+			$out .= '<h2><a id="mylocation" style="" hidefocus="true" href="#">Search near my location</a></h2>';
 			$atts = shortcode_atts(
 				array(
 					'default_type'     => 'individual',
