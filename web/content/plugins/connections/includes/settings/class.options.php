@@ -179,25 +179,6 @@ class cnOptions {
 		return $connections->settings->get( 'connections', 'connections_visibility', 'allow_private_override' ) ? TRUE : FALSE;
 	}
 
-	public function getVisibilityOptions() {
-
-		$options = array(
-			'public'   =>'Public',
-			'private'  =>'Private',
-			'unlisted' =>'Unlisted'
-			);
-
-		foreach ( $options as $key => $option ) {
-
-			if ( ! cnValidate::userPermitted( $key ) ) {
-
-				unset( $options[ $key ] );
-			}
-		}
-
-		return $options;
-	}
-
 	/**
 	 * Returns $version.
 	 *
@@ -739,6 +720,7 @@ class cnOptions {
 	 */
 	public function getDefaultFamilyRelationValues() {
 		return array(
+			''                 => __( 'Select Relation', 'connections' ),
 			'aunt'             => __( 'Aunt', 'connections' ),
 			'brother'          => __( 'Brother', 'connections' ),
 			'brotherinlaw'     => __( 'Brother-in-law', 'connections' ),

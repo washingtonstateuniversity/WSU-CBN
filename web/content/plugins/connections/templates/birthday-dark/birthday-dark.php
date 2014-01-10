@@ -1,22 +1,13 @@
 <?php
+
 /**
- * @package    Connections
- * @subpackage Template : Birthday Dark
- * @author     Steven A. Zahm
- * @since      0.7.9
- * @license    GPL-2.0+
- * @link       http://connections-pro.com
- * @copyright  2013 Steven A. Zahm
+ * Birthday Dark Template.
  *
- * @wordpress-plugin
- * Plugin Name:       Connections Birthday Dark - Template
- * Plugin URI:        http://connections-pro.com
- * Description:       Default birthday template with a black background in a table like format.
- * Version:           2.0.1
- * Author:            Steven A. Zahm
- * Author URI:        http://connections-pro.com
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * @package     Connections
+ * @subpackage  Template : Birthday Dark
+ * @copyright   Copyright (c) 2013, Steven A. Zahm
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * @since       0.7.9
  */
 
 // Exit if accessed directly
@@ -33,7 +24,7 @@ if ( ! class_exists( 'CN_Birthday_Dark_Template' ) ) {
 				'name'        => 'Birthday Dark',
 				'slug'        => 'birthday-dark',
 				'type'        => 'birthday',
-				'version'     => '2.0.1',
+				'version'     => '2.0',
 				'author'      => 'Steven A. Zahm',
 				'authorURL'   => 'connections-pro.com',
 				'description' => 'Default birthday template with a black background in a table like format.',
@@ -51,11 +42,11 @@ if ( ! class_exists( 'CN_Birthday_Dark_Template' ) ) {
 
 			$this->template = $template;
 
-			$template->part( array( 'tag' => 'card', 'type' => 'action', 'callback' => array( __CLASS__, 'card' ) ) );
+			$template->part( array( 'tag' => 'card', 'type' => 'action', 'callback' => array( $this, 'card' ) ) );
 			$template->part( array( 'tag' => 'css', 'type' => 'action', 'callback' => array( $template, 'printCSS' ) ) );
 		}
 
-		public static function card( $entry, $template, $atts ) {
+		public function card( $entry, $content, $template, $atts, $connections, $vCard ) {
 
 			?>
 
@@ -66,9 +57,5 @@ if ( ! class_exists( 'CN_Birthday_Dark_Template' ) ) {
 
 	}
 
-	// This action is ran if the template is loaded by core to register the template.
 	add_action( 'cn_register_template', array( 'CN_Birthday_Dark_Template', 'register' ) );
-
-	// If this template is moved to the `plugins` folder, this action will be run to register the template.
-	add_action( 'plugins_loaded', array( 'CN_Birthday_Dark_Template', 'register' ), 11 );
 }

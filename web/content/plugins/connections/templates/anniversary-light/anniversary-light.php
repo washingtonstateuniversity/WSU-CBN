@@ -1,22 +1,13 @@
 <?php
+
 /**
- * @package    Connections
- * @subpackage Template : Anniversary Light
- * @author     Steven A. Zahm
- * @since      0.7.9
- * @license    GPL-2.0+
- * @link       http://connections-pro.com
- * @copyright  2013 Steven A. Zahm
+ * Anniversary Light Template.
  *
- * @wordpress-plugin
- * Plugin Name:       Connections Anniversary Light - Template
- * Plugin URI:        http://connections-pro.com
- * Description:       Default anniversary template with a light background in a table like format.
- * Version:           2.0.1
- * Author:            Steven A. Zahm
- * Author URI:        http://connections-pro.com
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * @package     Connections
+ * @subpackage  Template : Anniversary Light
+ * @copyright   Copyright (c) 2013, Steven A. Zahm
+ * @license     http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * @since       0.7.9
  */
 
 // Exit if accessed directly
@@ -33,10 +24,10 @@ if ( ! class_exists( 'CN_Anniversary_Light_Template' ) ) {
 				'name'        => 'Anniversary Light',
 				'slug'        => 'anniversary-light',
 				'type'        => 'anniversary',
-				'version'     => '2.0.1',
+				'version'     => '2.0',
 				'author'      => 'Steven A. Zahm',
 				'authorURL'   => 'connections-pro.com',
-				'description' => 'Default anniversary template with a light background in a table like format.',
+				'description' => 'Default anniversary template with a white background in a table like format.',
 				'custom'      => FALSE,
 				'path'        => plugin_dir_path( __FILE__ ),
 				'url'         => plugin_dir_url( __FILE__ ),
@@ -51,11 +42,11 @@ if ( ! class_exists( 'CN_Anniversary_Light_Template' ) ) {
 
 			$this->template = $template;
 
-			$template->part( array( 'tag' => 'card', 'type' => 'action', 'callback' => array( __CLASS__, 'card' ) ) );
+			$template->part( array( 'tag' => 'card', 'type' => 'action', 'callback' => array( $this, 'card' ) ) );
 			$template->part( array( 'tag' => 'css', 'type' => 'action', 'callback' => array( $template, 'printCSS' ) ) );
 		}
 
-		public static function card( $entry, $template, $atts ) {
+		public function card( $entry, $content, $template, $atts, $connections, $vCard ) {
 
 			?>
 
@@ -66,9 +57,5 @@ if ( ! class_exists( 'CN_Anniversary_Light_Template' ) ) {
 
 	}
 
-	// This action is ran if the template is loaded by core to register the template.
 	add_action( 'cn_register_template', array( 'CN_Anniversary_Light_Template', 'register' ) );
-
-	// If this template is moved to the `plugins` folder, this action will be run to register the template.
-	add_action( 'plugins_loaded', array( 'CN_Anniversary_Light_Template', 'register' ), 11 );
 }

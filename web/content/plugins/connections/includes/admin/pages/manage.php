@@ -33,19 +33,10 @@ function connectionsShowViewPage( $action = NULL ) {
 			 * Check whether current user can add an entry.
 			 */
 			if ( current_user_can( 'connections_add_entry' ) || current_user_can( 'connections_add_entry_moderated' ) ) {
-
-				$field = array(
-					'id'       => 'metabox-name',
-					'title'    => __( 'Name', 'connection' ),
-					'context'  => 'normal',
-					'priority' => 'high',
-					'callback' => array( 'cnEntryMetabox', 'name' ),
-				);
-
-				cnMetabox_Render::add( $instance->pageHook->add, $field );
+				add_meta_box( 'metabox-name', 'Name', array( &$form, 'metaboxName' ), $connections->pageHook->add, 'normal', 'high' );
 
 				$form = new cnFormObjects();
-				$entry = new cnOutput();
+				$entry = new cnEntry();
 
 				echo '<div id="poststuff" class="metabox-holder has-right-sidebar">';
 
@@ -119,18 +110,10 @@ function connectionsShowViewPage( $action = NULL ) {
 				$id = esc_attr( $_GET['id'] );
 				check_admin_referer( 'entry_copy_' . $id );
 
-				$field = array(
-					'id'       => 'metabox-name',
-					'title'    => __( 'Name', 'connection' ),
-					'context'  => 'normal',
-					'priority' => 'high',
-					'callback' => array( 'cnEntryMetabox', 'name' ),
-				);
-
-				cnMetabox_Render::add( $instance->pageHook->manage, $field );
+				add_meta_box( 'metabox-name', 'Name', array( &$form, 'metaboxName' ), $connections->pageHook->manage, 'normal', 'high' );
 
 				$form = new cnFormObjects();
-				$entry = new cnOutput( $connections->retrieve->entry( $id ) );
+				$entry = new cnEntry( $connections->retrieve->entry( $id ) );
 
 				echo '<div id="poststuff" class="metabox-holder has-right-sidebar">';
 
@@ -202,18 +185,10 @@ function connectionsShowViewPage( $action = NULL ) {
 				$id = esc_attr( $_GET['id'] );
 				check_admin_referer( 'entry_edit_' . $id );
 
-				$field = array(
-					'id'       => 'metabox-name',
-					'title'    => __( 'Name', 'connection' ),
-					'context'  => 'normal',
-					'priority' => 'high',
-					'callback' => array( 'cnEntryMetabox', 'name' ),
-				);
-
-				cnMetabox_Render::add( $instance->pageHook->manage, $field );
+				add_meta_box( 'metabox-name', 'Name', array( &$form, 'metaboxName' ), $connections->pageHook->manage, 'normal', 'high' );
 
 				$form = new cnFormObjects();
-				$entry = new cnOutput( $connections->retrieve->entry( $id ) );
+				$entry = new cnEntry( $connections->retrieve->entry( $id ) );
 
 				echo '<div id="poststuff" class="metabox-holder has-right-sidebar">';
 
@@ -585,7 +560,7 @@ function connectionsShowViewPage( $action = NULL ) {
 					$rowActions = array();
 					$rowEditActions = array();
 
-					$rowActions[] = '<a class="detailsbutton" id="row-' . $entry->getId() . '" title="' . __( 'Click to show details.', 'connections' ) . '" >' . __( 'Show Details', 'connections' ) . '</a>';
+					$rowActions[] = '<a class="detailsbutton" id="row-' . $entry->getId() . '">' . __( 'Show Details', 'connections' ) . '</a>';
 					$rowActions[] = $vCard->download( array( 'anchorText' => __( 'vCard', 'connections' ), 'return' => TRUE ) );
 					$rowActions[] = cnURL::permalink( array(
 							'slug' => $entry->getSlug(),

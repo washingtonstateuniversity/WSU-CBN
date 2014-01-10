@@ -142,65 +142,6 @@ class cnFormatting {
 			return __('No', 'connections');
 		}
 	}
-
-	/**
-	 * JSON encode objects and arrays.
-	 *
-	 * @access public
-	 * @since 0.8
-	 * @param  mixed $value The value to maybe json_encode.
-	 *
-	 * @return mixed
-	 */
-	public static function maybeJSONencode( $value ) {
-
-		if ( is_null( $value ) ) {
-
-			return '';
-		}
-
-		if ( ! is_scalar( $value ) ) {
-
-			return json_encode( $value );
-
-		} else {
-
-			return $value;
-		}
-	}
-
-	/**
-	 * Maybe json_decode the supplied value.
-	 *
-	 * @access public
-	 * @since 0.8
-	 * @param  mixed   $value The value to decode.
-	 * @param  boolean $array [optional] Whether or not the JSON decoded value should an object or an associative array.
-	 *
-	 * @return mixed
-	 */
-	public static function maybeJSONdecode( $value, $array = TRUE ) {
-
-		if ( ! is_string( $value ) || strlen( $value ) == 0 ) {
-
-			return $value;
-		}
-
-		// A JSON encoded string will start and end with either a square bracket of curly bracket.
-		if ( ( $value[0] == '[' && $value[ strlen( $value ) - 1 ] == ']' ) || ( $value[0] == '{' && $value[ strlen( $value ) - 1 ] == '}' ) ) {
-
-			$value = json_decode( $value, $array );
-		}
-
-		if ( is_null( $value ) ) {
-
-			return '';
-
-		} else {
-
-			return $value;
-		}
-	}
 }
 
 class cnValidate
@@ -420,7 +361,7 @@ class cnValidate
 	 * @param string $visibilty
 	 * @return bool
 	 */
-	public static function userPermitted($visibilty)
+	public function userPermitted($visibilty)
 	{
 		global $connections;
 
@@ -458,25 +399,6 @@ class cnValidate
 }
 
 class cnURL {
-
-	/**
-	 * Take a URL and see if it's prefixed with a protocol, if it's not then it will add the default prefix to the start of the string.
-	 *
-	 * @access public
-	 * @since 0.8
-	 * @param  string $url
-	 * @param  string $protocal
-	 * @return string
-	 */
-	public static function prefix( $url, $protocal = 'http://' ) {
-
-		if ( ! preg_match( "~^(?:f|ht)tps?://~i", $url ) ) {
-
-			$url = $protocal . $url;
-		}
-
-		return $url;
-	}
 
 	/**
 	 * Create a permalink.

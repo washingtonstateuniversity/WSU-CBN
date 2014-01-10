@@ -13,8 +13,9 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		
 		public function __construct() {
 			$this->loadConstants();
-			if ( !is_admin() ) add_action( 'plugins_loaded', array(&$this, 'start') );
+			if ( !is_admin() ) add_action( 'plugins_loaded', array($this, 'start') );
 			//if ( !is_admin() ) add_action( 'wp_print_scripts', array(&$this, 'loadScripts') );
+			
 		}
 		
 		public function start() {
@@ -24,7 +25,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			require_once(dirname( __FILE__ ) . '/includes/class.template-parts-extended.php');//temp correct later
 			
 			add_action( 'wp_print_styles', array( $this, 'loadStyles' ) );
-			wp_enqueue_script( 'cn-form-ui-user' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
+			add_action( 'init', array($this, 'loadJs') );
 			
 			if (isset($_POST['start_search'])) {// Check if option save is performed
 				add_filter('the_content', array( $this, 'doSearch' ));
@@ -49,7 +50,8 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		 * @return null
 		 */
 		public function loadStyles() {
-			if ( ! is_admin() ) wp_enqueue_style('cn-expsearch', CNEXSCH_BASE_URL . '/css/cn-expsearch.css', array(), CNEXSCH_CURRENT_VERSION);
+			if ( ! is_admin() ) wp_enqueue_style('cn-expsearch', CNEXSCH_BASE_URL . 'css/cn-expsearch.css', array(), CNEXSCH_CURRENT_VERSION);
+			
 		}		
 		public static function expand_atts_permitted($permittedAtts){
 			$permittedAtts['mode'] = NULL;
@@ -59,6 +61,14 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			
 			return $permittedAtts;
 		}
+
+		public function loadJs(){
+			if ( ! is_admin() )wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
+		}
+
+
+
+
 
 		public function doSearch() {
 			global $post,$connections;
@@ -85,17 +95,15 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'family_name'           => NULL,
 				'last_name'             => NULL,
 				'title'                 => NULL,*/
+				'show_alphaindex'       => false,
+				'repeat_alphaindex'     => false,
+				'show_alphahead'       	=> false,
 				'organization'          => isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?$_POST['cn-keyword']:NULL,
 				'department'            => NULL,
 				'city'                  => NULL,
 				'state'                 => isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state']:NULL,
 				/*'zip_code'              => NULL,*/
 				'country'               => isset($_POST['cn-country']) && !empty($_POST['cn-country'])?$_POST['cn-country']:NULL,
-				/*'near_addr'             => NULL,
-				'latitude'              => NULL,
-				'longitude'             => NULL,
-				'radius'                => 10,
-				'unit'                  => 'mi',*/
 				'template'              => NULL, /* @since version 0.7.1.0 */
 				'template_name'         => NULL, /* @deprecated since version 0.7.0.4 */
 				'width'                 => NULL,
@@ -104,7 +112,46 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'search_terms'  		=> isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?explode(' ',$_POST['cn-keyword']):array(),
 				'home_id'               => in_the_loop() && is_page() ? get_the_id() : cnSettingsAPI::get( 'connections', 'connections_home_page', 'page_id' ),
 			);
-			$out= connectionsList( $permittedAtts, $content = NULL, $tag = 'connections' );
+			
+			if( (isset($_POST['cn-latitude']) && isset($_POST['cn-longitude'])) || (isset($_POST['cn-near_addr'])) ){
+				$locationalPermittedAtts = array(
+					'near_addr'		=> isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])?"":NULL,
+					'latitude'		=> isset($_POST['cn-latitude']) && !empty($_POST['cn-latitude'])?"":NULL,
+					'longitude'		=> isset($_POST['cn-longitude']) && !empty($_POST['cn-longitude'])?"":NULL,
+					'radius'		=> isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])?"":10,
+					'unit'			=> isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])?"":'mi',
+				);
+				$permittedAtts = array_merge($permittedAtts,$locationalPermittedAtts);
+			}
+			
+			$out = '';
+			$categories = $connections->retrieve->categories();
+			$opSortbyCat=true;//would be an option
+			
+			//var_dump($categories);
+			//die();
+			if($permittedAtts['category']==NULL){
+
+				$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
+				foreach($categories as $cat){
+					$permittedAtts['category']=$cat->term_id;
+					$catblock = connectionsList( $permittedAtts, $content = NULL, $tag = 'connections' );;
+					//var_dump($catblock);
+					if(!empty($catblock) && strpos($catblock,'No results')===false){
+						$out .= '<h3>'.$state.$cat->name.'</h3>';
+						$out .= '<div class="accordion">';
+						$out .= $catblock;
+						$out .= '</div>';
+					}
+				}
+			}else{
+				$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
+				$category = $connections->retrieve->category($permittedAtts['category']);
+				$out .= '<h3>'.$state.$category->name.'</h3>';
+				$out .= '<div class="accordion">';
+				$out .= connectionsList( $permittedAtts, $content = NULL, $tag = 'connections' );
+				$out .= '</div>';
+			}
 			
 			return $out;
 		}
@@ -124,7 +171,10 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$format =& $convert;
 			$entry = new cnEntry();
 			$out = '';
-			$out .= '<h2><a id="mylocation" style="" hidefocus="true" href="#">Search near my location</a></h2>';
+
+
+			
+			
 			$atts = shortcode_atts(
 				array(
 					'default_type'     => 'individual',
@@ -219,6 +269,12 @@ if (!class_exists('connectionsExpSearchLoad')) {
 						$out .= '<input type="text" id="cn-search-input" name="cn-keyword" value="' . esc_attr( $searchValue ) . '" placeholder="' . __('Search', 'connections') . '"/>';
 					$out .= '</span>';
 
+					$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">Search near my location</a></h2>';
+					$out .= '<input type="hidden" name="cn-near_addr" />';
+					$out .= '<input type="hidden" name="cn-latitude" />';
+					$out .= '<input type="hidden" name="cn-longitude" />';
+					$out .= '<input type="hidden" name="cn-radius" value="10" />';
+					$out .= '<input type="hidden" name="cn-unit" value="mi" />';
 					$out .=  '<hr/><br/><p class="cn-add"><input class="cn-button-shell cn-button red" id="cn-form-search" type="submit" name="start_search" value="' . __('Submit' , 'connections_form' ) . '" /></p><br/>' . "\n";
 	
 				$out .= '</form>';

@@ -473,6 +473,3 @@ class cnTemplateFactory {
 	}
 
 }
-
-// Init the Template Factory API
-cnTemplateFactory::init();
