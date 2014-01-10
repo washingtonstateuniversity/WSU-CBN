@@ -106,7 +106,7 @@ if ( ! class_exists( 'CN_cMap' ) ) {
 		public static function enqueueCSS() {
 
 			// If SCRIPT_DEBUG is set and TRUE load the non-minified JS files, otherwise, load the minified files.
-			$min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+			$min = '';//defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
 			wp_enqueue_style( 'cnt_' . self::$template->getSlug() . '-css', self::$template->getURL() . "cmap$min.css", array(), self::$template->getVersion() );
 		}
@@ -122,8 +122,8 @@ if ( ! class_exists( 'CN_cMap' ) ) {
 		public static function enqueueJS() {
 
 			// If SCRIPT_DEBUG is set and TRUE load the non-minified JS files, otherwise, load the minified files.
-			$min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
-
+			$min = '';//defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
+			wp_enqueue_script( 'jquery-ui-accordion' );
 			wp_enqueue_script( 'cnt_' . self::$template->getSlug() . '-js' , self::$template->getURL() . "cmap$min.js", array( 'jquery-chosen-min' ), self::$template->getVersion(), TRUE );
 			wp_enqueue_script( 'jquery-gomap-min' );
 		}

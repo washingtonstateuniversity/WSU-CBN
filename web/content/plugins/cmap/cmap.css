@@ -119,6 +119,11 @@
 
 #cn-cmap .cn-bio .cn-image-style, #cn-cmap .cn-bio-single .cn-image-style { float: right; }
 
+.ui-accordion-header span{ display:inline-block !important;}
+.ui-accordion-header span.type {display:none !important;}
+.ui-accordion .businesscontainer.ui-accordion-content{ padding:0px !important;}
+
+
 
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen

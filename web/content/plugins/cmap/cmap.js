@@ -78,8 +78,8 @@ jQuery(document).ready(function ($) {
 		return false
 	});
 
+	$(".accordion" ).accordion({collapsible: true,active:false,heightStyle: "content"});
 	$('select[name^=cn-cat]').chosen();
-
 	// Render map on single entry page
 	var cnSingleMap = $('#cn-gmap-single').length ? $('#cn-gmap-single') : false;
 
