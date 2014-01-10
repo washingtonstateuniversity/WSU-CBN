@@ -167,7 +167,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
 					foreach($categories as $cat){
 						$permittedAtts['category']=$cat->term_id;
-						$catblock = connectionsList( $permittedAtts, $content = NULL, $tag = 'connections' );;
+						$catblock = connectionsList( $permittedAtts,NULL,'connections' );;
 						//var_dump($catblock);
 						if(!empty($catblock) && strpos($catblock,'No results')===false){
 							$out .= '<h3>'.$state.$cat->name.'</h3>';

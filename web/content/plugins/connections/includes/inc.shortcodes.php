@@ -327,7 +327,7 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 		$results = apply_filters( 'cn_list_results-' . $template->getSlug() , $results );
 		$filterRegistry[] = 'cn_list_results-' . $template->getSlug();
 	}
-
+/*
 	ob_start();
 
 		// Prints the template's CSS file.
@@ -340,7 +340,7 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 	ob_end_clean();
 
 
-	/*$out .= sprintf( '<div class="cn-list" id="cn-list" data-connections-version="%1$s-%2$s"%3$s>',
+	$out .= sprintf( '<div class="cn-list" id="cn-list" data-connections-version="%1$s-%2$s"%3$s>',
 				$connections->options->getVersion(),
 				$connections->options->getDBVersion(),
 				empty( $atts['width'] ) ? '' : ' style="width: ' . $atts['width'] . 'px;"'
@@ -350,8 +350,7 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 					$template->getSlug(),
 					$template->getVersion()
 				);
-*/
-/*
+
 			$out .= "\n" . '<div class="cn-list-head cn-clear" id="cn-list-head">' . "\n";
 
 				// Display the List Actions.
@@ -390,14 +389,17 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 				$charIndex = apply_filters( 'cn_list_index' , $charIndex , $results );
 				$charIndex = apply_filters( 'cn_list_index-' . $template->getSlug() , $charIndex , $results );
 				$filterRegistry[] = 'cn_list_index-' . $template->getSlug();
-
-				
-				if ( $atts['show_alphaindex'] && ! $atts['repeat_alphaindex'] ) $out .= $charIndex;
-
-			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-head -->' : '' ) . "\n";
-
-			$out .= '<div class="connections-list cn-clear" id="cn-list-body">' . "\n";
 */
+				/*
+				 * The alpha index is only displayed if set to true and not set to repeat.
+				 * If alpha index is set to repeat, that is handled separately.
+				 */
+				//if ( $atts['show_alphaindex'] && ! $atts['repeat_alphaindex'] ) $out .= $charIndex;
+
+			//$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-head -->' : '' ) . "\n";
+
+			//$out .= '<div class="connections-list cn-clear" id="cn-list-body">' . "\n";
+
 			// If there are no results no need to proceed and output message.
 			if ( empty( $results ) ) {
 
@@ -473,13 +475,13 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 						$out .= ob_get_contents();
 					ob_end_clean();
 
-					/*$out .= sprintf( '<div class="cn-list-row%1$s vcard %2$s %3$s" id="%4$s">',
+				/*	$out .= sprintf( '<div class="cn-list-row%1$s vcard %2$s %3$s" id="%4$s">',
 							$alternate = $alternate == '' ? '-alternate' : '',
 							$entry->getEntryType(),
 							$entry->getCategoryClass(TRUE),
 							$entry->getSlug()
-						);*/
-
+						);
+*/
 						$out .= apply_filters( 'cn_list_entry_before' , '' , $entry );
 						$out .= apply_filters( 'cn_list_entry_before-' . $template->getSlug() , '' , $entry );
 						$filterRegistry[] = 'cn_list_entry_before-' . $template->getSlug();
@@ -488,11 +490,11 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 
 							if ( get_query_var( 'cn-entry-slug' ) && has_action( 'cn_action_card_single-' . $template->getSlug() ) ) {
 
-								do_action( 'cn_action_card_single-' . $template->getSlug(), $entry, $content, $template, $atts, $connections, $vCard );
+								do_action( 'cn_action_card_single-' . $template->getSlug(), $entry, $template, $atts );
 
 							} else {
 
-								do_action( 'cn_action_card-' . $template->getSlug(), $entry, $content, $template, $atts, $connections, $vCard );
+								do_action( 'cn_action_card-' . $template->getSlug(), $entry, $template, $atts );
 							}
 
 							$out .= ob_get_contents();
@@ -523,7 +525,7 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-body -->' : '' ) . "\n";
 
 			$out .= "\n" . '<div class="cn-clear" id="cn-list-foot">' . "\n";
-
+*/
 				$out .= apply_filters( 'cn_list_after' , '' , $results );
 				$out .= apply_filters( 'cn_list_after-' . $template->getSlug() , '' , $results );
 				$filterRegistry[] = 'cn_list_after-' . $template->getSlug();
@@ -539,7 +541,7 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 
 					$out .= ob_get_contents();
 				ob_end_clean();
-
+/*
 			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-foot -->' : '' ) . "\n";
 
 		$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-' . $template->getSlug() . ' -->' : '' ) . "\n";
@@ -759,7 +761,7 @@ function _upcoming_list( $atts, $content = NULL, $tag = 'upcoming_list' ) {
 
 						$out .= '<div class="cn-upcoming-row' . $alternate . ' vcard ' . '">' . "\n";
 							ob_start();
-							do_action( 'cn_action_card-' . $template->getSlug(), $entry, $content, $template, $atts, $connections, $vCard );
+							do_action( 'cn_action_card-' . $template->getSlug(), $entry, $template, $atts );
 						    $out .= ob_get_contents();
 						    ob_end_clean();
 						$out .= '</div>' . "\n";
