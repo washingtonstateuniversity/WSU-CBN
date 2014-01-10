@@ -125,6 +125,11 @@
 #cn-cmap .cn-entry{ margin:0px;}
 #cn-cmap h3{margin:6px 0px 0px 0px;}
 #cn-cmap{min-height:50px;}
+.ui-accordion .ui-accordion-header .ui-icon{margin-left:-11px !important;}
+
+
+
+
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen
 and (max-width : 480px) {

@@ -79,6 +79,9 @@ jQuery(document).ready(function ($) {
 	});
 
 	$(".accordion" ).accordion({collapsible: true,active:false,heightStyle: "content"});
+	$('#tabs').tabs();
+	
+	
 	$('select[name^=cn-cat]').chosen();
 	// Render map on single entry page
 	var cnSingleMap = $('#cn-gmap-single').length ? $('#cn-gmap-single') : false;
