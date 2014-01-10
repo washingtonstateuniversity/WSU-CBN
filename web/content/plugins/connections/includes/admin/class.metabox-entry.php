@@ -44,6 +44,9 @@ class cnEntryMetabox {
 	 */
 	public static function init( $metabox ) {
 
+		// Bail if doing an AJAX request.
+		// if ( defined('DOING_AJAX') && DOING_AJAX ) return;
+
 		// Grab an instance of the Connections object.
 		$instance = Connections_Directory();
 
@@ -75,9 +78,7 @@ class cnEntryMetabox {
 			// Grab an instance of Connections.
 			$instance = Connections_Directory();
 
-			// Define the core pages and use them by default if no page where defined.
-			// Check if doing AJAX because the page hooks are not defined when doing an AJAX request which cause undefined property errors.
-			$pages = defined('DOING_AJAX') && DOING_AJAX ? array() : array( $instance->pageHook->add, $instance->pageHook->manage );
+			$pages = array( $instance->pageHook->add, $instance->pageHook->manage );
 
 		} else {
 

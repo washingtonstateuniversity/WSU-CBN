@@ -2,7 +2,7 @@
 //var_dump($atts);
 ?>
 
-<div class="accordion"> 
+
     <h3 tabindex="0" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons  ui-corner-top">
     <span class="ui-accordion-header-icon ui-icon ui-icon-triangle-1-s"></span>
     <a style="" hidefocus="true" href="#">
@@ -12,28 +12,24 @@
     ?></em>&nbsp;&nbsp;<?php $entry->getNameBlock( array( 'format' => '%first%', 'link' => false ) ); ?></a>
     </h3>
     
-    
-    <div class="businesscontainer ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" id="ui-accordion-1-panel-0" role="tabpanel" aria-expanded="true" aria-hidden="false" aria-labelledby="ui-accordion-1-header-0" style="display: block;" rel="533">
+    <div id="cn-cmap" class="cn-template cn-cmap ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" id="cn-list-body" role="tabpanel" aria-expanded="true" aria-hidden="false" style="display: block;"  id="cn-list" >
+<div id="cn-list">
+    <div class="businesscontainer" rel="">
     
         <div id="entry-id-<?php echo $entry->getRuid(); ?>" class="cn-entry" rel="<?php echo $entry->getRuid(); ?>">
-        
             <div class="cn-left">
-        
                 <?php
-        
-                $entry->getImage( array(
-                    'image'    => $atts['image'] ,
-                    'height'   => $atts['image_height'] ,
-                    'width'    => $atts['image_width'] ,
-                    'fallback' => array(
-                        'type'     => $atts['image_fallback'] ,
-                        'string'   => $atts['str_image']
-                        )
-                    )
-                );
-        
+					$entry->getImage( array(
+						'image'    => $atts['image'] ,
+						'height'   => $atts['image_height'] ,
+						'width'    => $atts['image_width'] ,
+						'fallback' => array(
+							'type'     => $atts['image_fallback'] ,
+							'string'   => $atts['str_image']
+							)
+						)
+					);
                 ?>
-        
             </div>
         
             <div class="cn-right">
@@ -178,4 +174,5 @@
             <?php if ( isset($mapDiv) ) echo $mapDiv; ?>
         </div>
     </div>
+</div>
 </div>

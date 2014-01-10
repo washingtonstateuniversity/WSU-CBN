@@ -121,9 +121,14 @@
 
 .ui-accordion-header span{ display:inline-block !important;}
 .ui-accordion-header span.type {display:none !important;}
-.ui-accordion .businesscontainer.ui-accordion-content{ padding:0px !important;}
+#cn-cmap.ui-accordion-content{ padding:0px !important;}
 #cn-cmap .cn-entry{ margin:0px;}
 #cn-cmap h3{margin:6px 0px 0px 0px;}
+#cn-cmap{min-height:50px;}
+.ui-accordion .ui-accordion-header .ui-icon{margin-left:-11px !important;}
+
+
+
 
 /* Smartphones (portrait and landscape) ----------- */
 @media only screen

@@ -215,11 +215,12 @@ class cnSEO {
 
 		if ( get_query_var( 'cn-cat' ) ) {
 
-			if ( is_array( get_query_var( 'cn-cat' ) ) ) return implode( '', $title );
+			// If the category slug is a descendant, use the last slug from the URL for the query.
+			$categorySlug = explode( '/' , get_query_var( 'cn-cat' ) );
 
-			$categoryID = get_query_var( 'cn-cat' );
+			if ( isset( $categorySlug[ count( $categorySlug ) - 1 ] ) ) $categorySlug = $categorySlug[ count( $categorySlug ) - 1 ];
 
-			$term = $connections->term->getTermBy( 'id', $categoryID, 'category' );
+			$term = $connections->term->getTermBy( 'id', $categorySlug, 'category' );
 
 			$category = new cnCategory( $term );
 
@@ -296,11 +297,12 @@ class cnSEO {
 
 		if ( get_query_var( 'cn-cat' ) ) {
 
-			if ( is_array( get_query_var( 'cn-cat' ) ) ) return implode( '', $title );
+			// If the category slug is a descendant, use the last slug from the URL for the query.
+			$categorySlug = explode( '/' , get_query_var( 'cn-cat' ) );
 
-			$categoryID = get_query_var( 'cn-cat' );
+			if ( isset( $categorySlug[ count( $categorySlug ) - 1 ] ) ) $categorySlug = $categorySlug[ count( $categorySlug ) - 1 ];
 
-			$term = $connections->term->getTermBy( 'id', $categoryID, 'category' );
+			$term = $connections->term->getTermBy( 'id', $categorySlug, 'category' );
 
 			$category = new cnCategory( $term );
 
@@ -369,11 +371,12 @@ class cnSEO {
 
 		if ( get_query_var( 'cn-cat' ) ) {
 
-			if ( is_array( get_query_var( 'cn-cat' ) ) ) return;
+			// If the category slug is a descendant, use the last slug from the URL for the query.
+			$categorySlug = explode( '/' , get_query_var( 'cn-cat' ) );
 
-			$categoryID = get_query_var( 'cn-cat' );
+			if ( isset( $categorySlug[ count( $categorySlug ) - 1 ] ) ) $categorySlug = $categorySlug[ count( $categorySlug ) - 1 ];
 
-			$term = $connections->term->getTermBy( 'id', $categoryID, 'category' );
+			$term = $connections->term->getTermBy( 'id', $categorySlug, 'category' );
 
 			$category = new cnCategory( $term );
 
