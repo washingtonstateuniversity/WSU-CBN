@@ -10,29 +10,38 @@ Author URI:
 
 if (!class_exists('connectionsExpSearchLoad')) {
 	class connectionsExpSearchLoad {
-		
+		public $options;
+		public $settings;
 		public function __construct() {
 			$this->loadConstants();
-			if ( !is_admin() ) add_action( 'plugins_loaded', array($this, 'start') );
-			//if ( !is_admin() ) add_action( 'wp_print_scripts', array(&$this, 'loadScripts') );
-			
+			add_action( 'plugins_loaded', array( $this , 'start' ) );
 		}
 		
 		public function start() {
+			
+			
 			add_filter('cn_list_atts_permitted', array(__CLASS__, 'expand_atts_permitted'));
-
+			/*
+			 * Register the settings tabs shown on the Settings admin page tabs, sections and fields.
+			 * Init the registered settings.
+			 * NOTE: The init method must be run after registering the tabs, sections and fields.
+			 */
+			$this->settings = cnSettingsAPI::getInstance();
+			add_filter( 'cn_register_settings_sections' , array( $this, 'registerSettingsSections' ) );
+			add_filter( 'cn_register_settings_fields' , array( $this, 'registerSettingsFields' ) );
+			
+			$this->settings->init();
+			
+			
 			add_shortcode( 'connections_search', array( $this, 'shortcode') );
 			require_once(dirname( __FILE__ ) . '/includes/class.template-parts-extended.php');//temp correct later
-			
+
 			add_action( 'wp_print_styles', array( $this, 'loadStyles' ) );
 			add_action( 'init', array($this, 'loadJs') );
 			
 			if (isset($_POST['start_search'])) {// Check if option save is performed
 				add_filter('the_content', array( $this, 'doSearch' ));
 			}
-				
-		
-			
 		}
 		private function loadConstants() {
 
@@ -43,7 +52,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			define( 'CNEXSCH_BASE_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'CNEXSCH_BASE_URL', plugin_dir_url( __FILE__ ) );
 		}
-
+		public function init() { }
 		/**
 		 * Called when running the wp_print_styles action.
 		 *
@@ -65,6 +74,85 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		public function loadJs(){
 			if ( ! is_admin() )wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
 		}
+
+		/**
+		 * Register the settings sections.
+		 *
+		 * @author Steven A. Zahm
+		 * @since 0.4
+		 * @param array $sections
+		 * @return array
+		 */
+		public function registerSettingsSections( $sections ) {
+			global $connections;
+
+			$settings = 'connections_page_connections_settings';
+
+			// Register the core setting sections.
+			$sections[] = array(
+				'tab'       => 'search' ,
+				'id'        => 'connections_expsearch_defaults' ,
+				'position'  => 20 ,
+				'title'     => __( 'Search defaults' , 'connections_expsearch' ) ,
+				'callback'  => '' ,
+				'page_hook' => $settings );
+			return $sections;
+		}
+
+		public function registerSettingsFields( $fields ) {
+			$current_user = wp_get_current_user();
+
+			$settings = 'connections_page_connections_settings';
+
+			$fields[] = array(
+				'plugin_id' => 'connections_expsearch',
+				'id'        => 'use_geolocation',
+				'position'  => 10,
+				'page_hook' => $settings,
+				'tab'       => 'search',
+				'section'   => 'connections_expsearch_defaults',
+				'title'     => __('Add geo location to the search', 'connections_expsearch'),
+				'desc'      => __('', 'connections_expsearch'),
+				'help'      => __('', 'connections_expsearch'),
+				'type'      => 'checkbox',
+				'default'   => 1
+			);
+			$fields[] = array(
+				'plugin_id' => 'connections_expsearch',
+				'id'        => 'visiable_search_fields',
+				'position'  => 50,
+				'page_hook' => $settings,
+				'tab'       => 'search',
+				'section'   => 'connections_expsearch_defaults',
+				'title'     => __('Choose the visible on search form fields', 'connections_form'),
+				'desc'      => '',
+				'help'      => '',
+				'type'      => 'multiselect',
+				'options'   => $this->getSearchFields(),
+				'default'   => 'region,category,keyword'
+			);
+			return $fields;
+		}
+
+
+		//Note this is hard coded for the tmp need to finish a site
+		public function getSearchFields(){
+			
+			$fields = array(
+				'region'=>'Region',
+				'country'=>'Country',
+				'category'=>'Category',
+				'keyword'=>'Keywords'
+			);
+			
+			return $fields;
+		}
+
+
+
+
+
+
 
 
 
