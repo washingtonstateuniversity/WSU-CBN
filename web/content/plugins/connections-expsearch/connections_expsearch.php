@@ -254,40 +254,40 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				
 					<div id="tabs-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 					';
-				if($permittedAtts['category']==NULL){
-					$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
-					foreach($categories as $cat){
-						$permittedAtts['category']=$cat->term_id;
-						$catblock = $connections->shortcode->connectionsList( $permittedAtts,NULL,'connections' );;
-						//var_dump($catblock);
-						if(!empty($catblock) && strpos($catblock,'No results')===false){
-							$out .= '<h3>'.$state.$cat->name.'</h3>';
-							$out .= '<div class="accordion">';
-							$out .= $catblock;
-							$out .= '</div>';
+					if($permittedAtts['category']==NULL){
+						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
+						foreach($categories as $cat){
+							$permittedAtts['category']=$cat->term_id;
+							$catblock = $connections->shortcode->connectionsList( $permittedAtts,NULL,'connections' );;
+							//var_dump($catblock);
+							if(!empty($catblock) && strpos($catblock,'No results')===false){
+								$out .= '<h3>'.$state.$cat->name.'</h3>';
+								$out .= '<div class="accordion">';
+								$out .= $catblock;
+								$out .= '</div>';
+							}
 						}
+					}else{
+						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
+						$category = $connections->retrieve->category($permittedAtts['category']);
+						$out .= '<h3>'.$state.$category->name.'</h3>';
+						$out .= '<div class="accordion">';
+						$out .= connectionsList( $permittedAtts,NULL,'connections' );
+						$out .= '</div>';
 					}
-				}else{
-					$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
-					$category = $connections->retrieve->category($permittedAtts['category']);
-					$out .= '<h3>'.$state.$category->name.'</h3>';
-					$out .= '<div class="accordion">';
-					$out .= connectionsList( $permittedAtts,NULL,'connections' );
-					$out .= '</div>';
-				}
-	
-				$out .='
-					</div>
-					<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ">
-						<h2>Hover on a point to find a business and click for more information</h2>
-						<div id="mapJson">'.$markerJson.'</div>
-						<div id="front_cbn_map" class="byState " rel="'.$_POST['cn-state'].'" style="width:100%;height:450px;"></div>
-						<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;">
-							<div id="data_display"></div>
-							<div style="clear:both;"></div>
+		
+					$out .='
 						</div>
-					</div>
-				</div>';
+						<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ">
+							<h2>Hover on a point to find a business and click for more information</h2>
+							<div id="mapJson">'.$markerJson.'</div>
+							<div id="front_cbn_map" class="byState " rel="'.$_POST['cn-state'].'" style="width:100%;height:450px;"></div>
+							<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;">
+								<div id="data_display"></div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>';
 			}else{
 				$out = "No results";	
 			}
