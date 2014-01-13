@@ -10,29 +10,38 @@ Author URI:
 
 if (!class_exists('connectionsExpSearchLoad')) {
 	class connectionsExpSearchLoad {
-		
+		public $options;
+		public $settings;
 		public function __construct() {
 			$this->loadConstants();
-			if ( !is_admin() ) add_action( 'plugins_loaded', array($this, 'start') );
-			//if ( !is_admin() ) add_action( 'wp_print_scripts', array(&$this, 'loadScripts') );
-			
+			add_action( 'plugins_loaded', array( $this , 'start' ) );
 		}
 		
 		public function start() {
+			
+			
 			add_filter('cn_list_atts_permitted', array(__CLASS__, 'expand_atts_permitted'));
-
+			/*
+			 * Register the settings tabs shown on the Settings admin page tabs, sections and fields.
+			 * Init the registered settings.
+			 * NOTE: The init method must be run after registering the tabs, sections and fields.
+			 */
+			$this->settings = cnSettingsAPI::getInstance();
+			add_filter( 'cn_register_settings_sections' , array( $this, 'registerSettingsSections' ) );
+			add_filter( 'cn_register_settings_fields' , array( $this, 'registerSettingsFields' ) );
+			
+			$this->settings->init();
+			
+			
 			add_shortcode( 'connections_search', array( $this, 'shortcode') );
 			require_once(dirname( __FILE__ ) . '/includes/class.template-parts-extended.php');//temp correct later
-			
+
 			add_action( 'wp_print_styles', array( $this, 'loadStyles' ) );
 			add_action( 'init', array($this, 'loadJs') );
 			
 			if (isset($_POST['start_search'])) {// Check if option save is performed
 				add_filter('the_content', array( $this, 'doSearch' ));
 			}
-				
-		
-			
 		}
 		private function loadConstants() {
 
@@ -43,7 +52,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			define( 'CNEXSCH_BASE_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'CNEXSCH_BASE_URL', plugin_dir_url( __FILE__ ) );
 		}
-
+		public function init() { }
 		/**
 		 * Called when running the wp_print_styles action.
 		 *
@@ -65,6 +74,85 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		public function loadJs(){
 			if ( ! is_admin() )wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
 		}
+
+		/**
+		 * Register the settings sections.
+		 *
+		 * @author Steven A. Zahm
+		 * @since 0.4
+		 * @param array $sections
+		 * @return array
+		 */
+		public function registerSettingsSections( $sections ) {
+			global $connections;
+
+			$settings = 'connections_page_connections_settings';
+
+			// Register the core setting sections.
+			$sections[] = array(
+				'tab'       => 'search' ,
+				'id'        => 'connections_expsearch_defaults' ,
+				'position'  => 20 ,
+				'title'     => __( 'Search defaults' , 'connections_expsearch' ) ,
+				'callback'  => '' ,
+				'page_hook' => $settings );
+			return $sections;
+		}
+
+		public function registerSettingsFields( $fields ) {
+			$current_user = wp_get_current_user();
+
+			$settings = 'connections_page_connections_settings';
+
+			$fields[] = array(
+				'plugin_id' => 'connections_expsearch',
+				'id'        => 'use_geolocation',
+				'position'  => 10,
+				'page_hook' => $settings,
+				'tab'       => 'search',
+				'section'   => 'connections_expsearch_defaults',
+				'title'     => __('Add geo location to the search', 'connections_expsearch'),
+				'desc'      => __('', 'connections_expsearch'),
+				'help'      => __('', 'connections_expsearch'),
+				'type'      => 'checkbox',
+				'default'   => 1
+			);
+			$fields[] = array(
+				'plugin_id' => 'connections_expsearch',
+				'id'        => 'visiable_search_fields',
+				'position'  => 50,
+				'page_hook' => $settings,
+				'tab'       => 'search',
+				'section'   => 'connections_expsearch_defaults',
+				'title'     => __('Choose the visible on search form fields', 'connections_form'),
+				'desc'      => '',
+				'help'      => '',
+				'type'      => 'multiselect',
+				'options'   => $this->getSearchFields(),
+				'default'   => array('region','category','keyword')
+			);
+			return $fields;
+		}
+
+
+		//Note this is hard coded for the tmp need to finish a site
+		public function getSearchFields(){
+			
+			$fields = array(
+				'region'=>'Region',
+				'country'=>'Country',
+				'category'=>'Category',
+				'keywords'=>'Keywords'
+			);
+			
+			return $fields;
+		}
+
+
+
+
+
+
 
 
 
@@ -130,71 +218,79 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			
 			//var_dump($categories);
 			//die();
-			
-			$out .= '<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-				<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-					
-					<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tabs-2">Listings</a></li>
-					<li class="ui-state-default ui-corner-top"><a href="#tabs-1">Map</a></li>
-				</ul>
-			
-				<div id="tabs-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-			';
-			
-			
+
 			$results = $connections->retrieve->entries( $permittedAtts );
 			
-			$markers = new stdClass();
-			$markers->markers=array();
-			foreach($results as $entry){
-				$entryObj=new stdClass();
-				$entryObj->id=$entry->id;
-				$entryObj->title= $entry->organization;
-				$entryObj->position=new stdClass();
-				$addy = unserialize ($entry->addresses);
-				$array = (array) $addy;
-				$addy = array_pop($addy);
-				if(!empty($addy['latitude']) && !empty($addy['longitude'])){
-					$entryObj->position->latitude=$addy['latitude'];
-					$entryObj->position->longitude=$addy['longitude'];
-					$markers->markers[]= $entryObj;
-				}
-			}
+			if(!empty($results)){
 			
-			$markerJson=json_encode($markers);
 			
-				if($permittedAtts['category']==NULL){
-					$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
-					foreach($categories as $cat){
-						$permittedAtts['category']=$cat->term_id;
-						$catblock = connectionsList( $permittedAtts,NULL,'connections' );;
-						//var_dump($catblock);
-						if(!empty($catblock) && strpos($catblock,'No results')===false){
-							$out .= '<h3>'.$state.$cat->name.'</h3>';
-							$out .= '<div class="accordion">';
-							$out .= $catblock;
-							$out .= '</div>';
-						}
+				$markers = new stdClass();
+				$markers->markers=array();
+				foreach($results as $entry){
+					$entryObj=new stdClass();
+					$entryObj->id=$entry->id;
+					$entryObj->title= $entry->organization;
+					$entryObj->position=new stdClass();
+					$addy = unserialize ($entry->addresses);
+					$array = (array) $addy;
+					$addy = array_pop($addy);
+					if(!empty($addy['latitude']) && !empty($addy['longitude'])){
+						$entryObj->position->latitude=$addy['latitude'];
+						$entryObj->position->longitude=$addy['longitude'];
+						$markers->markers[]= $entryObj;
 					}
-				}else{
-					$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
-					$category = $connections->retrieve->category($permittedAtts['category']);
-					$out .= '<h3>'.$state.$category->name.'</h3>';
-					$out .= '<div class="accordion">';
-					$out .= connectionsList( $permittedAtts,NULL,'connections' );
-					$out .= '</div>';
 				}
-
-			$out .='
-			</div>
-			<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ">
-				<h2>Hover on a point to find a business and click for more information</h2>
-			<div id="mapJson">'.$markerJson.'</div>
-			<div id="front_cbn_map" class="byState " rel="'.$_POST['cn-state'].'" style="width:100%;height:450px;"></div>
-			<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;"><div id="data_display"></div><div style="clear:both;"></div></div>
-			</div>
-		</div>';
-			
+				$markerJson=json_encode($markers);
+	
+	
+				
+				$out .= '
+				<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+					<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+						
+						<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tabs-2">Listings</a></li>
+						<li class="ui-state-default ui-corner-top"><a href="#tabs-1">Map</a></li>
+					</ul>
+				
+					<div id="tabs-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+					';
+					if($permittedAtts['category']==NULL){
+						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
+						foreach($categories as $cat){
+							$permittedAtts['category']=$cat->term_id;
+							$catblock = $connections->shortcode->connectionsList( $permittedAtts,NULL,'connections' );;
+							//var_dump($catblock);
+							if(!empty($catblock) && strpos($catblock,'No results')===false){
+								$out .= '<h3>'.$state.$cat->name.'</h3>';
+								$out .= '<div class="accordion">';
+								$out .= $catblock;
+								$out .= '</div>';
+							}
+						}
+					}else{
+						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
+						$category = $connections->retrieve->category($permittedAtts['category']);
+						$out .= '<h3>'.$state.$category->name.'</h3>';
+						$out .= '<div class="accordion">';
+						$out .= connectionsList( $permittedAtts,NULL,'connections' );
+						$out .= '</div>';
+					}
+		
+					$out .='
+						</div>
+						<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ">
+							<h2>Hover on a point to find a business and click for more information</h2>
+							<div id="mapJson">'.$markerJson.'</div>
+							<div id="front_cbn_map" class="byState " rel="'.$_POST['cn-state'].'" style="width:100%;height:450px;"></div>
+							<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;">
+								<div id="data_display"></div>
+								<div style="clear:both;"></div>
+							</div>
+						</div>
+					</div>';
+			}else{
+				$out = "No results";	
+			}
 			
 			
 			return $out;
@@ -264,6 +360,9 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$convert->toBoolean($atts['notes']);
 			//$out .= var_dump($atts);
 
+
+			$visiblefields = $connections->settings->get( 'connections_expsearch' , 'connections_expsearch_defaults' , 'visiable_search_fields' );
+			$use_geolocation = $connections->settings->get( 'connections_expsearch' , 'connections_expsearch_defaults' , 'use_geolocation' );
 			// switch out for a template that can be changed. ie: {$category_select}, {$state_dropdown} etc.
 			$out .= '<div id="cn-form-container">' . "\n";
 				$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
@@ -276,49 +375,58 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					$atts = wp_parse_args( $atts, $defaults );	
 					$searchValue = ( get_query_var('cn-s') ) ? get_query_var('cn-s') : '';
 
-					$out .= '<div>';
-					$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(),array(
-						'type'            => 'select',
-						'group'           => FALSE,
-						'default'         => __('Select state', 'connections'),
-						'label'           => __('Search by category', 'connections'),
-						'show_select_all' => TRUE,
-						'select_all'      => __('Any', 'connections'),
-						'show_empty'      => TRUE,
-						'show_count'      => FALSE,
-						'depth'           => 0,
-						'parent_id'       => array(),
-						'exclude'         => array(),
-						'return'          => TRUE,
-						'class'				=>'search-select'
-					));
-					$out .= '<hr/></div>';
-
-					$out .= '<div>';
-
-					$out 			.= '<label class="search-select"><strong>Search by state:</strong></label><br/>';
-					$display_code 	= $connections->settings->get('connections_form', 'connections_form_preferences', 'form_preference_regions_display_code');
-					$out          	.= '<select name="cn-state">';
-					$out 			.= '<option value="" selected >Any</option>';
-					foreach (cnDefaultValues::getRegions() as $code => $regions) {
-						$lable = $display_code ? $code : $regions;
-						$out .= '<option value="' . $code . '" >' . $lable . '</option>';
+					if(in_array('category',$visiblefields)){
+						$out .= '<div>';
+						$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(),array(
+							'type'            => 'select',
+							'group'           => FALSE,
+							'default'         => __('Select a category', 'connections'),
+							'label'           => __('Search by category', 'connections'),
+							'show_select_all' => TRUE,
+							'select_all'      => __('Any', 'connections'),
+							'show_empty'      => TRUE,
+							'show_count'      => FALSE,
+							'depth'           => 0,
+							'parent_id'       => array(),
+							'exclude'         => array(),
+							'return'          => TRUE,
+							'class'				=>'search-select'
+						));
+						$out .= '<hr/></div>';
 					}
-					$out .= '</select>';
-					$out .= '<hr/></div>';
-
 					
-					$out .= '<label for="cn-s"><strong>Keywords:</strong></label><br/>';
-					$out .= '<span class="cn-search" style="width:50%; display:inline-block">';
-						$out .= '<input type="text" id="cn-search-input" name="cn-keyword" value="' . esc_attr( $searchValue ) . '" placeholder="' . __('Search', 'connections') . '"/>';
-					$out .= '</span>';
+					if(in_array('region',$visiblefields)){
+						$out .= '<div>';
+	
+						$out 			.= '<label class="search-select"><strong>Search by state:</strong></label><br/>';
+						$display_code 	= $connections->settings->get('connections_form', 'connections_form_preferences', 'form_preference_regions_display_code');
+						$out          	.= '<select name="cn-state">';
+						$out 			.= '<option value="" selected >Any</option>';
+						foreach (cnDefaultValues::getRegions() as $code => $regions) {
+							$lable = $display_code ? $code : $regions;
+							$out .= '<option value="' . $code . '" >' . $lable . '</option>';
+						}
+						$out .= '</select>';
+						$out .= '<hr/></div>';
+					}
 
-					$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">Search near my location</a></h2>';
-					$out .= '<input type="hidden" name="cn-near_addr" />';
-					$out .= '<input type="hidden" name="cn-latitude" />';
-					$out .= '<input type="hidden" name="cn-longitude" />';
-					$out .= '<input type="hidden" name="cn-radius" value="10" />';
-					$out .= '<input type="hidden" name="cn-unit" value="mi" />';
+					if(in_array('keywords',$visiblefields)){
+						$out .= '<div>';
+						$out .= '<label for="cn-s"><strong>Keywords:</strong></label><br/>';
+						$out .= '<span class="cn-search" style="width:50%; display:inline-block">';
+							$out .= '<input type="text" id="cn-search-input" name="cn-keyword" value="' . esc_attr( $searchValue ) . '" placeholder="' . __('Search', 'connections') . '"/>';
+						$out .= '</span>';
+						$out .= '<hr/></div>';
+					}
+					
+					if($use_geolocation){
+						$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">Search near my location</a></h2>';
+						$out .= '<input type="hidden" name="cn-near_addr" />';
+						$out .= '<input type="hidden" name="cn-latitude" />';
+						$out .= '<input type="hidden" name="cn-longitude" />';
+						$out .= '<input type="hidden" name="cn-radius" value="10" />';
+						$out .= '<input type="hidden" name="cn-unit" value="mi" />';
+					}
 					$out .=  '<hr/><br/><p class="cn-add"><input class="cn-button-shell cn-button red" id="cn-form-search" type="submit" name="start_search" value="' . __('Submit' , 'connections_form' ) . '" /></p><br/>' . "\n";
 	
 				$out .= '</form>';

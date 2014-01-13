@@ -226,8 +226,7 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 			return $sections;
 		}
 
-		public function registerSettingsFields( $fields )
-		{
+		public function registerSettingsFields( $fields ) {
 			$current_user = wp_get_current_user();
 
 			$settings = 'connections_page_connections_settings';
@@ -766,7 +765,6 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 					// Hidden Field -- 'action' required to trigger the registered action.
 					$out .= '<input type="hidden" name="action" value="cn-form-new-submit" />';
 		
-					// Hidden Field -- to create a WP nonce to be used to validate before processing the form submission.
 					ob_start();
 					cnMetabox_Render::metaboxes( array( 'exclude' => array( 'image','logo','address','phone','email','messenger','submitdiv', 'categorydiv', 'metabox-meta' ) ), $entry );
 					$form->tokenField('add_entry');
