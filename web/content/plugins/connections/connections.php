@@ -92,6 +92,17 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 		 * @var (object)
 		 */
 		public $template;
+		/**
+		 * Stores the shortcode object.
+		 *
+		 * NOTE: more to come
+		 *
+		 * @access public
+		 * @since na
+		 * @var (object)
+		 */
+		public $shortcode;	
+
 
 		/**
 		 * A dummy constructor to prevent the class from being loaded more than once.
@@ -109,7 +120,8 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 				self::defineConstants();
 				self::includes();
-
+				
+				self::$instance->shortcode   = new shortcode();
 				self::$instance->options     = new cnOptions();
 				self::$instance->settings    = cnSettingsAPI::getInstance();
 				self::$instance->pageHook    = new stdClass();
@@ -303,11 +315,11 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 			// The class for managing metaboxes.
 			// Must require BEFORE class.functions.php.
-			require_once CN_PATH . 'includes/admin/class.metabox-api.php';
+			require_once CN_PATH . 'includes/class.metabox-api.php';
 
 			// The class for registering the core metaboxes and fields for the add/edit entry admin pages.
 			// Must require AFTER class.metabox-api.php.
-			require_once CN_PATH . 'includes/admin/class.metabox-entry.php';
+			require_once CN_PATH . 'includes/class.metabox-entry.php';
 
 			/*
 			 * Entry classes. // --> START <-- \\
@@ -346,6 +358,7 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 			// Shortcodes
 			// NOTE This is required in both the admin and frontend. The shortcode callback is used on the Dashboard admin page.
+			require_once CN_PATH . 'includes/template/class.shortcode.php'; // Required for front end
 			require_once CN_PATH . 'includes/inc.shortcodes.php'; // Required for front end
 
 			// The class that inits the registered query vars, rewites reuls and canonical redirects.
