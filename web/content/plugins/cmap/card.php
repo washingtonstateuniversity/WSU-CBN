@@ -105,12 +105,21 @@
                     if ( ! empty( $gMap ) ) {
         
                         $mapDiv = '<div class="cn-gmap" id="map-container-' . $entry->getRuid() . '" style="display: none;">' . $gMap . '</div>';
-        
-                        printf( '<a class="cn-map-anchor toggle-map" id="map-anchor-%1$s" href="#" data-uuid="%1$s" data-str-show="%2$s" data-str-hide="%3$s">%2$s</a> | <a class="cn-map-get-directions" href="#" data-uuid="%1$s">%4$s</a>',
+						
+						//@todo come back to and clean this up
+        				$address = trim(strip_tags(str_replace('  ',' ',str_replace('<span class="type" style="display: none;">work</span>',
+															'',
+															$entry->getAddressBlock( array( 'format' => '%line1% %line2% %city% %state% %zipcode% %country%' ,
+																	'link' => array('locality'=>false,'region'=>false,'postal_code'=>false,'country'=>false),
+																	 'return'=>true
+																	) )
+												) ) ) );
+                        printf( '<a class="cn-map-anchor toggle-map" id="map-anchor-%1$s" href="#" data-uuid="%1$s" data-str-show="%2$s" data-str-hide="%3$s">%2$s</a><span class="tolocation"> | <a class="cn-map-get-directions" target="_blank" href="https://maps.google.com/maps?daddr=%4$s" data-uuid="%1$s">%5$s</a></span>',
                             $entry->getRuid(),
                             $atts['str_map_show'],
                             $atts['str_map_hide'],
-                                                        'Get directions'
+							urlencode( $address ),
+                            'Get directions'
                         );
                     }
                 }

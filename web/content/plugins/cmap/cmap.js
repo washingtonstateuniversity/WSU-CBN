@@ -117,4 +117,28 @@ jQuery(document).ready(function ($) {
 
 	}
 
+	function showError(error) {
+	  switch(error.code) {
+		case error.PERMISSION_DENIED:
+		  break;
+		case error.POSITION_UNAVAILABLE:
+		  break;
+		case error.TIMEOUT:
+		  break;
+		case error.UNKNOWN_ERROR:
+		  break;
+		}
+	}
+	if( $('html').is($('.geolocation '))){	
+		if (navigator.geolocation){
+			navigator.geolocation.getCurrentPosition(function (position) {
+				var lat = position.coords.latitude;
+				var long = position.coords.longitude;
+				$.each($('.cn-map-get-directions'),function(){
+					var url = $(this).attr('href');
+					$(this).attr('href',url+'&saddr='+lat+','+long);
+				});
+			},showError);
+		}
+	}
 });
