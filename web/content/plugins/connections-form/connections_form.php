@@ -771,7 +771,7 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 
 					
 					
-					cnMetabox_Render::metaboxes( array( 'exclude' => array_merge($already_used,array('leveled', 'last-emailed','submitdiv', 'categorydiv', 'metabox-meta', 'metabox-logo', 'metabox-messenger','metabox-social-media','metabox-note','metabox-date' )) ), $entry );
+					cnMetabox_Render::metaboxes( array( 'exclude' => array_merge($already_used,array('last-emailed','submitdiv', 'categorydiv', 'metabox-meta', 'metabox-logo', 'metabox-messenger','metabox-social-media','metabox-note','metabox-date' )) ), $entry );
 					$form->tokenField('add_entry');
 					$out .= ob_get_contents();
 					ob_end_clean();

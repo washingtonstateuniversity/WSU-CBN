@@ -384,7 +384,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 							'label'           => __('Search by category', 'connections'),
 							'show_select_all' => TRUE,
 							'select_all'      => __('Any', 'connections'),
-							'show_empty'      => TRUE,
+							'show_empty'      => FALSE,
 							'show_count'      => FALSE,
 							'depth'           => 0,
 							'parent_id'       => array(),
