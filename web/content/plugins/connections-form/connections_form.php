@@ -750,6 +750,7 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 					//( $entry->getVisibility() ) ? $visibility = $entry->getVisibility() : $visibility = 'unlisted';
 	
 					//Loop over all the blocks and add it to the output string
+
 					if(!empty($atts['use_blocks'])){
 						foreach($atts['use_blocks'] as $code){
 							//do_action( 'cnfm_block_creation_before-'.$code, $entry, $atts);
@@ -757,6 +758,7 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 							$blockStr .= cnfmFormParts::getFormBlock($code,$entry, $atts);
 							$blockStr = apply_filters( 'cnfm_block_creation_after-'.$code, $blockStr);
 							$out .= $blockStr;
+							$already_used[]='metabox-'.$code;
 						} 
 					}else{
 						$out.="<h2>".__('No blocks were choosen' , 'connections_form' )."</h2>";	
@@ -764,9 +766,12 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 	
 					// Hidden Field -- 'action' required to trigger the registered action.
 					$out .= '<input type="hidden" name="action" value="cn-form-new-submit" />';
-		
+
 					ob_start();
-					cnMetabox_Render::metaboxes( array( 'exclude' => array( 'image','logo','address','phone','email','messenger','submitdiv', 'categorydiv', 'metabox-meta' ) ), $entry );
+
+					
+					
+					cnMetabox_Render::metaboxes( array( 'exclude' => array_merge($already_used,array('last-emailed','submitdiv', 'categorydiv', 'metabox-meta', 'metabox-logo', 'metabox-messenger','metabox-social-media','metabox-note','metabox-date' )) ), $entry );
 					$form->tokenField('add_entry');
 					$out .= ob_get_contents();
 					ob_end_clean();

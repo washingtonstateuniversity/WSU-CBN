@@ -377,14 +377,14 @@ if (!class_exists('connectionsExpSearchLoad')) {
 
 					if(in_array('category',$visiblefields)){
 						$out .= '<div>';
-						$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(),array(
+						$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(array('order'=>'parent ASC, name ASC')),array(
 							'type'            => 'select',
 							'group'           => FALSE,
 							'default'         => __('Select a category', 'connections'),
 							'label'           => __('Search by category', 'connections'),
 							'show_select_all' => TRUE,
 							'select_all'      => __('Any', 'connections'),
-							'show_empty'      => TRUE,
+							'show_empty'      => FALSE,
 							'show_count'      => FALSE,
 							'depth'           => 0,
 							'parent_id'       => array(),

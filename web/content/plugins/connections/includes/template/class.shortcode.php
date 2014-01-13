@@ -649,5 +649,7 @@ class shortcode {
 			), $atts));
 		return isset($atts[$key])?$atts[$key]:'';
 	}
+	
+	
 }
 ?>

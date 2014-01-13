@@ -100,8 +100,10 @@ function connectionsView( $atts , $content = NULL ) {
 
 		// Show the entry detail using a template based on the entry type.
 		case 'detail':
+
 			// Ensure an array is passed the the cnRetrieve::entries method.
 			if ( ! is_array( $atts ) ) $atts = (array) $atts;
+
 			$results = $connections->retrieve->entries( $atts );
 			//var_dump($results);
 
@@ -118,7 +120,9 @@ function connectionsView( $atts , $content = NULL ) {
 
 		// Show the standard result list.
 		default:
+
 			return shortcode::connectionsList( $atts, $content );
+
 			break;
 	}
 }
