@@ -97,23 +97,29 @@ if (!class_exists('Connections_Levels')) {
 			$metabox::add( $atts );
 		}
 		public static function field( $field, $value ) {
-			
-			$out ='<select name="cnlevels" >';
-			if(empty($value)){
-				$value = 'pending';
-			}
 			//this would be pulled from the ?options?
 			$levels = array(
 				//'pending'=>__('Pending', 'connections_levels' ),
 				'member'=>__('Member', 'connections_levels' ),
 				'affiliate'=>__('Affiliate', 'connections_levels' )
-			);
-			foreach($levels as $slug=>$label){
-				$out .='<option value="'.$slug.'" '.selected($value, $slug, false).'>'.$label.'</option>';	
+			);	
+			$out='';
+			if (is_admin()) {		
+				$out .='<select name="cnlevels" >';
+				if(empty($value)){
+					$value = 'pending';
+				}
+	
+				foreach($levels as $slug=>$label){
+					$out .='<option value="'.$slug.'" '.selected($value, $slug, false).'>'.$label.'</option>';	
+				}
+				$out .='</select>';
+			}else{
+				foreach($levels as $slug=>$label){
+					$out .='<label><input type="radio" value="'.$slug.'" name="cnlevels" /> '.$label.'</label><br/>';	
+				}
 			}
-			$out .='</select>';
-
-			printf( '<label>%s: </label>%s', __( 'Level', 'connections_levels' ), $out);
+			printf( '%s', $out);
  
 		}
 
