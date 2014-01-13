@@ -104,7 +104,7 @@ if (!class_exists('Connections_Levels')) {
 			}
 			//this would be pulled from the ?options?
 			$levels = array(
-				'pending'=>__('Pending', 'connections_levels' ),
+				//'pending'=>__('Pending', 'connections_levels' ),
 				'member'=>__('Member', 'connections_levels' ),
 				'affiliate'=>__('Affiliate', 'connections_levels' )
 			);

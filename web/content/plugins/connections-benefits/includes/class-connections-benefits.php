@@ -98,19 +98,31 @@ if (!class_exists('Connections_benefits')) {
 		}
 		public static function field( $field, $value ) {
 			
+			if(empty($value)){
+				$value=array(
+					'description'=>'',
+					'wsuaa_discounts'=>1,
+					'categories'=>'',
+					'online'=>0
+				);	
+			}
+			
+			
+			
+			
 			$out ='
 			<div>Benefit description:
-			<br/><textarea name="discounts[0].description" rows="5" cols="30"></textarea>
+			<br/><textarea name="benefited[0][\'description\']" rows="5" cols="30">'.$value['description'].'</textarea>
 			<br/><br/>
 			
 			<label>Is this offer for only WSUAA Members?:</label><br/>
             
-			<input name="discounts[0].wsuaa_discounts" id="discounts_0_wsuaa_discounts" onclick="disableFields(false);" type="radio" value="1"> Yes 
-            <input name="discounts[0].wsuaa_discounts" id="discounts_0_wsuaa_discounts" onclick="disableFields(true);" type="radio" value="0"> No 
+			<input name="discounts[0][\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts"  type="radio" value="1"> Yes 
+            <input name="discounts[0][\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts" type="radio" value="0"> No 
 			<br/><br/>
             <label>Discount Category:</label>
             <br/>
-			<select name="discounts[0].categories.id" id="discounts_0_categories_id">
+			<select name="discounts[0][\'categories\']" id="discounts_0_categories_id">
 				<option value=""></option>
 				<option value="1">Automotive</option>
 				<option value="2">Dining</option>
@@ -125,8 +137,8 @@ if (!class_exists('Connections_benefits')) {
 			</select> 	<br/><br/>
 			<label>Is this an online offer?:</label>
             <br/>
-            <input name="discounts[0].online" id="discounts_0_online" onclick="disableFields(false);" type="radio" value="1"> Yes 
-            <input name="discounts[0].online" id="discounts_0_online" onclick="disableFields(true);" type="radio" value="0"> No 
+            <input name="discounts[0][\'online\']" id="discounts_0_online" onclick="disableFields(false);" type="radio" value="1"> Yes 
+            <input name="discounts[0][\'online\']" id="discounts_0_online" onclick="disableFields(true);" type="radio" value="0"> No 
 			<br/>
             <!--<em><strong>Note:</strong> to check if the online use is WSUAA Member have your web developer use this url http://cbn.wsu.edu/Business/is_member.castle with a url query of "Wsuid".  <br>The example is [ <strong>http://cbn.wsu.edu/Business/is_member.castle?Wsuid=47614823</strong> ]</em>-->
 			';
