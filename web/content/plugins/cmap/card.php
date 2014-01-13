@@ -4,9 +4,7 @@
 
 
 <h3 tabindex="0" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons  ui-corner-top"><a href='#'><em class="right"><?php
-     
     if ( $atts['show_addresses'] ) $entry->getAddressBlock( array( 'format' => '%city%, %state%' ,'link' => array('locality'=>false,'region'=>false,'postal_code'=>false,'country'=>false) ) );
-    
     ?></em>&nbsp;&nbsp;<?php $entry->getNameBlock( array( 'format' => '%first%', 'link' => false ) );
 ?></a></h3>
     
@@ -90,22 +88,15 @@
                     }
             
                     ?>
-            
                 </div>
-            
                 <div class="cn-right">
                    <!-- <span class="cn-return-to-top"><?php //cnTemplatePart::returnToTop() ?></span>-->
                 </div>
-            
                 <div class="cn-clear"></div>
-            
                 <?php
 					if ( $atts['enable_bio'] && $entry->getBio() != '' ) {
-				
 						echo '<div class="cn-bio" id="bio-block-' , $entry->getRuid() , '" style="display: none;">';
-				
 							if ( $atts['enable_bio_head'] ) echo '<h4>' , $atts['str_bio_head'] , '</h4>';
-				
 							$entry->getImage( array(
 								'image'    => $atts['tray_image'] ,
 								'height'   => $atts['tray_image_height'] ,
@@ -116,14 +107,10 @@
 									)
 								)
 							);
-				
 							$entry->getBioBlock();
-				
 							echo '<div class="cn-clear"></div>';
-				
 						echo '</div>';
 					}
-				
 					if ( $atts['enable_note'] && $entry->getNotes() != '' ) {
 				
 						echo '<div class="cn-notes" id="note-block-' , $entry->getRuid() , '" style="display: none;">';
@@ -136,7 +123,6 @@
 				
 						echo '</div>';
 					}
-            
                 ?>
                 <?php if ( isset($mapDiv) ) echo $mapDiv; ?>
             </div>
