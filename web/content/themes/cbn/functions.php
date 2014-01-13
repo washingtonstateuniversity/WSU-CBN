@@ -556,7 +556,7 @@ function CNFM_NoteImageBlock($blockStr) {
 	$blockStr.="<h1>Noting: the block</h1>";
 	return $blockStr;
 }
-add_filter( 'cnfm_block_creation_after-image', 'CNFM_NoteImageBlock' );
+//add_filter( 'cnfm_block_creation_after-image', 'CNFM_NoteImageBlock' );
 
 
 
