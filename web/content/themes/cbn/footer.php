@@ -12,7 +12,6 @@
 		<?php //get_search_form(); ?>
 		<?php wp_footer(); ?>
 		</div><!-- #main -->
-		
 	</div><!-- #main-content -->
 
 	
