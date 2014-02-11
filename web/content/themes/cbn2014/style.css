@@ -87,6 +87,29 @@ header h1 { margin:0 auto; position:relative; display:block;height: 0px; width: 
 #nav ul li { display:inline; padding:0px 10px; border-left:1px dotted #e7e9ea; }
 #nav ul li.last { border-right:1px dotted #e7e9ea }
 
+.navbar{min-height: 55px;}
+.navbar ul li{    
+	height: 55px;
+    line-height: 55px;
+}
+
+.navbar ul li > a {
+  height: 55px;
+  line-height: 55px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 #main-content {position: relative; padding:20px 40px; color:#000; text-align:left; }
 #main-content a { color:#981e32; }
 #main-content a:hover { color:#5e6a71; }
