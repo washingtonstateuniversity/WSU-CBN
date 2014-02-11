@@ -56,7 +56,9 @@
      <header class="row">
      	<div id="displayheader" class="twelve columns row">
             <nav role="navigation" class="ten columns" id="nav2">
-                <?php wp_nav_menu( array( 'menu' => 'quickaction', 'menu_class' => 'vrt-nav-menu' ) ); ?>
+
+    	        <?php wp_nav_menu( array( 'menu' => 'quickaction', 'menu_class' => 'vrt-nav-menu' ) ); ?>
+
             </nav>
         
         

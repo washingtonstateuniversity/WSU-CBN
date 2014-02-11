@@ -98,10 +98,19 @@ header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; }
 }
 
 #nav2{}
-#nav2 #menu-quickaction{}
-#nav2 #menu-quickaction li{line-height:36px; height:36px; background:transparent url('img/nav-link-background.png') center center;}
-#nav2 #menu-quickaction li > a { font-weight:bold; color:#fff; line-height:36px; height:36px;}
-
+#nav2 #menu-quickaction{float: right;}
+#nav2 #menu-quickaction li{line-height:36px;height:36px; width: 215px; margin-bottom:9px;}
+#nav2 #menu-quickaction li:first-of-type{line-height:65px;height:65px; }
+#nav2 #menu-quickaction li > a {    color: #FFFFFF;
+    display: inline-block;
+    font-weight: bold;
+    height: 36px;
+    line-height: 36px;
+    width: 100%;
+	background:transparent url('img/nav-link-background.png') center center;
+	}
+#nav2 #menu-quickaction li:first-of-type > a{line-height:65px;height:65px;}
+#nav2 #menu-quickaction li > a:hover {}
 
 
 
