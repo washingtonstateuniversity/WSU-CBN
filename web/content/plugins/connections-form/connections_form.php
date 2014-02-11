@@ -746,12 +746,8 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 				$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
 	
 				$out .= '<form id="cn-form" method="POST" enctype="multipart/form-data">' . "\n";
-	
 					//( $entry->getVisibility() ) ? $visibility = $entry->getVisibility() : $visibility = 'unlisted';
-	
 					//Loop over all the blocks and add it to the output string
-
-
 					ob_start();
 						cnMetabox_Render::metaboxes( array( 'include' => array('leveled') ), $entry );
 						$form->tokenField('add_entry');
