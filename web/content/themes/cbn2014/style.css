@@ -17,7 +17,7 @@ h2, h4, h6 { color:#981e32; }
 .clear { clear:both; }
 .crimson { color:#981e32; }
 
-header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; }
+header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; background:transparent url('img/Header-WSU-background.png') no-repeat top center;}
 #displayheader{ height: 200px; }
 
 #main { margin:25px auto 10px auto; background-color:#fff; color:#000; text-align:center; width:85%; float:left; clear:both; margin-left:7.5%; margin-right:7.5%; overflow:auto;
