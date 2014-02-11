@@ -110,7 +110,7 @@ header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; backgr
 	background:transparent url('img/nav-link-background.png') center center;
 	}
 #nav2 #menu-quickaction li:first-of-type > a{line-height:65px;height:65px;}
-#nav2 #menu-quickaction li > a:hover {}
+#nav2 #menu-quickaction li > a:hover {background:transparent url('img/nav-link-background-hover.png') center center;}
 
 
 
