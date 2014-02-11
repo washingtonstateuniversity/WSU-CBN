@@ -4,7 +4,7 @@
    Author: JKB, University Publishing, Washington State University
    ========================================================================== */
 
-body { background-color:#ff; }
+body { background:#fff url('img/Header-background.png') repeat-x top center; }
 
 a { color:#981e32; }
 a:visited { color: #981e32; }
