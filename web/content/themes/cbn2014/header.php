@@ -58,7 +58,7 @@
             <nav role="navigation" class="ten columns" id="nav2">
 
     	        <?php wp_nav_menu( array( 'menu' => 'quickaction', 'menu_class' => 'vrt-nav-menu' ) ); ?>
-
+				<span id="butch-nav">&nbsp;</span>
             </nav>
         
         

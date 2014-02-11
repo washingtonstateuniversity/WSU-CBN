@@ -86,7 +86,7 @@ header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; backgr
 #nav ul li { display:inline; padding:0px 10px; border-left:1px dotted #e7e9ea; }
 #nav ul li.last { border-right:1px dotted #e7e9ea }
 
-.navbar{min-height: 55px; background:none;}
+.navbar{min-height: 55px; background:none; background-color:#d1d1d1;}
 .navbar ul li{    
 	height: 55px;
     line-height: 55px;
@@ -97,7 +97,7 @@ header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; backgr
   line-height: 55px;
 }
 
-#nav2{}
+#nav2{ position: relative;}
 #nav2 #menu-quickaction{float: right;margin-right: 190px;}
 #nav2 #menu-quickaction li{line-height:36px;height:36px; width: 215px; margin-bottom:9px;}
 #nav2 #menu-quickaction li:first-of-type{line-height:65px;height:65px; }
@@ -112,7 +112,13 @@ header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; backgr
 #nav2 #menu-quickaction li:first-of-type > a{line-height:65px;height:65px;}
 #nav2 #menu-quickaction li > a:hover {background:transparent url('img/nav-link-background-hover.png') center center;}
 
-
+#butch-nav{height:245px;
+position: absolute;
+right: 27px;
+top: 2px;
+width:205px;
+background:transparent url('img/Header-butch.png') no-repeat center center;
+}
 
 
 
