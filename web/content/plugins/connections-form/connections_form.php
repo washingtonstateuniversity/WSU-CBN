@@ -746,10 +746,19 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 				$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
 	
 				$out .= '<form id="cn-form" method="POST" enctype="multipart/form-data">' . "\n";
-	
 					//( $entry->getVisibility() ) ? $visibility = $entry->getVisibility() : $visibility = 'unlisted';
-	
 					//Loop over all the blocks and add it to the output string
+					ob_start();
+						cnMetabox_Render::metaboxes( array( 'include' => array('leveled') ), $entry );
+						$form->tokenField('add_entry');
+						$out .= ob_get_contents();
+					ob_end_clean();
+
+					ob_start();
+						cnMetabox_Render::metaboxes( array( 'include' => array('educationed') ), $entry );
+						$form->tokenField('add_entry');
+						$out .= ob_get_contents();
+					ob_end_clean();
 
 					if(!empty($atts['use_blocks'])){
 						foreach($atts['use_blocks'] as $code){
@@ -768,12 +777,9 @@ if ( ! class_exists( 'connectionsFormLoad' ) ) {
 					$out .= '<input type="hidden" name="action" value="cn-form-new-submit" />';
 
 					ob_start();
-
-					
-					
-					cnMetabox_Render::metaboxes( array( 'exclude' => array_merge($already_used,array('last-emailed','submitdiv', 'categorydiv', 'metabox-meta', 'metabox-logo', 'metabox-messenger','metabox-social-media','metabox-note','metabox-date' )) ), $entry );
-					$form->tokenField('add_entry');
-					$out .= ob_get_contents();
+						cnMetabox_Render::metaboxes( array( 'exclude' => array_merge($already_used,array('educationed','leveled','last-emailed','submitdiv', 'categorydiv', 'metabox-meta', 'metabox-logo', 'metabox-messenger','metabox-social-media','metabox-note','metabox-date' )) ), $entry );
+						$form->tokenField('add_entry');
+						$out .= ob_get_contents();
 					ob_end_clean();
 /**/
 		
