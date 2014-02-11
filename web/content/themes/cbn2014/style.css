@@ -5,7 +5,7 @@
    ========================================================================== */
 
 body { background:#fff url('img/Header-background.png') repeat-x top center; }
-
+.row{max-width: 1260px;}
 a { color:#981e32; }
 a:visited { color: #981e32; }
 a:hover { color:#5e6a71; }
