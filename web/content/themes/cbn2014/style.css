@@ -99,8 +99,8 @@ header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; }
 
 #nav2{}
 #nav2 #menu-quickaction{}
-#nav2 #menu-quickaction li{}
-#nav2 #menu-quickaction li > a {}
+#nav2 #menu-quickaction li{line-height:36px; height:36px; background:transparent url('img/nav-link-background.png') center center;}
+#nav2 #menu-quickaction li > a { font-weight:bold; color:#fff; line-height:36px; height:36px;}
 
 
 
