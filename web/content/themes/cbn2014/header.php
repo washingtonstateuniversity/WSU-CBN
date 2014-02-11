@@ -55,12 +55,12 @@
  <div class="row">
      <header class="row">
      	<div id="displayheader" class="twelve columns row">
-            <nav role="navigation" class="eleven columns" id="nav2">
+            <nav role="navigation" class="ten columns" id="nav2">
                 <?php wp_nav_menu( array( 'menu' => 'quickaction', 'menu_class' => 'vrt-nav-menu' ) ); ?>
             </nav>
         
         
-            <h1 class="one columns logo">
+            <h1 class="two columns logo">
                 <a href="#">
                     <img src="/content/themes/cbn2014/img/wsuaa-logo-w-trans.png" gumby-retina />
                 </a>
