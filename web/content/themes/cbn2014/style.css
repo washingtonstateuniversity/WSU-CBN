@@ -19,6 +19,7 @@ h2, h4, h6 { color:#981e32; }
 
 header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; }
 header h1 { margin:0 auto; position:relative; display:block;height: 0px; width: 0px;top: 23px;}
+#displayheader{ height: 200px; }
 
 #main { margin:25px auto 10px auto; background-color:#fff; color:#000; text-align:center; width:85%; float:left; clear:both; margin-left:7.5%; margin-right:7.5%; overflow:auto;
 
