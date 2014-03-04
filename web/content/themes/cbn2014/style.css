@@ -4,7 +4,10 @@
    Author: JKB, University Publishing, Washington State University
    ========================================================================== */
 
-body { background:#fff url('img/Header-background.png') repeat-x top center; }
+body { background:#fff url('img/body-content-background.png') no-repeat top center; }
+#body_wrap {  background:transparent url('img/Header-background.png') repeat-x top center; }
+
+
 .row{max-width: 1260px;}
 a { color:#981e32; }
 a:visited { color: #981e32; }
@@ -245,12 +248,12 @@ position: relative;
 .col_2{width:50%;float:left;display:inline-block;height: 55px;position:relative}
 .col_2 input[type="submit"],.col_2 input[type="button"]{position:absolute;bottom:0px; right:0px;}
 
-
+/*
 body.page.page-id-9 #main-content {
 	background:#ffffff url('img/bkgrd/page-corner.jpg') no-repeat top left;
 	padding-left:146px;
 	padding-top:53px;
-}
+}*/
 
 
 .search-select{margin-bottom:15px;display:inline-block;}
