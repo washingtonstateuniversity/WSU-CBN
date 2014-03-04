@@ -1914,8 +1914,12 @@ class cnOutput extends cnEntry
 		$out .= '<span class="date-block">';
 
 		foreach ( $dates as $date ) {
+
 			$replace = array();
-			$dateObject = new DateTime( $date->date );
+
+			// Go thru the formatting acrobats to make sure DateTime is feed a valid date format
+			// // just incase a user manages to input an incorrect date or date format.
+			$dateObject = new DateTime( date( 'm/d/Y', strtotime( $date->date ) ) );
 
 			$out .= "\n" . '<span class="vevent">';
 
@@ -2215,19 +2219,34 @@ class cnOutput extends cnEntry
 	}
 
 	/**
-	 * Displays the custom meta data fields assigned to the entry.
+	 * Renders the custom meta data fields assigned to the entry.
 	 *
 	 * This will also run any actions registered for a custom metaboxes
-	 * and its fields. The actions should hook into `cn_meta_output_field-{key}`
-	 * to be displayed.
+	 * and its fields. The actions should hook into `cn_output_meta_field-{key}`
+	 * to be rendered.
+	 *
+	 * Accepted option for the $atts property are:
+	 * 	key (string) The meta key to retreive.
+	 * 	single (bool) Whether or not to return a single value
+	 * 		if multiple values exists forthe supplied `key`.
+	 * 			NOTE: The `key` attribute must be supplied.
+	 * 			NOTE: If multiple values exist for a given `key` only first found will be returned.
 	 *
 	 * @access public
 	 * @since 0.8
-	 * @param  array  $atts The attrubutes array.
+	 * @uses wp_parse_args()
+	 * @uses apply_filters()
+	 * @uses has_action()
+	 * @uses do_action()
+	 * @param  array  $atts The attributes array.
+	 * @param  array  $shortcode_atts If this is used within the shortcode template loop, the shortcode atts
+	 * 		should be passed so the shortcode atts can be passed by do_action() to allow access to the action callback.
+	 * @param  object $template If this is used within the shortcode template loop, the template object
+	 * 		should be passed so the template object can be passed by do_action() to allow access to the action callback.
 	 *
 	 * @return string
 	 */
-	public function getMetaBlock( $atts ) {
+	public function getMetaBlock( $atts, $shortcode_atts, $template ) {
 
 		// @todo Implement 'merge_keys'.
 		//
@@ -2251,15 +2270,12 @@ class cnOutput extends cnEntry
 		// NOTE: This should actually be done in cnEntry::getMeta and not here.
 		$defaults = array(
 			'key'             => '',
-			'value'           => '',
 			'single'          => FALSE,
 			'merge_keys'      => FALSE,
-			'shortcode_atts'  => array(),
-			'template_object' => NULL,
 			'display_custom'  => FALSE,
 			);
 
-		$atts = wp_parse_args( $atts, $defaults );
+		$atts = wp_parse_args( apply_filters( 'cn_output_meta_block_atts', $atts ), $defaults );
 
 		$results = $this->getMeta( $atts );
 
@@ -2267,42 +2283,31 @@ class cnOutput extends cnEntry
 
 			if ( empty( $atts['key'] ) ) {
 
-				foreach ( $results as $metaID => $meta ) {
-
-					if ( $atts['display_custom'] && has_action( 'cn_meta_output_field-' . $meta['meta_key'] ) ) {
-
-						do_action( 'cn_meta_output_field-' . $meta['meta_key'], $meta['meta_key'], $meta['meta_value'], $atts['shortcode_atts'], $this, $atts['template_object'] );
-
-						unset( $results[ $metaID ] );
-
-					}
-				}
-
-				$this->renderMetablock( $results );
+				$metadata = $results;
 
 			} else {
 
+				// Rebuild the results array for consistency in for the output methods/actions.
+
 				$metadata = array();
 
-				// Rebuild the results array for consistency in for the output methods/actions.
 				foreach ( $results as $metaID => $value ) {
 
 					$metadata[ $metaID ] = array( 'meta_key' => $atts['key'], 'meta_value' => $value );
 				}
-
-				foreach ( $metadata as $metaID => $meta ) {
-
-					if ( $atts['display_custom'] && has_action( 'cn_meta_output_field-' . $meta['meta_key'] ) ) {
-
-						do_action( 'cn_meta_output_field-' . $meta['meta_key'], $meta['meta_key'], $meta['meta_value'], $atts['shortcode_atts'], $this, $atts['template_object'] );
-
-						unset( $metadata[ $metaID ] );
-					}
-				}
-
-				$this->renderMetablock( $metadata );
 			}
 
+			foreach ( $metadata as $metaID => $meta ) {
+
+				if ( $atts['display_custom'] && has_action( 'cn_output_meta_field-' . $meta['meta_key'] ) ) {
+
+					do_action( 'cn_output_meta_field-' . $meta['meta_key'], $meta['meta_key'], $meta['meta_value'], $this, $shortcode_atts, $template );
+
+					unset( $metadata[ $metaID ] );
+				}
+			}
+
+			$this->renderMetaBlock( $metadata );
 		}
 	}
 
@@ -2314,11 +2319,13 @@ class cnOutput extends cnEntry
 	 *
 	 * @access private
 	 * @since 0.8
-	 * @param  array  $metadata The metadata array passed from $this->getMetaBlock().
+	 * @uses wp_parse_args()
+	 * @uses apply_filters()
+	 * @param  array  $metadata The metadata array passed from $this->getMetaBlock(). @see self::getMetaBlock().
 	 *
 	 * @return string
 	 */
-	private function renderMetablock( $metadata ) {
+	private function renderMetaBlock( $metadata ) {
 
 		$out = '';
 
@@ -2368,6 +2375,125 @@ class cnOutput extends cnEntry
 			);
 
 		echo PHP_EOL . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . PHP_EOL;
+	}
+
+	/**
+	 * Run the actions registered to custom content blocks.
+	 *
+	 * Render any custom content blocks registered to the `cn_entry_output_content-{id}` action hook.
+	 *
+	 * This will also run any actions registered for a custom metaboxes and its fields.
+	 * The actions should hook into `cn_output_meta_field-{key}` to be rendered.
+	 *
+	 * Accepted option for the $atts property are:
+	 * 	id (string) The custom block ID to render.
+	 * 	order (mixed) array | string  An indexed array of custom content block IDs that should be rendered in the order in the array.
+	 * 		If a string is provided, it should be a comma delimied string containing the content block IDs. It will be converted to an array.
+	 * 	exclude (array) An indexed array of custom content block IDs that should be excluded from being rendered.
+	 * 	include (array) An indexed array of custom content block IDs that should be rendered.
+	 * 		NOTE: Custom content block IDs in `exclude` outweigh custom content block IDs in include. Meaning if the
+	 * 		same custom content block ID exists in both, the custom content block will be excluded.
+	 *
+	 * @access public
+	 * @since 0.8
+	 * @uses do_action()
+	 * @uses wp_parse_args()
+	 * @uses apply_filters()
+	 * @uses has_action()
+	 * @param  mixed  $atts array | string [optional] The custom content block(s) to render.
+	 * @param  array  $shortcode_atts [optional] If this is used within the shortcode template loop, the shortcode atts
+	 * 		should be passed so the shortcode atts can be passed by do_action() to allow access to the action callback.
+	 * @param  object $template [optional] If this is used within the shortcode template loop, the template object
+	 * 		should be passed so the template object can be passed by do_action() to allow access to the action callback.
+	 *
+	 * @return string The HTML output of the custom content blocks.
+	 */
+	public function getContentBlock( $atts = array(), $shortcode_atts = array(), $template = NULL ) {
+
+		if ( get_query_var( 'cn-entry-slug' ) ) {
+
+			$settings = cnSettingsAPI::get( 'connections', 'connections_display_single', 'content_block' );
+
+		} else {
+
+			$settings = cnSettingsAPI::get( 'connections', 'connections_display_list', 'content_block' );
+		}
+
+		$order    = isset( $settings['order'] ) ? $settings['order'] : array();
+		$include  = isset( $settings['active'] ) ? $settings['active'] : array();
+		$exclude  = empty( $include ) ? $order : array();
+
+		$defaults = array(
+			'id'      => '',
+			'order'   => is_string( $atts ) && ! empty( $atts ) ? $atts : $order,
+			'exclude' => is_string( $atts ) && ! empty( $atts ) ? '' : $exclude,
+			'include' => is_string( $atts ) && ! empty( $atts ) ? '' : $include,
+			);
+
+		$atts = wp_parse_args( apply_filters( 'cn_output_content_block_atts', $atts ), $defaults );
+
+		if ( ! empty( $atts['id'] ) ) {
+
+			$blocks = array( $atts['id'] );
+
+		} elseif ( ! empty( $atts['order'] ) ) {
+
+			// If `order` was supplied as a comma delimited string, convert it to an array.
+			if ( is_string( $atts['order'] ) ) {
+
+				$blocks = stripos( $atts['order'], ',' ) !== FALSE ? explode( ',', $atts['order'] ) : array( $atts['order'] );
+
+			} else {
+
+				$blocks = $atts['order'];
+			}
+		}
+
+		// Nothing to render, exit.
+		if ( empty( $blocks ) ) return;
+
+		// Cleanup user input. Trim whitespace and convert to lowercase.
+		$blocks = array_map( 'strtolower', array_map( 'trim', $blocks ) );
+
+		// Output the registered action in the order supplied by the user.
+		foreach ( $blocks as $key ) {
+
+			// Exclude/Include the metaboxes that have been requested to exclude/include.
+			if( ! empty( $atts['exclude'] ) ) {
+
+				if ( in_array( $key, $atts['exclude'] ) ) continue;
+
+			} else {
+
+				if ( ! empty( $atts['include'] ) ) {
+
+					if ( ! in_array( $key, $atts['include'] ) ) continue;
+				}
+			}
+
+			// If the hook has a registered meta data output callback registered, lets run it.
+			if ( has_action( 'cn_output_meta_field-' . $key ) ) {
+
+				// Grab the meta.
+				$results = $this->getMeta( array( 'key' => $key, 'single' => TRUE ) );
+
+				if ( ! empty( $results ) ) {
+
+					do_action( "cn_output_meta_field-$key", $key, $results, $this, $shortcode_atts, $template );
+				}
+			}
+
+			// Render the "Custom Fields" meta block content.
+			if ( $key == 'meta' ) {
+
+				$this->getMetaBlock( array(), $shortcode_atts, $template );
+			}
+
+			$tag = "cn_entry_output_content-$key";
+
+			if ( has_action( $tag ) ) do_action( $tag, $this, $shortcode_atts, $template );
+		}
+
 	}
 
 	/**

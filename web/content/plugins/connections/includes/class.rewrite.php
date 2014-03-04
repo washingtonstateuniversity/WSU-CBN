@@ -47,6 +47,7 @@ class cnRewrite {
 
 		$var[] = 'cn-cat';   // category id
 		$var[] = 'cn-cat-slug';  // category slug
+		$var[] = 'cn-cat-in';  // category in
 		$var[] = 'cn-country';  // country
 		$var[] = 'cn-region';  // state
 		$var[] = 'cn-locality';  // city
@@ -108,9 +109,17 @@ class cnRewrite {
 		$department   = isset( $base['department_base'] ) && $base['department_base'] ? $base['department_base'] : 'department';
 		$name         = isset( $base['name_base'] ) && $base['name_base'] ? $base['name_base'] : 'name';
 
-		// landing page.
+		// Landing page.
 		$rule['landing/?$']
 			= 'index.php?page_id=' . $pageID . '&cn-view=landing';
+
+		// Search page.
+		$rule['search/?$']
+			= 'index.php?page_id=' . $pageID . '&cn-view=search';
+
+		// Search results  page.
+		$rule['results/?$']
+			= 'index.php?page_id=' . $pageID . '&cn-view=results';
 
 		// Category root rewrite rules.
 		$rule[ $category . '/(.+?)/' . $country . '/([^/]*)/' . $region . '/([^/]*)/' . $postal . '/([^/]*)/pg/([0-9]{1,})/?$']
@@ -303,9 +312,17 @@ class cnRewrite {
 		$department   = isset( $base['department_base'] ) && $base['department_base'] ? $base['department_base'] : 'department';
 		$name         = isset( $base['name_base'] ) && $base['name_base'] ? $base['name_base'] : 'name';
 
-		// landing page.
+		// Landing page.
 		$rule['(.?.+?)/landing/?$']
 			= 'index.php?pagename=$matches[1]&cn-view=landing';
+
+		// Search page.
+		$rule['(.?.+?)/search/?$']
+			= 'index.php?pagename=$matches[1]&cn-view=search';
+
+		// Search results page.
+		$rule['(.?.+?)/results/?$']
+			= 'index.php?pagename=$matches[1]&cn-view=results';
 
 		// Category root rewrite rules.
 		$rule['(.?.+?)/' . $category . '/(.+?)/' . $country . '/([^/]*)/' . $region . '/([^/]*)/' . $postal . '/([^/]*)/pg/([0-9]{1,})/?$']

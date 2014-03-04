@@ -47,8 +47,9 @@ class cnScript {
 		add_action( 'init', array( 'cnScript', 'registerCSS' ) );
 
 		// Enqueue the frontend scripts and CSS.
-		add_action( 'wp_enqueue_scripts', array( 'cnScript', 'enqueueScripts' ) );
-		add_action( 'wp_enqueue_scripts', array( 'cnScript', 'enqueueStyles' ) );
+		add_action( 'wp', array( __CLASS__, 'enqueue' ) );
+		// add_action( 'wp_enqueue_scripts', array( 'cnScript', 'enqueueScripts' ) );
+		// add_action( 'wp_enqueue_scripts', array( 'cnScript', 'enqueueStyles' ) );
 
 		// Enqueue the admin scripts and CSS.
 		add_action( 'admin_enqueue_scripts', array( 'cnScript', 'enqueueAdminScripts' ) );
@@ -105,7 +106,8 @@ class cnScript {
 		// Disble this for now, Elegant Theme uses the same registration name in the admin which causes errors.
 		// wp_register_script('jquery-spin', CN_URL . 'js/jquery.spin.js', array('jquery'), '1.2.5', $connections->options->getJavaScriptFooter() );
 
-		wp_register_script( 'jquery-chosen-min', CN_URL . "assets/js/jquery.chosen$min.js", array( 'jquery' ), '0.9.11', $connections->options->getJavaScriptFooter() );
+		// wp_register_script( 'jquery-chosen-min', CN_URL . "assets/js/jquery.chosen$min.js", array( 'jquery' ), '0.9.11', $connections->options->getJavaScriptFooter() );
+		wp_register_script( 'jquery-chosen-min', CN_URL . "vendor/chosen/chosen.jquery$min.js", array( 'jquery' ), '1.1.0', $connections->options->getJavaScriptFooter() );
 		wp_register_script( 'jquery-validate' , CN_URL . "assets/js/jquery.validate$min.js", array( 'jquery', 'jquery-form' ) , '1.9.0' , $connections->options->getJavaScriptFooter() );
 	}
 
@@ -130,7 +132,8 @@ class cnScript {
 			wp_register_style( 'connections-qtip', CN_URL . "assets/css/jquery.qtip$min.css", array(), '2.0.1' );
 		}
 
-		wp_register_style( 'connections-chosen', CN_URL . "assets/css/chosen$min.css", array(), '0.9.11' );
+		// wp_register_style( 'connections-chosen', CN_URL . "assets/css/chosen$min.css", array(), '0.9.11' );
+		wp_register_style( 'connections-chosen', CN_URL . "vendor/chosen/chosen$min.css", array(), '1.1.0' );
 	}
 
 	/**
@@ -199,6 +202,30 @@ class cnScript {
 			wp_enqueue_script( 'postbox' );
 			wp_enqueue_script( 'cn-widget' );
 		}
+	}
+
+	public static function enqueue() {
+		global $wp_query;
+
+		$posts   = $wp_query->posts;
+		$pattern = get_shortcode_regex();
+
+		foreach ( $posts as $post ) {
+
+			if ( preg_match_all( '/'. $pattern .'/s', $post->post_content, $matches )
+				&& array_key_exists( 2, $matches )
+				&& in_array( 'connections', $matches[2] ) )
+			{
+				add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueueScripts' ) );
+				add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueueStyles' ) );
+
+				// Hook extensions can use to enqueue scripts.
+				do_action( 'cn_enqueue_scripts' );
+
+				break;
+			}
+		}
+
 	}
 
 	/**

@@ -194,6 +194,18 @@ class cnEntryMetabox {
 					'id'         => 'bio',
 					'type'       => 'rte',
 					'value'      => 'getBio',
+					'options'    => array(
+						'media_buttons' => FALSE,
+						'tinymce'       => array(
+							'editor_selector'         => 'tinymce',
+							'theme_advanced_buttons1' => 'bold, italic, underline, |, bullist, numlist, |, justifyleft, justifycenter, justifyright, |, link, unlink, |, pastetext, pasteword, removeformat, |, undo, redo',
+							'theme_advanced_buttons2' => '',
+							'inline_styles'           => TRUE,
+							'relative_urls'           => FALSE,
+							'remove_linebreaks'       => FALSE,
+							'plugins'                 => 'inlinepopups,spellchecker,tabfocus,paste,wordpress,wpdialogs'
+						)
+					),
 				),
 			),
 		);
@@ -209,6 +221,18 @@ class cnEntryMetabox {
 					'id'         => 'notes',
 					'type'       => 'rte',
 					'value'      => 'getNotes',
+					'options'    => array(
+						'media_buttons' => FALSE,
+						'tinymce'       => array(
+							'editor_selector'         => 'tinymce',
+							'theme_advanced_buttons1' => 'bold, italic, underline, |, bullist, numlist, |, justifyleft, justifycenter, justifyright, |, link, unlink, |, pastetext, pasteword, removeformat, |, undo, redo',
+							'theme_advanced_buttons2' => '',
+							'inline_styles'           => TRUE,
+							'relative_urls'           => FALSE,
+							'remove_linebreaks'       => FALSE,
+							'plugins'                 => 'inlinepopups,spellchecker,tabfocus,paste,wordpress,wpdialogs'
+						)
+					),
 				),
 			),
 		);
@@ -3042,7 +3066,7 @@ class cnEntryMetabox {
 
 						<td>
 							<label class="screen-reader-text" for='meta[<?php echo $metaID; ?>][value]'><?php _e( 'Value', 'connections' ); ?></label>
-							<textarea name='meta[<?php echo $metaID; ?>][value]' id='meta[<?php echo $metaID; ?>][value]' rows="2" cols="30"><?php echo esc_textarea( $meta['meta_value'] ) ?></textarea>
+							<textarea name='meta[<?php echo $metaID; ?>][value]' id='meta[<?php echo $metaID; ?>][value]' rows="2" cols="30"><?php echo esc_textarea( cnFormatting::maybeJSONencode( $meta['meta_value'] ) ) ?></textarea>
 						</td>
 
 					</tr>

@@ -1,5 +1,8 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Class registering the metaboxes for add/edit an entry.
  *
@@ -80,9 +83,6 @@
  * </code>
  *
  */
-
-// Exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
 
 class cnMetaboxAPI {
 
@@ -201,10 +201,14 @@ class cnMetaboxAPI {
 		} else {
 
 			$metabox['pages'] = 'public';
+			$metabox['args']  = $metabox;
 		}
 
 		$metabox['context']  = empty( $metabox['context'] ) ? 'normal' : $metabox['context'];
 		$metabox['priority'] = empty( $metabox['priority'] ) ? 'default' : $metabox['priority'];
+
+		// Use the core metabox API to render the metabox unless the metabox was registered with a custom callback to be used to render the metabox.
+		$metabox['callback'] = isset( $metabox['callback'] ) && ! empty( $metabox['callback'] ) ? $metabox['callback'] : array( new cnMetabox_Render(), 'render' );
 
 		self::$metaboxes[ $metabox['id'] ] = $metabox;
 	}
@@ -267,10 +271,10 @@ class cnMetaboxAPI {
 		// even if this API is not loaded; for example in the frontend to check if a field ID
 		// is private so it will not be rendered.
 		//
-		// NOTE: All fields registered via this API are considered private. The expectation is
-		// an action will be called to render the metadata.
+		// NOTE: All fields registered via this API are considered private.
+		// The expectation is an action will be called to render the metadata.
 		// Do not update table when doing an AJAX request.
-		if ( ! defined('DOING_AJAX') /*&& ! DOING_AJAX*/ ) update_option( 'connections_metaboxes', self::$metaboxes );
+		// if ( ! defined('DOING_AJAX') /*&& ! DOING_AJAX*/ ) update_option( 'connections_metaboxes', self::$metaboxes );
 
 		// Process the metaboxes added via the `cn_metabox` action.
 		foreach ( self::$metaboxes as $id => $metabox ) {
@@ -465,14 +469,14 @@ class cnMetabox_Render {
 		if ( empty( $pageHook ) || empty( $metabox ) ) return;
 
 		// Use the core metabox API to render the metabox unless the metabox was registered with a custom callback to be used to render the metabox.
-		$callback = isset( $metabox['callback'] ) && ! empty( $metabox['callback'] ) ? $metabox['callback'] : array( new cnMetabox_Render(), 'render' );
+		// $callback = isset( $metabox['callback'] ) && ! empty( $metabox['callback'] ) ? $metabox['callback'] : array( new cnMetabox_Render(), 'render' );
 
 		if ( is_admin() ) {
 
 			add_meta_box(
 				$metabox['id'],
 				$metabox['title'],
-				$callback,
+				$metabox['callback'],
 				$pageHook,
 				$metabox['context'],
 				$metabox['priority'],
@@ -484,7 +488,7 @@ class cnMetabox_Render {
 			self::$metaboxes[ $metabox['id'] ] = array(
 				'id'        => $metabox['id'],
 				'title'     => $metabox['title'],
-				'callback'  => $callback,
+				'callback'  => $metabox['callback'],
 				'page_hook' => $pageHook,
 				'context'   => $metabox['context'],
 				'priority'  => $metabox['priority'],
@@ -502,6 +506,9 @@ class cnMetabox_Render {
 	 * 	id (array) The metabox ID to render.
 	 * 	order (array) An indexed array of metabox IDs that should be rendered in the order in the array.
 	 * 	exclude (array) An indexed array of metabox IDs that should be excluded from being rendered.
+	 * 	include (array) An indexed array of metabox IDs that should be rendered.
+	 * 		NOTE: Metabox IDs in `exclude` outweigh metabox IDs in include. Meaning if the same metabox ID
+	 * 		exists in both, the metabox will be excluded.
 	 *
 	 * @access public
 	 * @since 0.8
@@ -512,6 +519,8 @@ class cnMetabox_Render {
 	 */
 	public static function metaboxes( array $atts = array(), $object ) {
 
+		$metaboxes = array();
+
 		$defaults = array(
 			'id'      => '',
 			'order'   => array(),
@@ -521,35 +530,69 @@ class cnMetabox_Render {
 
 		$atts = wp_parse_args( $atts, $defaults );
 
-		// If the metabox order has been supplied, sort them as supplied.
-		if ( ! empty( $atts['order'] ) ) {
+		if ( ! empty( $atts['id'] ) ) {
 
-			// array_multisort( $atts['order'], self::$metaboxes );
+			$metaboxes[ $atts['id'] ] = cnMetaboxAPI::get( $atts['id'] );
+
+		} else if ( ! empty( $atts['order'] ) ) {
+
+			// If the metabox order has been supplied, sort them as supplied. Exclude is implied.
+			// Meaning, if a metabox ID is not supplied in $atts['order'], they will be excluded.
+			foreach ( $atts['order'] as $id ) {
+
+				$metaboxes[ $id ] = cnMetaboxAPI::get( $id );
+			}
+
+		} else {
+
+			$metaboxes = cnMetaboxAPI::get();
 		}
 
+		foreach ( $metaboxes as $id => $metabox ) {
 
-		foreach ( self::$metaboxes as $id => $metabox ) {
+			// Exclude/Include the metaboxes that have been requested to exclude/include.
+			if( ! empty( $atts['exclude'] ) ) {
 
-			// Exclude the metaboxes that have been requested to exclude.
-			if(!empty($atts['exclude'])){
 				if ( in_array( $id, $atts['exclude'] ) ) continue;
-			}else{
-				if(!empty($atts['include'])){
-					if ( !in_array( $id, $atts['include'] ) ) continue;
+
+			} else {
+
+				if ( ! empty( $atts['include'] ) ) {
+
+					if ( ! in_array( $id, $atts['include'] ) ) continue;
 				}
 			}
 
+			echo '<div id="cn-metabox-' . $metabox['id'] . '" class="cn-metabox">';
+				echo '<h3 class="cn-metabox-title">' . $metabox['title'] . '</h3>';
+				echo '<div class="cn-metabox-inside">';
 
-			$box = new cnMetabox_Render();
+					if ( is_callable( $metabox['callback'] ) ) {
 
-			echo '<div id="cn-' . $metabox['id'] . '" class="postbox">';
-				echo '<h3 class="hndle"><span>' . $metabox['title'] . '</span></h3>';
-				echo '<div class="cnf-inside">';
-					echo '<div class="form-field">';
+						call_user_func( $metabox['callback'], $object, $metabox );
 
-					call_user_func( $metabox['callback'], $object, $metabox );
+					} else {
 
-					echo '</div>';
+						if ( is_string( $metabox['callback'] ) ) {
+
+							$callback = $metabox['callback'];
+
+						} else if ( is_array( $metabox['callback'] ) ) {
+
+							if ( is_object( $metabox['callback'][0] ) ) {
+
+								$callback = get_class( $metabox['callback'][0] ) . '::' . $metabox['callback'][1];
+
+							} else {
+
+								$callback = implode( '::', $metabox['callback'] );
+							}
+
+						}
+
+						echo '<p>' , __( sprintf( 'Invalid callback: %s', $callback ), 'connections' ) , '</p>';
+					}
+
 				echo '<div class="cn-clear"></div>';
 				echo '</div>';
 			echo '</div>';
@@ -589,7 +632,7 @@ class cnMetabox_Render {
 
 			echo '<div class="cn-metabox-section">';
 
-			echo '<table class="form-table cn-metabox"><tbody>';
+			echo '<table class="cn-metabox-table form-table"><tbody>';
 
 				$this->fields( $fields );
 
@@ -628,7 +671,7 @@ class cnMetabox_Render {
 
 		if ( isset( $section['fields'] ) && ! empty( $section['fields'] ) ) {
 
-			echo '<table class="form-table cn-metabox"><tbody>';
+			echo '<table class="cn-metabox-table form-table"><tbody>';
 
 				$this->fields( $section['fields'] );
 
@@ -663,15 +706,17 @@ class cnMetabox_Render {
 	 * 	size (string) [optional] The size if the text input and textarea field types.
 	 * 		NOTE: Only used for the `text` field type. Valid options: small', 'regular' or 'large'
 	 * 		NOTE: Only used for the `textarea` field type. Valid options: small' or 'large'
-	 * 	options (mixed) string | array [optional] Valid value depend on the field type being rendered.
+	 * 	options (mixed) string | array [optional] Valid value depends on the field type being rendered.
 	 * 		Field type / valid value for options
 	 * 			checkboxgroup (array) An associative array where the key is the checkbox value and the value is the checkbox label.
 	 * 			radio / radio_inline (array) An associative array where the key is the radio value and the value is the radio label.
 	 * 			select (array) An associative array where the key is the option value and the value is the option name.
+	 * 			rte (array) @link http://codex.wordpress.org/Function_Reference/wp_editor#Arguments
 	 * 			slider (array) The slider options.
 	 * 				min (int) The minimum slider step.
 	 * 				max (int) The maximim slider step.
 	 * 				step (int) The step the slider steps at.
+	 * 	default	(mixed) The default value to be used.
 	 *
 	 * @access private
 	 * @since 0.8
@@ -685,8 +730,6 @@ class cnMetabox_Render {
 
 		// do_action( 'cn_metabox_table_before', $entry, $meta, $this->metabox );
 
-		// echo '<table class="form-table cn-metabox"><tbody>';
-
 		foreach ( $fields as $field ) {
 
 			// If the meta field has a specific method defined call the method and set the field value.
@@ -699,6 +742,8 @@ class cnMetabox_Render {
 
 				$value = $this->object->getMeta( array( 'key' => $field['id'], 'single' => TRUE ) );
 			}
+
+			if ( empty( $value ) ) $value = isset( $field['default'] ) ? $field['default'] : '';
 
 			echo '<tr class="cn-metabox-type-'. sanitize_html_class( $field['type'] ) .' cn-metabox-id-'. sanitize_html_class( $field['id'] ) .'">';
 
@@ -773,7 +818,7 @@ class cnMetabox_Render {
 						printf( '<input type="checkbox" class="checkbox" id="%1$s[%2$s]" name="%1$s[]" value="%2$s"%3$s/>',
 							esc_attr( $field['id'] ),
 							esc_attr( $key ),
-							checked( TRUE , in_array( $key, (array) $value ) , FALSE )
+							checked( TRUE , ( is_array( $value ) ) ? ( in_array( $key, $value ) ) : ( $key == $value ) , FALSE )
 						);
 
 						printf( '<label for="%1$s[%2$s]"> %3$s</label>',
@@ -811,7 +856,7 @@ class cnMetabox_Render {
 						printf( '<input type="radio" class="checkbox" id="%1$s[%2$s]" name="%1$s" value="%2$s"%3$s/>',
 							esc_attr( $field['id'] ),
 							esc_attr( $key ),
-							checked( $key, $value, FALSE )
+							checked( $key, ( $value = empty( $value ) ? $key : $value ), FALSE )
 						);
 
 						printf( '<label for="%1$s[%2$s]"> %3$s</label>',
@@ -849,7 +894,7 @@ class cnMetabox_Render {
 						printf( '<input type="radio" class="checkbox" id="%1$s[%2$s]" name="%1$s" value="%2$s"%3$s/>',
 							esc_attr( $field['id'] ),
 							esc_attr( $key ),
-							checked( $key, $value, FALSE )
+							checked( $key, ( $value = empty( $value ) ? $key : $value ), FALSE )
 						);
 
 						printf( '<label for="%1$s[%2$s]"> %3$s</label>',
@@ -873,7 +918,11 @@ class cnMetabox_Render {
 
 					foreach ( $field['options'] as $key => $label ) {
 
-						printf( '<option value="%1$s" %2$s>%3$s</option>', $key, selected( $value, $key, FALSE ), $label );
+						printf( '<option value="%1$s" %2$s>%3$s</option>',
+							$key,
+							selected( $key, ( $value = empty( $value ) ? $key : $value ), FALSE ),
+							$label
+						);
 					}
 
 					echo '</select>';
@@ -1113,8 +1162,6 @@ class cnMetabox_Render {
 			echo '</td>' , '</tr>';
 		}
 
-		// echo '</tbody></table>';
-
 		// do_action( 'cn_metabox_table_after', $entry, $meta, $this->metabox );
 	}
 
@@ -1299,13 +1346,14 @@ class cnMetabox_Process {
 
 			if ( ! $id = absint( $id ) ) return FALSE;
 
-			// If the field is not in POST, bail.
-			// This will likely be a checkbox field which is not sent if not checked by the user.
-			if ( ! isset( $_POST[ $field['id'] ] ) ) return FALSE;
+			// Quick and dirty hack to prevent the bio and notes fields from being saved in the meta table.
+			// @todo Think of something better to do here.
+			// There should be some type of flag to check before saving as meta.
+			if ( $field['id'] === 'bio' || $field['id'] === 'notes' ) continue;
 
 			$value = $this->sanitize(
 				$field['type'],
-				$_POST[ $field['id'] ],
+				isset( $_POST[ $field['id'] ] ) ? $_POST[ $field['id'] ] : NULL,
 				isset( $field['options'] ) ? $field['options'] : array(),
 				isset( $field['default'] ) ? $field['default'] : NULL
 			);
@@ -1314,13 +1362,13 @@ class cnMetabox_Process {
 
 				case 'add':
 
-					cnMeta::add( 'entry', $id, $field['id'], $_POST[ $field['id'] ] );
+					cnMeta::add( 'entry', $id, $field['id'], $value );
 
 					break;
 
 				case 'copy':
 
-					cnMeta::add( 'entry', $id, $field['id'], $_POST[ $field['id'] ] );
+					cnMeta::add( 'entry', $id, $field['id'], $value );
 
 					break;
 
