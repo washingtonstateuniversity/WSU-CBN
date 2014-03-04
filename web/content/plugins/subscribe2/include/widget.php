@@ -119,7 +119,7 @@ class S2_Form_widget extends WP_Widget {
 		echo "<br /><label for=\"" . $this->get_field_id('hidebutton') . "subscribe\"><input id=\"" . $this->get_field_id('hidebutton') . "subscribe\" name=\"" . $this->get_field_name('hidebutton') . "\" type=\"radio\" value=\"subscribe\"". checked('subscribe', $hidebutton, false) . "/> " . __('Hide Subscribe button', 'subscribe2') . "</label>\r\n";
 		echo "<br /><label for=\"" . $this->get_field_id('hidebutton') . "unsubscribe\"><input id=\"" . $this->get_field_id('hidebutton') . "unsubscribe\" name=\"" . $this->get_field_name('hidebutton') . "\" type=\"radio\" value=\"unsubscribe\"". checked('unsubscribe', $hidebutton, false) . "/> " . __('Hide Unsubscribe button', 'subscribe2') . "</label>\r\n";
 		if ( '1' == $mysubscribe2->subscribe2_options['ajax'] ) {
-			echo "<br /><label for=\"" . $this->get_field_id('hidebutton') . "ajax\"><input id=\"" . $this->get_field_id('hidebutton') . "ajax\" name=\"" . $this->get_field_name('hidebutton') . "\" type=\"radio\" value=\"link\"". checked('link', $hidebutton, false) . "/>" . __('Show as link', 'subscribe2') . "</label>\r\n";
+			echo "<br /><label for=\"" . $this->get_field_id('hidebutton') . "ajax\"><input id=\"" . $this->get_field_id('hidebutton') . "ajax\" name=\"" . $this->get_field_name('hidebutton') . "\" type=\"radio\" value=\"link\"". checked('link', $hidebutton, false) . "/> " . __('Show as link', 'subscribe2') . "</label>\r\n";
 		}
 		echo "</p>\r\n";
 		echo "<p><label for=\"" . $this->get_field_id('postto') . "\">" . __('Post form content to page', 'subscribe2') . ":\r\n";

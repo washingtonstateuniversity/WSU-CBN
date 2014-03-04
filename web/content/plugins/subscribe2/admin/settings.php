@@ -125,7 +125,7 @@ if ( empty($id) ) {
 }
 
 if ( $this->subscribe2_options['email_freq'] != 'never' ) {
-	$disallowed_keywords = array('{TITLE}', '{PERMALINK}', '{DATE}', '{TIME}', '{LINK}', '{ACTION}');
+	$disallowed_keywords = array('{TITLE}', '{PERMALINK}', '{DATE}', '{TIME}', '{LINK}', '{ACTION}', '{REFERENCELINKS}');
 } else {
 	$disallowed_keywords = array('{POSTTIME}', '{TABLE}', '{TABLELINKS}', '{COUNT}', '{LINK}', '{ACTION}');
 }
@@ -136,7 +136,9 @@ foreach ( $disallowed_keywords as $disallowed_keyword ) {
 	}
 }
 if ( $disallowed !== false ) {
-	echo "<div id=\"keyword_message\" class=\"error\"><p class=\"s2_error\"><strong>$this->disallowed_keywords</strong><br>" . implode($disallowed, ', ') . "</p></div>";
+	$disallowed_keywords = __('Your chosen email type (per-post or digest) does not support the following keywords:', 'subscribe2');
+	$template_link = "<a href = \"" . admin_url('admin.php?page=s2_settings&tab=templates') . "\">" . __('Modify your template', 'subscribe2') . "</a>";
+	echo "<div id=\"keyword_message\" class=\"error\"><p class=\"s2_error\"><strong>$disallowed_keywords</strong><br />" . implode($disallowed, ', ') . "<br />" . $template_link . "</p></div>";
 }
 
 // send error message if sender email address is off-domain
@@ -156,7 +158,9 @@ $current_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'email';
 
 // show our form
 echo "<div class=\"wrap\">";
-echo "<div id=\"icon-options-general\" class=\"icon32\"></div>";
+if ( version_compare($GLOBALS['wp_version'], '3.8', '<=') ) {
+	echo "<div id=\"icon-options-general\" class=\"icon32\"></div>";
+}
 $tabs = array('email' => __('Email Settings', 'subscribe2'),
 	'templates' => __('Templates', 'subscribe2'),
 	'registered' => __('Registered Users', 'subscribe2'),
@@ -261,7 +265,7 @@ switch ($current_tab) {
 		echo "<p>\r\n";
 		echo "<table style=\"width: 100%; border-collapse: separate; border-spacing: 5px; *border-collapse: expression('separate', cellSpacing = '5px');\" class=\"editform\">\r\n";
 		echo "<tr><td style=\"vertical-align: top; height: 350px; min-height: 350px;\">";
-		echo __('New Post email (must not be empty)', 'subscribe2') . ":<br />\r\n";
+		echo __('Notification email (must not be empty)', 'subscribe2') . ":<br />\r\n";
 		echo __('Subject Line', 'subscribe2') . ": ";
 		echo "<input type=\"text\" name=\"notification_subject\" value=\"" . stripslashes($this->subscribe2_options['notification_subject']) . "\" size=\"45\" />";
 		echo "<br />\r\n";
@@ -278,6 +282,7 @@ switch ($current_tab) {
 		echo "<dt><b>{POSTTIME}</b></dt><dd>" . __("the excerpt of the post and the time it was posted<br />(<i>for digest emails only</i>)", 'subscribe2') . "</dd>\r\n";
 		echo "<dt><b>{TABLE}</b></dt><dd>" . __("a list of post titles<br />(<i>for digest emails only</i>)", 'subscribe2') . "</dd>\r\n";
 		echo "<dt><b>{TABLELINKS}</b></dt><dd>" . __("a list of post titles followed by links to the articles<br />(<i>for digest emails only</i>)", 'subscribe2') . "</dd>\r\n";
+		echo "<dt><b>{REFERENCELINKS}</b></dt><dd>" . __("a reference style list of links at the end of the email with corresponding numbers in the content<br />(<i>for the full content plain text per-post email only</i>)", 'subscribe2') . "</dd>\r\n";
 		echo "<dt><b>{PERMALINK}</b></dt><dd>" . __("the post's permalink<br />(<i>for per-post emails only</i>)", 'subscribe2') . "</dd>\r\n";
 		echo "<dt><b>{TINYLINK}</b></dt><dd>" . __("the post's permalink after conversion by TinyURL", 'subscribe2') . "</dd>\r\n";
 		echo "<dt><b>{DATE}</b></dt><dd>" . __("the date the post was made<br />(<i>for per-post emails only</i>)", "subscribe2") . "</dd>\r\n";
@@ -410,6 +415,7 @@ switch ($current_tab) {
 		// WordPress page ID where subscribe2 token is used
 		echo __('Set default Subscribe2 page as', 'subscribe2') . ': ';
 		echo "<select name=\"s2page\">\r\n";
+		echo "<option value=\"0\">" . __('Select a page', 'subscribe2') . "</option>\r\n";
 		$this->pages_dropdown($this->subscribe2_options['s2page']);
 		echo "</select>\r\n";
 

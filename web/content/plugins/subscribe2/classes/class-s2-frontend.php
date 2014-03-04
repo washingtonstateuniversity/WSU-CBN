@@ -6,9 +6,8 @@ class s2_frontend extends s2class {
 	*/
 	function shortcode($atts) {
 		extract(shortcode_atts(array(
-			'hide'  => strtolower(''),
+			'hide'  => '',
 			'id'    => '',
-			'url' => '',
 			'nojs' => 'false',
 			'noantispam' => 'false',
 			'link' => '',
@@ -18,7 +17,7 @@ class s2_frontend extends s2class {
 
 		// if link is true return a link to the page with the ajax class
 		if ( $link !== '' && !is_user_logged_in() ) {
-			$hide_id = ($hide === '') ? "": " id=\"" . $hide . "\"";
+			$hide_id = ($hide === '') ? "": " id=\"" . strtolower($hide) . "\"";
 			$this->s2form = "<a href=\"" . get_permalink($this->subscribe2_options['s2page']) . "\" class=\"s2popup\"" . $hide_id . ">" . $link . "</a>\r\n";
 			return $this->s2form;
 		}
@@ -28,9 +27,9 @@ class s2_frontend extends s2class {
 		$subscribe_button_value = apply_filters('s2_subscribe_button', __('Subscribe', 'subscribe2'));
 
 		// if a button is hidden, show only other
-		if ( $hide == 'subscribe' ) {
+		if ( strtolower($hide) == 'subscribe' ) {
 			$this->input_form_action = "<input type=\"submit\" name=\"unsubscribe\" value=\"" . esc_attr($unsubscribe_button_value) . "\" />";
-		} elseif ( $hide == 'unsubscribe' ) {
+		} elseif ( strtolower($hide) == 'unsubscribe' ) {
 			$this->input_form_action = "<input type=\"submit\" name=\"subscribe\" value=\"" . esc_attr($subscribe_button_value) . "\" />";
 		} else {
 			// both form input actions
@@ -52,7 +51,7 @@ class s2_frontend extends s2class {
 		// allow remote setting of email in form
 		if ( isset($_REQUEST['email']) && is_email($_REQUEST['email']) ) {
 			$value = $this->sanitize_email($_REQUEST['email']);
-		} elseif ( $nojs == 'true' ) {
+		} elseif ( strtolower($nojs) == 'true' ) {
 			$value = '';
 		} else {
 			$value = __('Enter email address...', 'subscribe2');
@@ -60,26 +59,26 @@ class s2_frontend extends s2class {
 
 		// if wrap is true add paragraph html tags
 		$wrap_text = '';
-		if ( $wrap == 'true' ) {
+		if ( strtolower($wrap) == 'true' ) {
 			$wrap_text = '</p><p>';
 		}
 
 		// deploy some anti-spam measures
 		$antispam_text = '';
-		if ( $noantispam != 'true' ) {
+		if ( strtolower($noantispam) != 'true' ) {
 			$antispam_text = "<span style=\"display:none !important\">";
 			$antispam_text .= "<label for=\"name\">Leave Blank:</label><input type=\"text\" id=\"name\" name=\"name\" />";
-			$antispam_text .= "<label for=\"uri\">Don't Change:</label><input type=\"text\" id=\"uri\" name=\"uri\" value=\"http://\" />";
+			$antispam_text .= "<label for=\"uri\">Do Not Change:</label><input type=\"text\" id=\"uri\" name=\"uri\" value=\"http://\" />";
 			$antispam_text .= "</span>";
 		}
 
 		// build default form
-		if ( $nojs == 'true' ) {
+		if ( strtolower($nojs) == 'true' ) {
 			$this->form = "<form method=\"post\"" . $action . "><input type=\"hidden\" name=\"ip\" value=\"" . $_SERVER['REMOTE_ADDR'] . "\" />" . $antispam_text . "<p><label for=\"s2email\">" . __('Your email:', 'subscribe2') . "</label><br /><input type=\"text\" name=\"email\" id=\"s2email\" value=\"" . $value . "\" size=\"" . $size . "\" />" . $wrap_text . $this->input_form_action . "</p></form>";
 		} else {
 			$this->form = "<form method=\"post\"" . $action . "><input type=\"hidden\" name=\"ip\" value=\"" . $_SERVER['REMOTE_ADDR'] . "\" />" . $antispam_text . "<p><label for=\"s2email\">" . __('Your email:', 'subscribe2') . "</label><br /><input type=\"text\" name=\"email\" id=\"s2email\" value=\"" . $value . "\" size=\"" . $size . "\" onfocus=\"if (this.value == '" . $value . "') {this.value = '';}\" onblur=\"if (this.value == '') {this.value = '" . $value . "';}\" />" . $wrap_text . $this->input_form_action . "</p></form>\r\n";
 		}
-		$this->s2form = $this->form;
+		$this->s2form = apply_filters('s2_form', $this->form);
 
 		global $user_ID;
 		get_currentuserinfo();
@@ -300,7 +299,11 @@ class s2_frontend extends s2class {
 	function add_ajax() {
 		// enqueue the jQuery script we need and let WordPress handle the dependencies
 		wp_enqueue_script('jquery-ui-dialog');
-		wp_register_style('jquery-ui-style', apply_filters('s2_jqueryui_css', 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-darkness/jquery-ui.css'));
+		$css = 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-darkness/jquery-ui.css';
+		if ( is_ssl() ) {
+			$css = str_replace('http:', 'https:', $css);
+		}
+		wp_register_style('jquery-ui-style', apply_filters('s2_jqueryui_css', $css));
 		wp_enqueue_style('jquery-ui-style');
 	} // end add_ajax()
 

@@ -2,8 +2,8 @@
 Contributors: sudar  
 Tags: email, wpmu, wordpress-mu, log  
 Requires at least: 3.3  
-Tested up to: 3.8  
-Stable tag: 1.6.1  
+Tested up to: 3.8.1  
+Stable tag: 1.6.2  
 
 Logs every email sent through WordPress
 
@@ -111,6 +111,9 @@ Extract the zip file and just drop the contents in the wp-content/plugins/ direc
 
 This Readme file was generated using <a href = 'http://sudarmuthu.com/wordpress/wp-readme'>wp-readme</a>, which generates readme files for WordPress Plugins.
 == Changelog ==
+
+= v1.6.2  (2014-01-27) - (Dev time: 0.5 hours) =
+- Fix: Fix unexpected output while activating the plugin
 
 = v1.6.1  (2013-12-17) - (Dev time: 0.5 hours) =
 - Fix: Change `prepare_items` function so that it adheres to strict mode

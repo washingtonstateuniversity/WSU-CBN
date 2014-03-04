@@ -1,4 +1,13 @@
 <?php
+// Add for WordPress Plugin
+// Remove Magic Quotes
+if ( ! class_exists( 'AdminerForWP' ) ) {
+	require_once '../../adminer.php';
+	new AdminerForWP();
+}
+AdminerForWP::gpc_strip_slashes();
+
+
 /** Adminer - Compact database management
 * @link http://www.adminer.org/
 * @author Jakub Vrana, http://www.vrana.cz/
@@ -7,14 +16,8 @@
 * @license http://www.gnu.org/licenses/gpl-2.0.html GNU General Public License, version 2 (one or other)
 */
 
-// Remove Magic Quotes
-if ( ! class_exists( 'AdminerForWP' ) ) {
-	require_once '../../adminer.php';
-	new AdminerForWP();
-}
-AdminerForWP::gpc_strip_slashes();
-
 include "./include/bootstrap.inc.php";
+include "./include/tmpfile.inc.php";
 
 $enum_length = "'(?:''|[^'\\\\]|\\\\.)*+'";
 $inout = "IN|OUT|INOUT";
@@ -28,6 +31,7 @@ if (isset($_GET["callf"])) {
 if (isset($_GET["function"])) {
 	$_GET["procedure"] = $_GET["function"];
 }
+
 if (isset($_GET["download"])) {
 	include "./download.inc.php";
 } elseif (isset($_GET["table"])) {
