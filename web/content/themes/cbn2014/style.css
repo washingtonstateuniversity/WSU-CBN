@@ -23,21 +23,11 @@ h2, h4, h6 { color:#981e32; }
 header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; background:transparent url('img/Header-WSU-background.png') no-repeat top center;}
 #displayheader{ height: 200px; }
 
-#main { margin:25px auto 10px auto; background-color:#fff; color:#000; text-align:center; width:85%; float:left; clear:both; margin-left:7.5%; margin-right:7.5%; overflow:auto;
-
-	/* rounding corners */
-	-webkit-border-radius:10px 10px 10px 10px;
-	-moz-border-radius:10px 10px 10px 10px;
-	border-radius:10px 10px 10px 10px;	
-
-	background:none repeat scroll 0 0 #ffffff;
-	box-shadow:0 1px 4px rgba(0, 0, 0, 0.1) inset;
-
-	/* adding drop shadow */
-	-webkit-box-shadow:0 8px 20px -3px #000000;
-	-moz-box-shadow:0 8px 20px -3px #000000;
-	box-shadow:0 8px 20px -3px #000000;
- 
+#main { background: none repeat scroll 0 0 #FFFFFF;
+margin: 0;
+overflow: auto;
+text-align: center;
+width: 100%;
 }
 .admin #main {    clear: none;
     float: left;
