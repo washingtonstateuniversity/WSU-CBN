@@ -189,20 +189,12 @@ background:transparent url('img/Header-butch.png') no-repeat center center;
 
 
 
-#footer { text-align:center; color:#b6bcbf; font-size:0.75em; line-height:1.5; float:left; clear:both; width:100%; }
+#footer { text-align:center; color:#b6bcbf; font-size:0.75em; line-height:1.5; float:left; clear:both; width:100%; background-color:#5e6a71; }
 #footer a { color:#b6bcbf; }
 #footer a:visited { color:#b6bcbf; }
 #footer #footer-bkgrd a:hover { color:#981e32; }
-
-#footer #footer-crimson { background-color:#981e32; border-top:1px solid #000; height:4px; }
-
-#footer #footer-bkgrd { margin-top:4px; background:url('img/bkgrd/footer-texture.jpg') repeat-x top center; padding:13px; text-align:center; color:#b6bcbf; 
-
-	/* adding drop shadow underneath */
-	-webkit-box-shadow:0 8px 20px 0px #000000;
-	-moz-box-shadow:0 8px 20px 0px #000000;
-	box-shadow:0 8px 20px 0px #000000;
-
+#footer #footer-bkgrd { margin-top:4px; background:url('img/footer-background.jpg') no-repeat top center; padding:13px; text-align:center; color:#b6bcbf; 
+height:350px;
 }
 
 
