@@ -196,7 +196,8 @@ background:transparent url('img/Header-butch.png') no-repeat center center;
 #footer #footer-bkgrd { margin-top:4px; background:url('img/footer-background.jpg') no-repeat top center; padding:13px; text-align:center; color:#b6bcbf; 
 height:350px;
 }
-
+#contact_block{display: inline-block;
+margin-top: 35px;}
 
 /* Map styles */
 
