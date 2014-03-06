@@ -15,7 +15,7 @@ if (!isset($this->subscribe2_options['wpregdef'])) {
 } // option to check registration form box by default
 
 if (!isset($this->subscribe2_options['autoformat'])) {
-	$this->subscribe2_options['autoformat'] = "text";
+	$this->subscribe2_options['autoformat'] = "post";
 } // option for default auto-subscription email format
 
 if (!isset($this->subscribe2_options['show_autosub'])) {

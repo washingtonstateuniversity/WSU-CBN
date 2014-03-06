@@ -3,7 +3,7 @@
  * Plugin Name: Connections
  * Plugin URI: http://connections-pro.com/
  * Description: A business directory and address book manager.
- * Version: 0.7.9.3
+ * Version: 0.7.9.5
  * Author: Steven A. Zahm
  * Author URI: http://connections-pro.com/
  * Text Domain: connections
@@ -25,8 +25,8 @@
  *
  * @package Connections
  * @category Core
- * @author Steven A. Zahm
- * @version 0.7.9.3
+ * @author Steven A. ZAhm
+ * @version 0.7.9.5
  */
 
 // Exit if accessed directly
@@ -92,17 +92,6 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 		 * @var (object)
 		 */
 		public $template;
-		/**
-		 * Stores the shortcode object.
-		 *
-		 * NOTE: more to come
-		 *
-		 * @access public
-		 * @since na
-		 * @var (object)
-		 */
-		public $shortcode;	
-
 
 		/**
 		 * A dummy constructor to prevent the class from being loaded more than once.
@@ -120,8 +109,7 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 				self::defineConstants();
 				self::includes();
-				
-				self::$instance->shortcode   = new shortcode();
+
 				self::$instance->options     = new cnOptions();
 				self::$instance->settings    = cnSettingsAPI::getInstance();
 				self::$instance->pageHook    = new stdClass();
@@ -178,7 +166,7 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 			/*
 			 * Version Constants
 			 */
-			define( 'CN_CURRENT_VERSION', '0.7.9.3' );
+			define( 'CN_CURRENT_VERSION', '0.7.9.5' );
 			define( 'CN_DB_VERSION', '0.1.9' );
 
 			/*
@@ -330,6 +318,8 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 			// Entry HTML template blocks.
 			require_once CN_PATH . 'includes/class.entry-output.php'; // Required for activation, entry list
+			require_once CN_PATH . 'includes/class.entry-html.php';
+			require_once CN_PATH . 'includes/class.entry-shortcode.php';
 
 			// Entry vCard.
 			require_once CN_PATH . 'includes/class.entry-vcard.php'; // Required for front end
@@ -358,8 +348,11 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 			// Shortcodes
 			// NOTE This is required in both the admin and frontend. The shortcode callback is used on the Dashboard admin page.
-			require_once CN_PATH . 'includes/template/class.shortcode.php'; // Required for front end
-			require_once CN_PATH . 'includes/inc.shortcodes.php'; // Required for front end
+			require_once CN_PATH . 'includes/inc.shortcodes.php';
+			require_once CN_PATH . 'includes/class.shortcode.php';
+			require_once CN_PATH . 'includes/class.shortcode-connections.php';
+
+			// require_once CN_PATH . 'includes/class.shortcode-upcoming_list.php';
 
 			// The class that inits the registered query vars, rewites reuls and canonical redirects.
 			require_once CN_PATH . 'includes/class.rewrite.php';
@@ -384,6 +377,8 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 
 			// Class for registering the core email templates.
 			require_once CN_PATH . 'includes/email/class.default-template.php';
+
+			// require_once CN_PATH . 'includes/class.results.php';
 
 			if ( is_admin() ) {
 

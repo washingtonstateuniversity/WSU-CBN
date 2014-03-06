@@ -22,6 +22,15 @@ class cnRetrieve {
 	public $resultCountNoLimit;
 
 	/**
+	 * Runtime cache of query results.
+	 *
+	 * @access  private
+	 * @since  0.8
+	 * @var array
+	 */
+	private $results = array();
+
+	/**
 	 *
 	 *
 	 * @access public
@@ -85,7 +94,7 @@ class cnRetrieve {
 		$defaults['radius']                = 10;
 		$defaults['unit']                  = 'mi';
 
-		$defaults['lock']                  = TRUE;
+		$defaults['lock']                  = FALSE;
 
 		$atts = $validate->attributesArray( $defaults, $atts );
 		/*
@@ -97,18 +106,28 @@ class cnRetrieve {
 		 * NOTE: these will override any values supplied via $atts, which include via the shortcode.
 		 */
 		if ( ! is_admin() && ! $atts['lock'] ) {
+
 			// Category slug
 			$queryCategorySlug = get_query_var( 'cn-cat-slug' );
+
 			if ( ! empty( $queryCategorySlug ) ) {
+
 				// If the category slug is a descendant, use the last slug from the URL for the query.
 				$queryCategorySlug = explode( '/' , $queryCategorySlug );
 
-				if ( isset( $queryCategorySlug[count( $queryCategorySlug )-1] ) ) $atts['category_slug'] = $queryCategorySlug[count( $queryCategorySlug )-1];
+				if ( isset( $queryCategorySlug[ count( $queryCategorySlug ) - 1 ] ) ) $atts['category_slug'] = $queryCategorySlug[ count( $queryCategorySlug ) - 1 ];
 			}
 
 			// Category ID
 			$queryCategoryID = get_query_var( 'cn-cat' );
 			if ( ! empty( $queryCategoryID ) ) $atts['category'] = $queryCategoryID;
+
+			// Category in
+			$queryCategoryIn = get_query_var( 'cn-cat-in' );
+			if ( ! empty( $queryCategoryIn ) ) {
+
+				$atts['category_in'] = get_query_var( 'cn-cat-in' );
+			}
 
 			// Country
 			$queryCountry = get_query_var( 'cn-country' );
@@ -153,16 +172,18 @@ class cnRetrieve {
 
 			// Geo-location
 			$queryCoord = get_query_var( 'cn-near-coord' );
+
 			if ( ! empty( $queryCoord ) ) {
-				$queryCoord = explode( ',', $queryCoord );
-				$atts['latitude'] = (float) $queryCoord[0];
-				$atts['longitude'] = (float) $queryCoord[1];
+
+				$queryCoord        = explode( ',', $queryCoord );
+				$atts['latitude']  = $wpdb->prepare( '%f', $queryCoord[0] );
+				$atts['longitude'] = $wpdb->prepare( '%f', $queryCoord[1] );
 
 				// Get the radius, otherwise the defaultf of 10.
-				if ( get_query_var( 'cn-radius' ) ) $atts['radius'] = (int) get_query_var( 'cn-radius' );
+				if ( get_query_var( 'cn-radius' ) ) $atts['radius'] = $wpdb->prepare( '%d', get_query_var( 'cn-radius' ) );
 
-				// Set the unit.
-				$atts['unit'] = ( get_query_var( 'cn-unit' ) ) ? get_query_var( 'cn-unit' ) : $atts['unit'];
+				// Sanitize and set the unit.
+				$atts['unit'] = get_query_var( 'cn-unit' ) ? $wpdb->prepare( '%s', get_query_var( 'cn-unit' ) ): $wpdb->prepare( '%s', $atts['unit'] );
 			}
 		}
 		/*
@@ -180,18 +201,20 @@ class cnRetrieve {
 		 * Thought --- maybe resetting to the default $atts should be done --- something to consider.
 		 */
 		if ( ! empty( $atts['slug'] ) || ! empty( $atts['category_slug'] ) ) {
-			$atts['list_type'] = NULL;
-			$atts['category'] = NULL;
-			$atts['category_in'] = NULL;
+
+			$atts['list_type']           = NULL;
+			$atts['category']            = NULL;
+			$atts['category_in']         = NULL;
 			$atts['wp_current_category'] = NULL;
 		}
 
 		if ( ! empty( $atts['slug'] ) ) {
+
 			$atts['near_addr'] = NULL;
-			$atts['latitude'] = NULL;
+			$atts['latitude']  = NULL;
 			$atts['longitude'] = NULL;
-			$atts['radius'] = 10;
-			$atts['unit'] = 'mi';
+			$atts['radius']    = 10;
+			$atts['unit']      = 'mi';
 		}
 		/*
 		 * // END -- Reset.
@@ -200,13 +223,15 @@ class cnRetrieve {
 		/*
 		 * If in a post get the category names assigned to the post.
 		 */
-		if ( $atts['wp_current_category'] && !is_page() ) {
+		if ( $atts['wp_current_category'] && ! is_page() ) {
+
 			// Get the current post categories.
 			$wpCategories = get_the_category();
 
 			// Build an array of the post categories.
 			foreach ( $wpCategories as $wpCategory ) {
-				$categoryNames[] = $wpCategory->cat_name;
+
+				$categoryNames[] = $wpdb->prepare( '%s', $wpCategory->cat_name );
 			}
 		}
 
@@ -214,20 +239,25 @@ class cnRetrieve {
 		 * Build and array of the supplied category names and their children.
 		 */
 		if ( ! empty( $atts['category_name'] ) ) {
+
 			// If value is a string convert to an array.
 			if ( ! is_array( $atts['category_name'] ) ) {
+
 				$atts['category_name'] = explode( ',', $atts['category_name'] );
 			}
 
 			foreach ( $atts['category_name'] as $categoryName ) {
-				// Add the parent category to the array and remove any whitespace from the begining/end of the name in case the user added it when using the shortcode.
-				$categoryNames[] = htmlspecialchars( trim( $categoryName ) );
+
+				// Add the parent category to the array and remove any whitespace from the beginning/end of the name just in case the user added it when using the shortcode.
+				$categoryNames[] = htmlentities( $wpdb->prepare( '%s', trim( $categoryName ) ) );
 
 				// Retrieve the children categories
 				$results = $this->categoryChildren( 'name', $categoryName );
 
 				foreach ( (array) $results as $term ) {
-					if ( ! in_array( $term->name, $categoryNames ) ) $categoryNames[] = htmlspecialchars( $term->name );
+
+					// Only add the name if it doesn't already exist. If it doesn't sanitize and add to the array.
+					if ( ! in_array( $term->name, $categoryNames ) ) $categoryNames[] = htmlentities( $wpdb->prepare( '%s', $term->name ) );
 				}
 			}
 		}
@@ -236,22 +266,27 @@ class cnRetrieve {
 		 * Build and array of the supplied category slugs and their children.
 		 */
 		if ( ! empty( $atts['category_slug'] ) ) {
+
 			$categorySlugs = array();
 
 			// If value is a string convert to an array.
 			if ( ! is_array( $atts['category_slug'] ) ) {
+
 				$atts['category_slug'] = explode( ',', $atts['category_slug'] );
 			}
 
 			foreach ( $atts['category_slug'] as $categorySlug ) {
-				// Add the parent category to the array and remove any whitespace from the begining/end of the name in case the user added it when using the shortcode.
-				$categorySlugs[] = trim( $categorySlug );
 
-				// Retrieve the children categories
+				// Add the parent category to the array and remove any whitespace from the beginning/end of the name in case the user added it when using the shortcode.
+				$categorySlugs[] = $wpdb->prepare( '%s', trim( $categorySlug ) );
+
+				// Retrieve the children categories.
 				$results = $this->categoryChildren( 'slug', $categorySlug );
 
 				foreach ( (array) $results as $term ) {
-					if ( ! in_array( $term->name, $categorySlugs ) ) $categorySlugs[] = $term->slug;
+
+					// Only add the slug if it doesn't already exist. If it doesn't sanitize and add to the array.
+					if ( ! in_array( $term->name, $categorySlugs ) ) $categorySlugs[] = $wpdb->prepare( '%s', $term->slug );
 				}
 			}
 		}
@@ -260,23 +295,28 @@ class cnRetrieve {
 		 * Build an array of all the categories and their children based on the supplied category IDs.
 		 */
 		if ( ! empty( $atts['category'] ) ) {
+
 			// If value is a string, string the white space and covert to an array.
 			if ( ! is_array( $atts['category'] ) ) {
+
 				$atts['category'] = str_replace( ' ', '', $atts['category'] );
 
 				$atts['category'] = explode( ',', $atts['category'] );
 			}
 
 			foreach ( $atts['category'] as $categoryID ) {
+
 				// Add the parent category ID to the array.
-				$categoryIDs[] = $categoryID;
+				$categoryIDs[] = $wpdb->prepare( '%d', $categoryID );
 
 				// Retrieve the children categories
 				$results = $this->categoryChildren( 'term_id', $categoryID );
 				//print_r($results);
 
 				foreach ( (array) $results as $term ) {
-					if ( ! in_array( $term->term_id, $categoryIDs ) ) $categoryIDs[] = $term->term_id;
+
+					// Only add the ID if it doesn't already exist. If it doesn't sanitize and add to the array.
+					if ( ! in_array( $term->term_id, $categoryIDs ) ) $categoryIDs[] = $wpdb->prepare( '%d', $term->term_id );
 				}
 			}
 		}
@@ -288,7 +328,7 @@ class cnRetrieve {
 
 			if ( ! isset( $categoryIDs ) ) $categoryIDs = array();
 
-			// If value is a string, string the white space and covert to an array.
+			// If value is a string, strip the white space and then convert to an array.
 			if ( ! is_array( $atts['exclude_category'] ) ) {
 
 				$atts['exclude_category'] = str_replace( ' ', '', $atts['exclude_category'] );
@@ -301,7 +341,7 @@ class cnRetrieve {
 			foreach ( $atts['exclude_category'] as $categoryID ) {
 
 				// Add the parent category ID to the array.
-				$categoryExcludeIDs[] = $categoryID;
+				$categoryExcludeIDs[] = $wpdb->prepare( '%d', $categoryID );
 
 				// Retrieve the children categories
 				$results = $this->categoryChildren( 'term_id', $categoryID );
@@ -309,19 +349,28 @@ class cnRetrieve {
 
 				foreach ( (array) $results as $term ) {
 
-					if ( ! in_array( $term->term_id, $categoryExcludeIDs ) ) $categoryExcludeIDs[] = $term->term_id;
+					// Only add the ID if it doesn't already exist. If it doesn't sanitize and add to the array.
+					if ( ! in_array( $term->term_id, $categoryExcludeIDs ) ) $categoryExcludeIDs[] = $wpdb->prepare( '%d', $term->term_id );
 				}
 			}
 		}
 
 		// Convert the supplied category IDs $atts['category_in'] to an array.
 		if ( ! empty( $atts['category_in'] ) ) {
+
 			if ( ! is_array( $atts['category_in'] ) ) {
+
 				// Trim the space characters if present.
 				$atts['category_in'] = str_replace( ' ', '', $atts['category_in'] );
 
 				// Convert to array.
 				$atts['category_in'] = explode( ',', $atts['category_in'] );
+			}
+
+			// Sanitize the values in $atts['category_in']
+			foreach ( $atts['category_in'] as $key => $value ) {
+
+				$atts['category_in'][ $key ] = $wpdb->prepare( '%d', $value );
 			}
 
 			// Exclude any category IDs that may have been set.
@@ -330,14 +379,14 @@ class cnRetrieve {
 			// Build the query to retrieve entry IDs that are assigned to all the supplied category IDs; operational AND.
 			$sql = 'SELECT DISTINCT tr.entry_id FROM ' . CN_TERM_RELATIONSHIP_TABLE . ' AS tr
 					INNER JOIN ' . CN_TERM_TAXONOMY_TABLE . ' AS tt ON (tr.term_taxonomy_id = tt.term_taxonomy_id)
-					WHERE 1=1 AND tt.term_id IN (\'' . implode( "', '", $atts['category_in'] ) . '\') GROUP BY tr.entry_id HAVING COUNT(*) = ' . count( $atts['category_in'] ) . ' ORDER BY tr.entry_id';
+					WHERE 1=1 AND tt.term_id IN (' . implode( ", ", $atts['category_in'] ) . ') GROUP BY tr.entry_id HAVING COUNT(*) = ' . count( $atts['category_in'] ) . ' ORDER BY tr.entry_id';
 
 			// Store the entryIDs that exist on all of the supplied category IDs
 			$results = $wpdb->get_col( $sql );
 			//print_r($results);
 
 			if ( ! empty( $results ) ) {
-				$where[] = 'AND ' . CN_ENTRY_TABLE . '.id IN (\'' . implode( "', '", $results ) . '\')';
+				$where[] = 'AND ' . CN_ENTRY_TABLE . '.id IN (' . implode( ", ", $results ) . ')';
 			} else {
 				$where[] = 'AND 1=2';
 			}
@@ -362,25 +411,25 @@ class cnRetrieve {
 			$where[] = 'AND ' . CN_TERM_TAXONOMY_TABLE . '.taxonomy = \'category\'';
 
 			if ( ! empty( $categoryIDs ) ) {
-				$where[] = 'AND ' . CN_TERM_TAXONOMY_TABLE . '.term_id IN (\'' . implode( "', '", $categoryIDs ) . '\')';
+				$where[] = 'AND ' . CN_TERM_TAXONOMY_TABLE . '.term_id IN (' . implode( ", ", $categoryIDs ) . ')';
 
 				unset( $categoryIDs );
 			}
 
 			if ( ! empty( $categoryExcludeIDs ) ) {
-				$where[] = 'AND ' . CN_TERM_TAXONOMY_TABLE . '.term_id NOT IN (\'' . implode( "', '", $categoryExcludeIDs ) . '\')';
+				$where[] = 'AND ' . CN_TERM_TAXONOMY_TABLE . '.term_id NOT IN (' . implode( ", ", $categoryExcludeIDs ) . ')';
 
 				unset( $categoryExcludeIDs );
 			}
 
 			if ( ! empty( $categoryNames ) ) {
-				$where[] = 'AND ' . CN_TERMS_TABLE . '.name IN (\'' . implode( "', '", (array) $categoryNames ) . '\')';
+				$where[] = 'AND ' . CN_TERMS_TABLE . '.name IN (' . implode( ", ", (array) $categoryNames ) . ')';
 
 				unset( $categoryNames );
 			}
 
 			if ( ! empty( $categorySlugs ) ) {
-				$where[] = 'AND ' . CN_TERMS_TABLE . '.slug IN (\'' . implode( "', '", (array) $categorySlugs ) . '\')';
+				$where[] = 'AND ' . CN_TERMS_TABLE . '.slug IN (' . implode( ", ", (array) $categorySlugs ) . ')';
 
 				unset( $categorySlugs );
 			}
@@ -460,23 +509,25 @@ class cnRetrieve {
 		/*
 		 * // START --> Set up the query to only return the entries that match the supplied filters.
 		 */
-		if ( ! empty( $atts['family_name'] ) ) $where[] = $wpdb->prepare( 'AND `family_name` = %s' , $atts['family_name'] );
-		if ( ! empty( $atts['last_name'] ) ) $where[] = $wpdb->prepare( 'AND `last_name` = %s' , $atts['last_name'] );
-		if ( ! empty( $atts['title'] ) ) $where[] = $wpdb->prepare( 'AND `title` = %s' , $atts['title'] );
+		if ( ! empty( $atts['family_name'] ) ) $where[]  = $wpdb->prepare( 'AND `family_name` = %s' , $atts['family_name'] );
+		if ( ! empty( $atts['last_name'] ) ) $where[]    = $wpdb->prepare( 'AND `last_name` = %s' , $atts['last_name'] );
+		if ( ! empty( $atts['title'] ) ) $where[]        = $wpdb->prepare( 'AND `title` = %s' , $atts['title'] );
 		if ( ! empty( $atts['organization'] ) ) $where[] = $wpdb->prepare( 'AND `organization` = %s' , $atts['organization'] );
-		if ( ! empty( $atts['department'] ) ) $where[] = $wpdb->prepare( 'AND `department` = %s' , $atts['department'] );
+		if ( ! empty( $atts['department'] ) ) $where[]   = $wpdb->prepare( 'AND `department` = %s' , $atts['department'] );
 
 		if ( ! empty( $atts['city'] ) || ! empty( $atts['state'] ) || ! empty( $atts['zip_code'] ) || ! empty( $atts['country'] ) ) {
+
 			if ( ! isset( $join['address'] ) ) $join['address'] = 'INNER JOIN ' . CN_ENTRY_ADDRESS_TABLE . ' ON ( ' . CN_ENTRY_TABLE . '.id = ' . CN_ENTRY_ADDRESS_TABLE . '.entry_id )';
 
-			if ( ! empty( $atts['city'] ) ) $where[] = $wpdb->prepare( 'AND ' . CN_ENTRY_ADDRESS_TABLE . '.city = %s' , $atts['city'] );
-			if ( ! empty( $atts['state'] ) ) $where[] = $wpdb->prepare( 'AND ' . CN_ENTRY_ADDRESS_TABLE . '.state = %s' , $atts['state'] );
+			if ( ! empty( $atts['city'] ) ) $where[]     = $wpdb->prepare( 'AND ' . CN_ENTRY_ADDRESS_TABLE . '.city = %s' , $atts['city'] );
+			if ( ! empty( $atts['state'] ) ) $where[]    = $wpdb->prepare( 'AND ' . CN_ENTRY_ADDRESS_TABLE . '.state = %s' , $atts['state'] );
 			if ( ! empty( $atts['zip_code'] ) ) $where[] = $wpdb->prepare( 'AND ' . CN_ENTRY_ADDRESS_TABLE . '.zipcode = %s' , $atts['zip_code'] );
-			if ( ! empty( $atts['country'] ) ) $where[] = $wpdb->prepare( 'AND ' . CN_ENTRY_ADDRESS_TABLE . '.country = %s' , $atts['country'] );
+			if ( ! empty( $atts['country'] ) ) $where[]  = $wpdb->prepare( 'AND ' . CN_ENTRY_ADDRESS_TABLE . '.country = %s' , $atts['country'] );
 		}
 
 		if ( 0 < strlen( $atts['char'] ) ) {
-			$having[] = $wpdb->prepare( 'HAVING sort_column LIKE %s' , like_escape ( $atts['char'] ) . '%' );
+
+			$having[] = $wpdb->prepare( 'HAVING sort_column LIKE %s', like_escape( $atts['char'] ) . '%' );
 		}
 		/*
 		 * // END --> Set up the query to only return the entries that match the supplied filters.
@@ -486,16 +537,19 @@ class cnRetrieve {
 		 * // START --> Set up the query to only return the entries based on user permissions.
 		 */
 		if ( is_user_logged_in() ) {
+
 			if ( ! isset( $atts['visibility'] ) || empty( $atts['visibility'] ) ) {
-				if ( current_user_can( 'connections_view_public' ) ) $visibility[] = 'public';
-				if ( current_user_can( 'connections_view_private' ) ) $visibility[] = 'private';
+
+				if ( current_user_can( 'connections_view_public' ) ) $visibility[]                 = 'public';
+				if ( current_user_can( 'connections_view_private' ) ) $visibility[]                = 'private';
 				if ( current_user_can( 'connections_view_unlisted' ) && is_admin() ) $visibility[] = 'unlisted';
-			}
-			else {
+
+			} else {
+
 				$visibility[] = $atts['visibility'];
 			}
-		}
-		else {
+
+		} else {
 			//var_dump( $connections->options->getAllowPublic() ); die;
 
 			// Display the 'public' entries if the user is not required to be logged in.
@@ -587,7 +641,7 @@ class cnRetrieve {
 			$maxLng = $atts['longitude'] + rad2deg( $atts['radius']/$earthRadius/cos( deg2rad( $atts['latitude'] ) ) );
 
 			// Convert origin of geographic circle to radians.
-			$atts['latitude'] = deg2rad( $atts['latitude'] );
+			$atts['latitude']  = deg2rad( $atts['latitude'] );
 			$atts['longitude'] = deg2rad( $atts['longitude'] );
 
 			// Add the SELECT statement that adds the `radius` column.
@@ -725,9 +779,10 @@ class cnRetrieve {
 
 								/*
 								 * @TODO: This seems fast enough, better profiling will need to be done.
-								 * @TODO: The session ID can be used as the seed for RAND() to support randomized paginated results.
 								 */
-								$select[] = CN_ENTRY_TABLE . '.id*0+RAND() AS random';
+								$seed = cnFormatting::stripNonNumeric( cnUtility::getIP() ) . date( 'Hdm', current_time( 'timestamp', 1 ) );
+
+								$select[] = CN_ENTRY_TABLE . '.id*0+RAND(' . $seed . ') AS random';
 								$orderBy = array( 'random' );
 								break;
 
@@ -752,7 +807,7 @@ class cnRetrieve {
 		}
 		//}
 
-		( empty( $orderBy ) ) ? $orderBy = 'ORDER BY sort_column, last_name, first_name' : $orderBy = 'ORDER BY ' . implode( ', ', $orderBy );
+		$orderBy = empty( $orderBy ) ? 'ORDER BY sort_column, last_name, first_name' : 'ORDER BY ' . implode( ', ', $orderBy );
 		/*
 		 * // END --> Build the ORDER BY query segment.
 		 */
@@ -760,8 +815,8 @@ class cnRetrieve {
 		/*
 		 * // START --> Set up the query LIMIT and OFFSET.
 		 */
-		( empty( $atts['limit'] ) ) ? $limit = NULL : $limit = ' LIMIT ' . $atts['limit'] . ' ';
-		( empty( $atts['offset'] ) ) ? $offset = NULL : $offset = ' OFFSET ' . $atts['offset'] . ' ';
+		$limit  = empty( $atts['limit'] )  ? '' : $wpdb->prepare( ' LIMIT %d ', $atts['limit'] );
+		$offset = empty( $atts['offset'] ) ? '' : $wpdb->prepare( ' OFFSET %d ', $atts['offset'] );
 		/*
 		 * // END --> Set up the query LIMIT and OFFSET.
 		 */
@@ -783,24 +838,30 @@ class cnRetrieve {
 		$sql = 'SELECT SQL_CALC_FOUND_ROWS DISTINCT ' . implode( ', ', $select ) . ' FROM ' . implode( ', ', $from ) . ' ' . implode( ' ', $join ) . ' ' . implode( ' ', $where ) . ' ' . ' ' . implode( ' ', $having ) . ' ' . $orderBy . ' ' . $limit . $offset;
 		// print_r($sql); die;
 
-		$results = $wpdb->get_results( $sql );
+		if ( ! $results = $this->results( $sql ) ) {
 
-		// The most recent query to have been executed by cnRetrieve::entries
-		$connections->lastQuery      = $wpdb->last_query;
+			$results = $wpdb->get_results( $sql );
 
-		// The most recent query error to have been generated by cnRetrieve::entries
-		$connections->lastQueryError = $wpdb->last_error;
+			$this->cache( $sql, $results );
 
-		// ID generated for an AUTO_INCREMENT column by the most recent INSERT query.
-		$connections->lastInsertID   = $wpdb->insert_id;
+			// The most recent query to have been executed by cnRetrieve::entries
+			$connections->lastQuery      = $wpdb->last_query;
 
-		// The number of rows returned by the last query.
-		$connections->resultCount    = $wpdb->num_rows;
+			// The most recent query error to have been generated by cnRetrieve::entries
+			$connections->lastQueryError = $wpdb->last_error;
 
-		// The number of rows returned by the last query without the limit clause set
-		$foundRows                       = $wpdb->get_results( 'SELECT FOUND_ROWS()' );
-		$connections->resultCountNoLimit = $foundRows[0]->{'FOUND_ROWS()'};
-		$this->resultCountNoLimit        = $foundRows[0]->{'FOUND_ROWS()'};
+			// ID generated for an AUTO_INCREMENT column by the most recent INSERT query.
+			$connections->lastInsertID   = $wpdb->insert_id;
+
+			// The number of rows returned by the last query.
+			$connections->resultCount    = $wpdb->num_rows;
+
+			// The number of rows returned by the last query without the limit clause set
+			$foundRows                       = $wpdb->get_results( 'SELECT FOUND_ROWS()' );
+			$connections->resultCountNoLimit = $foundRows[0]->{'FOUND_ROWS()'};
+			$this->resultCountNoLimit        = $foundRows[0]->{'FOUND_ROWS()'};
+
+		}
 
 		// The total number of entries based on user permissions.
 		// $connections->recordCount         = self::recordCount( array( 'public_override' => $atts['allow_public_override'], 'private_override' => $atts['private_override'] ) );
@@ -840,9 +901,6 @@ class cnRetrieve {
 		}
 
 		return $results;
-
-		// Return the results ordered.
-		//return $this->orderBy($results, $atts['order_by'], $atts['id']);
 	}
 
 	public function entry( $id ) {
@@ -1198,15 +1256,22 @@ class cnRetrieve {
 		return $results;
 	}
 
+	// Retrieve the categories.
 	public function entryCategories( $id ) {
 		global $wpdb;
 
-		// Retrieve the categories.
-		$results =  $wpdb->get_results( $wpdb->prepare( "SELECT t.*, tt.* FROM " . CN_TERMS_TABLE . " AS t INNER JOIN " . CN_TERM_TAXONOMY_TABLE . " AS tt ON t.term_id = tt.term_id INNER JOIN " . CN_TERM_RELATIONSHIP_TABLE . " AS tr ON tt.term_taxonomy_id = tr.term_taxonomy_id WHERE tt.taxonomy = 'category' AND tr.entry_id = %d ", $id ) );
-		//SELECT t.*, tt.* FROM wp_connections_terms AS t INNER JOIN wp_connections_term_taxonomy AS tt ON t.term_id = tt.term_id INNER JOIN wp_connections_term_relationships AS tr ON tt.term_taxonomy_id = tr.term_taxonomy_id WHERE tt.taxonomy = 'category' AND tr.entry_id = 325
+		$sql = $wpdb->prepare( "SELECT t.*, tt.* FROM " . CN_TERMS_TABLE . " AS t INNER JOIN " . CN_TERM_TAXONOMY_TABLE . " AS tt ON t.term_id = tt.term_id INNER JOIN " . CN_TERM_RELATIONSHIP_TABLE . " AS tr ON tt.term_taxonomy_id = tr.term_taxonomy_id WHERE tt.taxonomy = 'category' AND tr.entry_id = %d ", $id );
+
+		if ( ! $results = $this->results( $sql ) ) {
+
+			$results = $wpdb->get_results( $sql );
+
+			$this->cache( $sql, $results );
+		}
 
 		if ( ! empty( $results ) ) {
-			usort( $results, array( &$this, 'sortTermsByName' ) );
+
+			usort( $results, array( $this, 'sortTermsByName' ) );
 		}
 
 		return $results;
@@ -2019,6 +2084,7 @@ class cnRetrieve {
 			// Convert the search terms to a string adding the wild card to the end of each term to allow wider search results.
 			//$terms = implode( '* ' , $atts['terms'] ) . '*';
 			$terms = '+' . implode( ' +' , $atts['terms'] );
+			// $terms = '+"' . implode( ' +' , $atts['terms'] ) . '"';
 			//$terms = implode( ' ' , $atts['terms'] );
 
 			/*
@@ -2549,10 +2615,10 @@ class cnRetrieve {
 	 *
 	 * @return object
 	 */
-	public function categories($arg=NULL) {
+	public function categories() {
 		global $connections;
 
-		return $connections->term->getTerms( 'category' , $arg );
+		return $connections->term->getTerms( 'category' );
 	}
 
 	/**
@@ -2577,6 +2643,50 @@ class cnRetrieve {
 		global $connections;
 
 		return $connections->term->getTermChildrenBy( $field, $value, 'category' );
+	}
+
+	/**
+	 * Cache a query results so results can be used again without an db hit,
+	 * NOTE: This cache is good for each page load; not persistent.
+	 *
+	 * @access private
+	 * @since  0.8
+	 * @param  string $sql     The query statement.
+	 * @param  array  $results The results of the query statement.
+	 * @return void
+	 */
+	public function cache( $sql, $results ) {
+
+		// Create a hash so the correct results can be returned.
+		$hash = md5( json_encode( $sql ) );
+
+		$this->results[ $hash ] = $results;
+	}
+
+	/**
+	 * Return the results from a previously run query.
+	 *
+	 * @access private
+	 * @since  0.8
+	 * @param  string $sql The query statement,
+	 * @return mixed       array | bool The results if the query is in the cache. False if it is not.
+	 */
+	public function results( $sql ) {
+
+		// Create a hash so the correct results can be returned.
+		$hash = md5( json_encode( $sql ) );
+
+		// First check to see if the results have been queried already.
+		// If not query the results, store and then return then.
+		if ( array_key_exists( $hash, $this->results ) ) {
+
+			return $this->results[ $hash ];
+
+		} else {
+
+			return FALSE;
+		}
+
 	}
 
 }

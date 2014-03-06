@@ -1,3 +1,31 @@
+= Version 9.2 by Matthew Robinson =
+
+* Fixed an error in the Registered User deletion code - thanks to Jay Wasack
+
+= Version 9.1 by Matthew Robinson =
+
+* Shortcode parameters are now not case sensitive
+* Fixed AJAX mode to work with new Anti Spam code
+* Suppress undefined variable warnings when sending Digest Email previews
+* Include Signup Date and IP for Public Subscribers in CSV Export - props Taylor4484
+* Fix for Sticky Posts in the digest returning errant posts - thanks to belg4mit
+* Move FAQs to external site to allow more timely updates
+* Add ability to hide other Multisite blogs with CSS in the Subscribe2->Your Subscriptions page (DIV id of 's2_mu_sites') - props cblsysadmin
+* Add 's2_form' filter to allow dynamic alterations to the default form - props adam_jack
+* Conduct more thorough checking for Public and Registered emails when adding users in the admin pages - thanks to MadtownLems
+* Introduce the {REFERENCELINKS} keyword - props manu1033
+* Fix link to jQuery CSS for servers using HTTPS connections - props Christian (aka Alariel)
+* Introduce link to Templates page with unsupported keywords are detected - props MadtownLems
+* Ensure all JavaScript passes the JSHint WordPress Coding Standards
+* Initialise ‘colorpicker’ boxes on page load so they are coloured before first user click
+* Only add a new Weekly schedule if it doesn’t already exist
+* Use trim() on post excerpt to account for blank but non-empty excerpts
+* Don't display screen icons in WordPress 3.8 as they are hidden by CSS - see ticket http://core.trac.wordpress.org/ticket/26119
+* Added 's2_confirm_email' filter to allow amendment or replacement of the subscribe and unsubscribe emails - proposed by Tim Büttner
+* Fixed a typo in the names of the five 's2_send_{email_type}_subscribers' hooks - thanks to robertjj
+* Introduced the 's2_post_statuses' to allow for custom post status transitions, for example with the 'Edit Flow' plugin
+* Fix for failed deletion of Registered Subscribers in Subscribe2->Subscribers page - thanks to Russ Michaels
+
 = Version 9.0 by Matthew Robinson =
 
 * Added capability to send emails with attachments from Send Email page

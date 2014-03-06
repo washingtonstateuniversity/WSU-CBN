@@ -194,6 +194,18 @@ class cnEntryMetabox {
 					'id'         => 'bio',
 					'type'       => 'rte',
 					'value'      => 'getBio',
+					'options'    => array(
+						'media_buttons' => FALSE,
+						'tinymce'       => array(
+							'editor_selector'         => 'tinymce',
+							'theme_advanced_buttons1' => 'bold, italic, underline, |, bullist, numlist, |, justifyleft, justifycenter, justifyright, |, link, unlink, |, pastetext, pasteword, removeformat, |, undo, redo',
+							'theme_advanced_buttons2' => '',
+							'inline_styles'           => TRUE,
+							'relative_urls'           => FALSE,
+							'remove_linebreaks'       => FALSE,
+							'plugins'                 => 'inlinepopups,spellchecker,tabfocus,paste,wordpress,wpdialogs'
+						)
+					),
 				),
 			),
 		);
@@ -209,6 +221,18 @@ class cnEntryMetabox {
 					'id'         => 'notes',
 					'type'       => 'rte',
 					'value'      => 'getNotes',
+					'options'    => array(
+						'media_buttons' => FALSE,
+						'tinymce'       => array(
+							'editor_selector'         => 'tinymce',
+							'theme_advanced_buttons1' => 'bold, italic, underline, |, bullist, numlist, |, justifyleft, justifycenter, justifyright, |, link, unlink, |, pastetext, pasteword, removeformat, |, undo, redo',
+							'theme_advanced_buttons2' => '',
+							'inline_styles'           => TRUE,
+							'relative_urls'           => FALSE,
+							'remove_linebreaks'       => FALSE,
+							'plugins'                 => 'inlinepopups,spellchecker,tabfocus,paste,wordpress,wpdialogs'
+						)
+					),
 				),
 			),
 		);
@@ -450,7 +474,7 @@ class cnEntryMetabox {
 								'id'        => 'honorific_suffix',
 								'show'      => TRUE,
 								'label'     => __( 'Suffix' , 'connections' ),
-								'required'  => TRUE,
+								'required'  => FALSE,
 								'type'      => 'text',
 								'value'     => strlen( $entry->getHonorificSuffix() ) > 0 ? $entry->getHonorificSuffix() : '',
 								'before'    => '<span id="cn-name-suffix">',
@@ -1243,7 +1267,7 @@ class cnEntryMetabox {
 				echo '<div class="map" id="map-::FIELD::" data-map-id="::FIELD::" style="display: none; height: 400px;">' , __( 'Geocoding Address.', 'connections' ) , '</div>';
 
 				echo '<br>';
-				echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="address" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
+				echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="address" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
 
 			echo '</div>' , PHP_EOL;
 
@@ -1469,7 +1493,7 @@ class cnEntryMetabox {
 						echo '<input type="hidden" name="address[' , $token , '][id]" value="' , $address->id , '">' , PHP_EOL;
 
 						echo '<br>';
-						echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="address" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
+						echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="address" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
 
 					echo '</div>' , PHP_EOL;
 
@@ -1731,7 +1755,7 @@ class cnEntryMetabox {
 					)
 				);
 
-				echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="phone" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
+				echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="phone" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
 
 			echo '</div>' , PHP_EOL;
 
@@ -1826,7 +1850,7 @@ class cnEntryMetabox {
 
 						echo '<input type="hidden" name="phone[' , $token , '][id]" value="' , $phone->id , '">' , PHP_EOL;
 
-						echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="phone" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
+						echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="phone" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
 
 					echo '</div>' , PHP_EOL;
 
@@ -1931,7 +1955,7 @@ class cnEntryMetabox {
 					)
 				);
 
-				echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="email" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
+				echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="email" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
 
 			echo '</div>' , PHP_EOL;
 
@@ -2026,7 +2050,7 @@ class cnEntryMetabox {
 
 						echo '<input type="hidden" name="email[' , $token , '][id]" value="' , $email->id , '">' , PHP_EOL;
 
-						echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="email" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
+						echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="email" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
 
 					echo '</div>' , PHP_EOL;
 
@@ -2131,7 +2155,7 @@ class cnEntryMetabox {
 					)
 				);
 
-				echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="im" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
+				echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="im" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
 
 			echo '</div>' , PHP_EOL;
 
@@ -2226,7 +2250,7 @@ class cnEntryMetabox {
 
 						echo '<input type="hidden" name="im[' , $token , '][uid]" value="' , $network->id , '">' , PHP_EOL;
 
-						echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="im" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
+						echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="im" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
 
 					echo '</div>' , PHP_EOL;
 
@@ -2331,7 +2355,7 @@ class cnEntryMetabox {
 					)
 				);
 
-				echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="social" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
+				echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="social" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
 
 			echo '</div>' , PHP_EOL;
 
@@ -2426,7 +2450,7 @@ class cnEntryMetabox {
 
 						echo '<input type="hidden" name="social[' , $token , '][id]" value="' , $network->id , '">' , PHP_EOL;
 
-						echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="social" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
+						echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="social" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
 
 					echo '</div>' , PHP_EOL;
 
@@ -2596,7 +2620,7 @@ class cnEntryMetabox {
 
 				echo '</div>';
 
-				echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="link" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
+				echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="link" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
 
 			echo '</div>' , PHP_EOL;
 
@@ -2759,7 +2783,7 @@ class cnEntryMetabox {
 
 						echo '<input type="hidden" name="link[' , $token , '][id]" value="' , $link->id , '">' , PHP_EOL;
 
-						echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="link" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
+						echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="link" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
 
 					echo '</div>' , PHP_EOL;
 
@@ -2864,7 +2888,7 @@ class cnEntryMetabox {
 					)
 				);
 
-				echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="date" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
+				echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="date" data-token="::FIELD::">' , __( 'Remove', 'connections' ) , '</a></p>';
 
 			echo '</div>' , PHP_EOL;
 
@@ -2959,7 +2983,7 @@ class cnEntryMetabox {
 
 						echo '<input type="hidden" name="date[' , $token , '][id]" value="' , $date->id , '">' , PHP_EOL;
 
-						echo '<p class="remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="date" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
+						echo '<p class="cn-remove-button"><a href="#" class="cn-remove cn-button button button-warning" data-type="date" data-token="' . $token . '">' , __( 'Remove', 'connections' ) , '</a></p>' , PHP_EOL;
 
 					echo '</div>' , PHP_EOL;
 
@@ -3042,7 +3066,7 @@ class cnEntryMetabox {
 
 						<td>
 							<label class="screen-reader-text" for='meta[<?php echo $metaID; ?>][value]'><?php _e( 'Value', 'connections' ); ?></label>
-							<textarea name='meta[<?php echo $metaID; ?>][value]' id='meta[<?php echo $metaID; ?>][value]' rows="2" cols="30"><?php echo esc_textarea( $meta['meta_value'] ) ?></textarea>
+							<textarea name='meta[<?php echo $metaID; ?>][value]' id='meta[<?php echo $metaID; ?>][value]' rows="2" cols="30"><?php echo esc_textarea( cnFormatting::maybeJSONencode( $meta['meta_value'] ) ) ?></textarea>
 						</td>
 
 					</tr>

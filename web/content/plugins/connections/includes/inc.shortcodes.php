@@ -10,14 +10,8 @@
  * @since       unknown
  */
 
-
-
-
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
-
-
-
 
 /**
  * Template tag to call the entry list. All options can be passed as an
@@ -82,10 +76,22 @@ function connectionsView( $atts , $content = NULL ) {
 
 			break;
 
+		case 'search':
+
+			return '<p>' . __( 'Future home of the search page.', 'connections' ) . '</p>';
+
+			break;
+
+		case 'results':
+
+			return '<p>' . __( 'Future home of the search results landing page.', 'connections' ) . '</p>';
+
+			break;
+
 		// Show the standard result list.
 		case 'list':
 
-			return shortcode::connectionsList( $atts, $content );
+			return connectionsList( $atts, $content );
 
 			break;
 
@@ -94,7 +100,7 @@ function connectionsView( $atts , $content = NULL ) {
 
 			$atts['template'] = 'names';
 
-			return shortcode::connectionsList( $atts, $content );
+			return connectionsList( $atts, $content );
 
 			break;
 
@@ -114,38 +120,60 @@ function connectionsView( $atts , $content = NULL ) {
 			$atts['repeat_alphaindex'] = FALSE;
 			$atts['show_alphahead']    = FALSE;
 
-			return shortcode::connectionsList( $atts, $content );
+			return connectionsList( $atts, $content );
 
 			break;
 
 		// Show the standard result list.
 		default:
 
-			return shortcode::connectionsList( $atts, $content );
+			return connectionsList( $atts, $content );
 
 			break;
 	}
 }
 
-
-function connectionsList(){}
-
-
 /**
  * Register the [connections] shortcode
  *
  * Filters:
- * 		cn_list_template_init			=> Change the list type [affects the default loaded template] or template
- * 										   to be loaded and intialized.The shortcode atts are passed, However 
- * 										   the associative array will be limited to list_type and template so only
- * 										   these values can / should be altered.
+ * 		cn_list_template_init			=> Change the list type [affects the default loaded template] or template to be loaded and intialized.
+ * 										   The shortcode atts are passed, However the associative array will be limited to list_type and template so only these values can / should be altered.
+ * 		cn_list_atts_permitted			=> The permitted shortcode attributes validated using the WordPress function shortcode_atts().
+ * 										   The permitted shortcode associative array is passed. Return associative array.
+ * 		cn_list_atts					=> Alter the shortcode attributes before validation via the WordPress function shortcode_atts().
+ * 										   The shortcode atts are passed. Return associative array.
+ * 		cn_list_retrieve_atts			=> Alter the query attributes to be used.
+ * 										   The shortcode atts are passed. however the retrieve method will filter and use only the valid atts. Return associative array.
+ * 		cn_list_results					=> Filter the returned results before being processed for display. Return indexed array of entry objects.
+ * 		cn_list_before					=> Can be used to add content before the output of the list.
+ * 										   The entry list results are passed. Return string.
+ * 		cn_list_after					=> Can be used to add content after the output of the list.
+ * 										   The entry list results are passed. Return string.
+ * 		cn_list_entry_before			=> Can be used to add content before the output of the entry.
+ * 										   The entry data is passed. Return string.
+ * 		cn_list_entry_after				=> Can be used to add content after the output of the entry.
+ * 										   The entry data is passed. Return string.
+ * 		cn_list_no_result_message		=> Change the 'no results message'.
+ * 		cn_list_index					=> Can be used to modify the index before the output of the list.
+ * 										   The entry list results are passed. Return string.
+ *
  * @access public
  * @since unknown
  * @param (array) $atts
- * @return (object) $template  //@todo 
+ * @param (string) $content [optional]
+ * @param (string) $tag [optional] When called as the callback for add_shortcode, the shortcode tag is passed automatically. Manually setting the shortcode tag so the function can be called independently.
+ * @return (string)
  */
-function prep_template($atts){
-	global $connections;
+function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
+	global $wpdb, $wp_filter, $connections;
+
+	$out            = '';
+	$form           = new cnFormObjects();
+	$convert        = new cnFormatting();
+	// $format         =& $convert;
+	$filterRegistry = array();
+
 	/*
 	 * Parse the user supplied shortcode atts for the values only required to load the template.
 	 * This will permit templates to apply a filter to alter the permitted shortcode atts.
@@ -202,46 +230,16 @@ function prep_template($atts){
 		$templateSlug = $connections->options->getActiveTemplate( $templateType );
 		$template = cnTemplateFactory::getTemplate( $templateSlug );
 	}
-	
-	
-	
 	//$out .= '<pre style="display: none;">' . print_r($template , TRUE) . '</pre>';
 
 	// If no template was found, exit return an error message.
 	if ( $template == FALSE )
 		return '<p style="color:red; font-weight:bold; text-align:center;">' . sprintf( __( 'ERROR: Template %1$s not found.', 'connections' ), $preLoadAtts['template_name'] . $preLoadAtts['template'] ) . '</p>';
 
-	do_action( 'cn_register_legacy_template_parts' ); 	
+	do_action( 'cn_register_legacy_template_parts' );
+	do_action( 'cn_action_include_once-' . $template->getSlug() );
+	do_action( 'cn_action_js-' . $template->getSlug() );
 
-	return $template;
-}
-
-
-
-
-/**
- * Register the [connections] shortcode
- *
- * Filters:
- * 		cn_list_atts_permitted			=> The permitted shortcode attributes validated using the WordPress
- * 										   function shortcode_atts(). The permitted shortcode associative array is
- * 										   passed. Return associative array.
- * 		cn_list_atts					=> Alter the shortcode attributes before validation via the WordPress
- * 										   function shortcode_atts().
- * 										   The shortcode atts are passed. Return associative array.
- * 		cn_list_retrieve_atts			=> Alter the query attributes to be used.
- * 										   The shortcode atts are passed. however the retrieve method will filter
- * 										   and use only the valid atts. Return associative array.
- * @access public
- * @since unknown
- * @param (array) $atts
- * @param (string) $template [optional]
- * @param (string) $tag [optional] When called as the callback for add_shortcode, the shortcode tag is passed automatically. Manually setting the shortcode tag so the function can be called independently.
- * @return (array) $atts
- */
-/* abstract the data to filter and alter */
-function connectionsListData( $atts, $template, $tag ){
-	$convert        = new cnFormatting();
 	/*
 	 * Now that the template has been loaded, Validate the user supplied shortcode atts.
 	 */
@@ -256,9 +254,9 @@ function connectionsListData( $atts, $template, $tag ){
 		'wp_current_category'   => 'false',
 		'allow_public_override' => 'false',
 		'private_override'      => 'false',
-		'show_alphaindex'       => cnSettingsAPI::get( 'connections', 'connections_display_results', 'index' ),
-		'repeat_alphaindex'     => cnSettingsAPI::get( 'connections', 'connections_display_results', 'index_repeat' ),
-		'show_alphahead'        => cnSettingsAPI::get( 'connections', 'connections_display_results', 'show_current_character' ),
+		'show_alphaindex'       => cnSettingsAPI::get( 'connections', 'display_results', 'index' ),
+		'repeat_alphaindex'     => cnSettingsAPI::get( 'connections', 'display_results', 'index_repeat' ),
+		'show_alphahead'        => cnSettingsAPI::get( 'connections', 'display_results', 'show_current_character' ),
 		'list_type'             => NULL,
 		'order_by'              => NULL,
 		'limit'                 => NULL,
@@ -272,6 +270,7 @@ function connectionsListData( $atts, $template, $tag ){
 		'state'                 => NULL,
 		'zip_code'              => NULL,
 		'country'               => NULL,
+		'content'               => '',
 		'near_addr'             => NULL,
 		'latitude'              => NULL,
 		'longitude'             => NULL,
@@ -282,7 +281,7 @@ function connectionsListData( $atts, $template, $tag ){
 		'width'                 => NULL,
 		'lock'                  => FALSE,
 		'force_home'            => FALSE,
-		'home_id'               => in_the_loop() && is_page() ? get_the_id() : cnSettingsAPI::get( 'connections', 'connections_home_page', 'page_id' ),
+		'home_id'               => in_the_loop() && is_page() ? get_the_id() : cnSettingsAPI::get( 'connections', 'home_page', 'page_id' ),
 	);
 
 	$permittedAtts = apply_filters( 'cn_list_atts_permitted' , $permittedAtts );
@@ -326,12 +325,274 @@ function connectionsListData( $atts, $template, $tag ){
 
 	$atts = apply_filters('cn_list_retrieve_atts' , $atts );
 	$atts = apply_filters('cn_list_retrieve_atts-' . $template->getSlug() , $atts );
-	
-	return $atts;
+
+	$results = $connections->retrieve->entries( $atts );
+	//$out .= print_r($connections->lastQuery , TRUE);
+	//$out .= print_r($results , TRUE);
+
+	// Apply any registered filters to the results.
+	if ( ! empty( $results ) ) {
+
+		$results = apply_filters( 'cn_list_results', $results );
+		$results = apply_filters( 'cn_list_results-' . $template->getSlug() , $results );
+		$filterRegistry[] = 'cn_list_results-' . $template->getSlug();
+	}
+
+	ob_start();
+
+		// Prints the template's CSS file.
+		do_action( 'cn_action_css-' . $template->getSlug() , $atts );
+
+		// The return to top anchor
+		do_action( 'cn_action_return_to_target', $atts );
+
+		$out .= ob_get_contents();
+	ob_end_clean();
+
+
+	$out .= sprintf( '<div class="cn-list" id="cn-list" data-connections-version="%1$s-%2$s"%3$s>',
+				$connections->options->getVersion(),
+				$connections->options->getDBVersion(),
+				empty( $atts['width'] ) ? '' : ' style="width: ' . $atts['width'] . 'px;"'
+			);
+
+		$out .= sprintf( '<div class="cn-template cn-%1$s" id="cn-%1$s" data-template-version="%2$s">',
+					$template->getSlug(),
+					$template->getVersion()
+				);
+
+			$out .= "\n" . '<div class="cn-list-head cn-clear" id="cn-list-head">' . "\n";
+
+				// Display the Results List Actions.
+				if ( ! get_query_var( 'cn-entry-slug' ) ) {
+
+					// List actions template part.
+					ob_start();
+						do_action( 'cn_action_list_actions-before', $atts );
+						do_action( 'cn_action_list_actions', $atts );
+						$out .= ob_get_contents();
+					ob_end_clean();
+
+				}
+
+				ob_start();
+					do_action( 'cn_action_list_before' , $atts , $results );
+					do_action( 'cn_action_list_before-' . $template->getSlug() , $atts , $results );
+					$filterRegistry[] = 'cn_action_list_before-' . $template->getSlug();
+
+					do_action( 'cn_action_list_both' , $atts , $results );
+					do_action( 'cn_action_list_both-' . $template->getSlug() , $atts , $results );
+					$filterRegistry[] = 'cn_action_list_both-' . $template->getSlug();
+
+					$out .= ob_get_contents();
+				ob_end_clean();
+
+				$out .= apply_filters( 'cn_list_before' , '' , $results );
+				$out .= apply_filters( 'cn_list_before-' . $template->getSlug() , '' , $results );
+				$filterRegistry[] = 'cn_list_before-' . $template->getSlug();
+
+				//  This action only is required when the index is to be displayed.
+				if ( $atts['show_alphaindex'] || $atts['repeat_alphaindex'] ) {
+
+					// The character index template part.
+					ob_start();
+						do_action( 'cn_action_character_index' , $atts );
+						$charIndex = ob_get_contents();
+					ob_end_clean();
+
+					// These filters are left here primarily for legacy support. At some point these should be removed.
+					$charIndex = apply_filters( 'cn_list_index' , $charIndex , $results );
+					$charIndex = apply_filters( 'cn_list_index-' . $template->getSlug() , $charIndex , $results );
+					$filterRegistry[] = 'cn_list_index-' . $template->getSlug();
+				}
+
+				/*
+				 * The alpha index is only displayed if set to true and not set to repeat.
+				 * If alpha index is set to repeat, that is handled separately.
+				 */
+				if ( $atts['show_alphaindex'] && ! $atts['repeat_alphaindex'] ) $out .= $charIndex;
+
+			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-head -->' : '' ) . "\n";
+
+			$out .= '<div class="connections-list cn-clear" id="cn-list-body">' . "\n";
+
+			// If there are no results no need to proceed and output message.
+			if ( empty( $results ) ) {
+
+				// The no results message.
+				ob_start();
+					do_action( 'cn_action_no_results', $atts , $template->getSlug() );
+					$filterRegistry[] = 'cn_list_no_result_message-' . $template->getSlug();
+
+					$out .= ob_get_contents();
+				ob_end_clean();
+
+			} else {
+
+				$previousLetter = '';
+				$alternate      = '';
+
+				/*
+				 * When an entry is assigned multiple categories and the RANDOM order_by shortcode attribute
+				 * is used, this will cause the entry to show once for every category it is assigned.
+				 *
+				 * The same issue occurs when an entry has been assigned multiple address and each address
+				 * falls within the geo bounds when performing a geo-limiting query.
+				 */
+				$skipEntry = array();
+
+				foreach ( $results as $row ) {
+					$entry = new cnvCard( $row );
+					$vCard =& $entry;
+
+					// Configure the page where the entry link to.
+					$entry->directoryHome( array( 'page_id' => $atts['home_id'], 'force_home' => $atts['force_home'] ) );
+
+					// @TODO --> Fix this somehow in the query, see comment above for $skipEntry.
+					if ( in_array( $entry->getId() , $skipEntry ) ) continue;
+					$skipEntry[] = $entry->getId();
+
+					// Display the Entry Actions.
+					if ( get_query_var( 'cn-entry-slug' ) ) {
+
+						// Entry actions template part.
+						ob_start();
+							do_action( 'cn_action_entry_actions-before', $atts , $entry );
+							do_action( 'cn_action_entry_actions', $atts , $entry );
+							$out .= ob_get_contents();
+						ob_end_clean();
+
+					}
+
+					$currentLetter = strtoupper( mb_substr( $entry->getSortColumn(), 0, 1 ) );
+
+					if ( $currentLetter != $previousLetter ) {
+
+						$out .= sprintf( '<div class="cn-list-section-head cn-clear" id="cn-char-%1$s">', $currentLetter );
+
+							if ( $atts['show_alphaindex'] && $atts['repeat_alphaindex'] ) $out .= $charIndex;
+
+							if ( $atts['show_alphahead'] ) $out .= sprintf( '<h4 class="cn-alphahead">%1$s</h4>', $currentLetter );
+
+						$out .= '</div>' . ( WP_DEBUG ? '<!-- END #cn-char-' . $currentLetter . ' -->' : '' );
+
+						$previousLetter = $currentLetter;
+					}
+
+					// Before entry actions.
+					ob_start();
+						do_action( 'cn_action_entry_before' , $atts , $entry );
+						do_action( 'cn_action_entry_before-' . $template->getSlug() , $atts , $entry );
+						$filterRegistry[] = 'cn_action_entry_before-' . $template->getSlug();
+
+						do_action( 'cn_action_entry_both' , $atts , $entry  );
+						do_action( 'cn_action_entry_both-' . $template->getSlug() , $atts , $entry );
+						$filterRegistry[] = 'cn_action_entry_both-' . $template->getSlug();
+
+						$out .= ob_get_contents();
+					ob_end_clean();
+
+					$out .= sprintf( '<div class="cn-list-row%1$s vcard %2$s %3$s" id="%4$s" data-entry-type="%2$s" data-entry-id="%5$d" data-entry-slug="%4$s">',
+							$alternate = $alternate == '' ? '-alternate' : '',
+							$entry->getEntryType(),
+							$entry->getCategoryClass(TRUE),
+							$entry->getSlug(),
+							$entry->getId()
+						);
+
+						$out .= apply_filters( 'cn_list_entry_before' , '' , $entry );
+						$out .= apply_filters( 'cn_list_entry_before-' . $template->getSlug() , '' , $entry );
+						$filterRegistry[] = 'cn_list_entry_before-' . $template->getSlug();
+
+						ob_start();
+
+							if ( get_query_var( 'cn-entry-slug' ) && has_action( 'cn_action_card_single-' . $template->getSlug() ) ) {
+
+								do_action( 'cn_action_card_single-' . $template->getSlug(), $entry, $template, $atts );
+
+							} else {
+
+								do_action( 'cn_action_card-' . $template->getSlug(), $entry, $template, $atts );
+							}
+
+							$out .= ob_get_contents();
+					    ob_end_clean();
+
+						$out .= apply_filters( 'cn_list_entry_after' , '' , $entry );
+						$out .= apply_filters( 'cn_list_entry_after-' . $template->getSlug() , '' , $entry );
+						$filterRegistry[] = 'cn_list_entry_after-' . $template->getSlug();
+
+					$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #' . $entry->getSlug() . ' -->' : '' ) . "\n";
+
+					// After entry actions.
+					ob_start();
+						do_action( 'cn_action_entry_after' , $atts , $entry );
+						do_action( 'cn_action_entry_after-' . $template->getSlug() , $atts , $entry );
+						$filterRegistry[] = 'cn_action_entry_after-' . $template->getSlug();
+
+						do_action( 'cn_action_entry_both' , $atts , $entry  );
+						do_action( 'cn_action_entry_both-' . $template->getSlug() , $atts ,$entry );
+						$filterRegistry[] = 'cn_action_entry_both-' . $template->getSlug();
+
+						// Entry actions template part.
+						do_action( 'cn_action_entry_actions-after', $atts , $entry );
+
+						$out .= ob_get_contents();
+					ob_end_clean();
+
+				}
+			}
+
+			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-body -->' : '' ) . "\n";
+
+			$out .= "\n" . '<div class="cn-clear" id="cn-list-foot">' . "\n";
+
+				$out .= apply_filters( 'cn_list_after' , '' , $results );
+				$out .= apply_filters( 'cn_list_after-' . $template->getSlug() , '' , $results );
+				$filterRegistry[] = 'cn_list_after-' . $template->getSlug();
+
+				ob_start();
+					do_action( 'cn_action_list_both' , $atts , $results  );
+					do_action( 'cn_action_list_both-' . $template->getSlug() , $atts , $results );
+					$filterRegistry[] = 'cn_action_list_both-' . $template->getSlug();
+
+					do_action( 'cn_action_list_after' , $atts , $results );
+					do_action( 'cn_action_list_after-' . $template->getSlug() , $atts , $results );
+					$filterRegistry[] = 'cn_action_list_after-' . $template->getSlug();
+
+					// Display the Results List Actions.
+					if ( ! get_query_var( 'cn-entry-slug' ) ) {
+
+						// List actions template part.
+						do_action( 'cn_action_list_actions-after', $atts );
+					}
+
+					$out .= ob_get_contents();
+				ob_end_clean();
+
+			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-foot -->' : '' ) . "\n";
+
+		$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-' . $template->getSlug() . ' -->' : '' ) . "\n";
+
+	$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list -->' : '' ) . "\n";
+
+	/*
+	 * Remove any filters a template may have added
+	 * so it is not run again if more than one template
+	 * is in use on the same page.
+	 */
+	foreach ( $filterRegistry as $filter ) {
+		if ( isset( $wp_filter[ $filter ] ) ) unset( $wp_filter[ $filter ] );
+	}
+
+	if ( cnSettingsAPI::get( 'connections', 'compatibility', 'strip_rnt' ) ) {
+		$search = array( "\r\n", "\r", "\n", "\t" );
+		$replace = array( ' ', ' ', ' ', ' ' );
+		$out = str_replace( $search , $replace , $out );
+	}
+
+	return $out;
 }
-
-
-
 
 /**
  * Template tag to call the upcoming list. All options can be passed as an
@@ -347,7 +608,7 @@ function connectionsUpcomingList( $atts ) {
 	echo _upcoming_list( $atts );
 }
 
-add_shortcode( 'upcoming_list', '_upcoming_list' );
+
 
 /**
  * Display the upcoming list.
@@ -555,8 +816,6 @@ function _upcoming_list( $atts, $content = NULL, $tag = 'upcoming_list' ) {
 	return $out;
 }
 
-add_shortcode( 'connections_vcard', '_connections_vcard' );
-
 function _connections_vcard( $atts , $content = NULL, $tag ) {
 
 	$atts = shortcode_atts( array(
@@ -572,8 +831,6 @@ function _connections_vcard( $atts , $content = NULL, $tag ) {
 
 	return '<span class="cn-qtip-vcard">' . $content . $qTipContent . '</span>';
 }
-
-add_shortcode( 'connections_qtip', '_connections_qtip' );
 
 function _connections_qtip( $atts , $content = NULL, $tag )
 {

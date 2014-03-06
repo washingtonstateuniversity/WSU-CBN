@@ -7,18 +7,17 @@ Version: 0.1
 Author: 
 Author URI: 
 */
-
+// If this file is called directly, abort.
+if ( ! defined( 'WPINC' ) ) {
+	die;
+}
 if (!class_exists('connectionsExpSearchLoad')) {
 	class connectionsExpSearchLoad {
 		public $options;
 		public $settings;
 		public function __construct() {
-			$this->loadConstants();
-			add_action( 'plugins_loaded', array( $this , 'start' ) );
-		}
-		
-		public function start() {
 			
+			self::defineConstants();
 			
 			add_filter('cn_list_atts_permitted', array(__CLASS__, 'expand_atts_permitted'));
 			/*
@@ -43,15 +42,14 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				add_filter('the_content', array( $this, 'doSearch' ));
 			}
 		}
-		private function loadConstants() {
-
+		private function defineConstants() {
 			define( 'CNEXSCH_CURRENT_VERSION', '1.0.2' );
-
 			define( 'CNEXSCH_DIR_NAME', plugin_basename( dirname( __FILE__ ) ) );
 			define( 'CNEXSCH_BASE_NAME', plugin_basename( __FILE__ ) );
 			define( 'CNEXSCH_BASE_PATH', plugin_dir_path( __FILE__ ) );
 			define( 'CNEXSCH_BASE_URL', plugin_dir_url( __FILE__ ) );
 		}
+		
 		public function init() { }
 		/**
 		 * Called when running the wp_print_styles action.
@@ -258,7 +256,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
 						foreach($categories as $cat){
 							$permittedAtts['category']=$cat->term_id;
-							$catblock = $connections->shortcode->connectionsList( $permittedAtts,NULL,'connections' );;
+							$catblock = connectionsList( $permittedAtts,NULL,'connections' );
 							//var_dump($catblock);
 							if(!empty($catblock) && strpos($catblock,'No results')===false){
 								$out .= '<h3>'.$state.$cat->name.'</h3>';
@@ -377,28 +375,21 @@ if (!class_exists('connectionsExpSearchLoad')) {
 
 					if(in_array('category',$visiblefields)){
 						$out .= '<div>';
-						$out .= cnTemplatePartExended::flexSelect(
-																$connections->retrieve->categories(
-																	array(
-																			'orderby'	=>array('parent','name'),
-																			'order'		=>array('ASC','ASC')
-																		)
-																)
-																,array(
-																	'type'            => 'select',
-																	'group'           => FALSE,
-																	'default'         => __('Select a category', 'connections'),
-																	'label'           => __('Search by category', 'connections'),
-																	'show_select_all' => TRUE,
-																	'select_all'      => __('Any', 'connections'),
-																	'show_empty'      => TRUE,
-																	'show_count'      => FALSE,
-																	'depth'           => 0,
-																	'parent_id'       => array(),
-																	'exclude'         => array(),
-																	'return'          => TRUE,
-																	'class'				=>'search-select'
-																));
+						$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(array('order'=>'parent ASC, name ASC')),array(
+							'type'            => 'select',
+							'group'           => FALSE,
+							'default'         => __('Select a category', 'connections'),
+							'label'           => __('Search by category', 'connections'),
+							'show_select_all' => TRUE,
+							'select_all'      => __('Any', 'connections'),
+							'show_empty'      => FALSE,
+							'show_count'      => FALSE,
+							'depth'           => 0,
+							'parent_id'       => array(),
+							'exclude'         => array(),
+							'return'          => TRUE,
+							'class'				=>'search-select'
+						));
 						$out .= '<hr/></div>';
 					}
 					
@@ -449,19 +440,38 @@ if (!class_exists('connectionsExpSearchLoad')) {
 
 
 	}
-	
-	/*
-	 * Checks for PHP 5 or greater as required by Connections Pro and display an error message
-	 * rather that havinh PHP thru an error.
+
+
+
+	/**
+	 * Start up the extension.
+	 *
+	 * @access public
+	 * @since 1.0
+	 *
+	 * @return mixed (object)|(bool)
 	 */
-	if (version_compare(PHP_VERSION, '5.0.0', '>')) {
-		/*
-		 * Initiate the plug-in.
-		 */
-		global $connectionsExpSearch;
-		$connectionsExpSearch = new connectionsExpSearchLoad();
-	} else {
-		add_action( 'admin_notices', create_function('', 'echo \'<div id="message" class="error"><p><strong>Connections ROT13 requires at least PHP5. You are using version: ' . PHP_VERSION . '</strong></p></div>\';') );
+	function connectionsExpSearchLoad() {
+
+
+			if ( class_exists('connectionsLoad') ) {
+					return new connectionsExpSearchLoad();
+			} else {
+					add_action(
+							'admin_notices',
+							 create_function(
+									 '',
+									'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order use Connections Extended Search.</p></div>\';'
+									)
+					);
+					return FALSE;
+			}
 	}
-	
+
+
+	/**
+	 * Since Connections loads at default priority 10, and this extension is dependent on Connections,
+	 * we'll load with priority 11 so we know Connections will be loaded and ready first.
+	 */
+	add_action( 'plugins_loaded', 'connectionsExpSearchLoad', 11 );
 }

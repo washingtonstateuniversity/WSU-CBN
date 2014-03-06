@@ -144,7 +144,6 @@ $translations = array(
 	'No tables.' => 'Tiada tabel.',
 	'Alter table' => 'Ubah tabel',
 	'Create table' => 'Buat tabel',
-	'Create new table' => 'Buat tabel baru',
 	'Table has been dropped.' => 'Tabel berhasil dihapus.',
 	'Tables have been dropped.' => 'Tabel berhasil dihapus.',
 	'Tables have been optimized.' => 'Tabel berhasil dioptimalkan.',
@@ -166,7 +165,7 @@ $translations = array(
 	'Move up' => 'Naik',
 	'Move down' => 'Turun',
 	'Remove' => 'Hapus',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Jumlah ruas maksimum yang diizinkan dilewati. Harap naikkan %s dan %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Jumlah ruas maksimum yang diizinkan dilewati. Harap naikkan %s.',
 
 	'Partition by' => 'Partisi menurut',
 	'Partitions' => 'Partisi',
@@ -233,7 +232,6 @@ $translations = array(
 	'%d row(s)' => '%d baris',
 	'Page' => 'Halaman',
 	'last' => 'terakhir',
-	'Last page' => 'Halaman terakhir',
 	'whole result' => 'Seluruh hasil',
 	'%d byte(s)' => '%d bita',
 

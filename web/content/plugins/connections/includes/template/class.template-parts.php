@@ -34,6 +34,8 @@ class cnTemplatePart {
 
 		add_action( 'cn_action_character_index', array( __CLASS__, 'index' ) );
 		add_action( 'cn_action_return_to_target', array( __CLASS__, 'returnToTopTarget' ) );
+
+		add_action( 'cn_action_entry_after', array( __CLASS__, 'JSON' ), 10, 2 );
 	}
 
 	/**
@@ -261,6 +263,87 @@ class cnTemplatePart {
 
 		if ( $atts['return'] ) return $out;
 		echo $out;
+	}
+
+	/**
+	 * Outputs entry data JSON encoded in HTML data attribute.
+	 * This is an action called by the `cn_action_entry_after` hook.
+	 *
+	 * @access  public
+	 * @since  0.8
+	 * @uses   wp_parse_args()
+	 * @param array  $atts  Shortcode $atts passed by the `cn_action_entry_after` action hook.
+	 * @param object $entry An instance the the cnEntry object.
+	 *
+	 * return void
+	 */
+	public static function JSON( $atts, $entry ) {
+
+		// Stores the entry data.
+		$data = array();
+
+		$defaults = array(
+			'tag'                => 'div',
+			'before'             => '',
+			'after'              => '',
+			'return'             => FALSE,
+			'show_addresses'     => TRUE,
+			'show_phone_numbers' => TRUE,
+			'show_email'         => TRUE,
+			'show_im'            => TRUE,
+			'show_social_media'  => TRUE,
+			'show_links'         => TRUE,
+			'show_dates'         => TRUE,
+			'show_bio'           => TRUE,
+			'show_notes'         => TRUE,
+		);
+
+		$atts = wp_parse_args( $atts, $defaults );
+
+		$data = array(
+			'type'            => $entry->getEntryType(),
+			'id'              => $entry->getId(),
+			'ruid'            => $entry->getRuid(),
+			'slug'            => $entry->getSlug(),
+			'name'            => array(
+				'full'   => $entry->getName( $atts ),
+				'prefix' => $entry->getHonorificPrefix(),
+				'first'  => $entry->getFirstName(),
+				'middle' => $entry->getMiddleName(),
+				'last'   => $entry->getLastName(),
+				'suffix' => $entry->getHonorificSuffix(),
+				),
+			'title'           => $entry->getTitle(),
+			'organization'    => $entry->getOrganization(),
+			'department'      => $entry->getDepartment(),
+			'contact_name'    => array(
+				'full'   => $entry->getContactName(),
+				'first'  => $entry->getContactFirstName(),
+				'last'   => $entry->getContactLastName()
+				),
+			'family_name'     => $entry->getFamilyName(),
+			'family_members'  => $entry->getFamilyMembers(),
+			'categories'      => $entry->getCategory(),
+			'meta'            => $entry->getMeta( $atts ),
+			);
+
+		if ( $atts['show_addresses'] ) $data['addresses'] = $entry->getAddresses( $atts );
+		if ( $atts['show_phone_numbers'] ) $data['phone_numbers'] = $entry->getPhoneNumbers( $atts );
+		if ( $atts['show_email'] ) $data['email_addresses'] = $entry->getEmailAddresses( $atts );
+		if ( $atts['show_im'] ) $data['im'] = $entry->getIm( $atts );
+		if ( $atts['show_social_media'] ) $data['social_media'] = $entry->getSocialMedia( $atts );
+		if ( $atts['show_links'] ) $data['links'] = $entry->getLinks( $atts );
+		if ( $atts['show_dates'] ) $data['dates'] = $entry->getDates( $atts );
+		if ( $atts['show_bio'] ) $data['bio'] = $entry->getBio();
+		if ( $atts['show_notes'] ) $data['notes'] = $entry->getNotes();
+
+		$out =  sprintf('<%1$s class="cn-entry-data-json" data-entry-data-json=\'%2$s\'></%1$s>',
+				$atts['tag'],
+				htmlspecialchars( json_encode( $data ), ENT_QUOTES, 'UTF-8' )
+			);
+
+		if ( $atts['return'] ) return PHP_EOL . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . PHP_EOL;
+		echo PHP_EOL . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . PHP_EOL;
 	}
 
 	/**
@@ -735,10 +818,10 @@ class cnTemplatePart {
 				// Add the country base and path if paging thru a country.
 				if ( get_query_var('cn-country') ) $permalink = trailingslashit( $permalink . $base['country_base'] . '/' . get_query_var('cn-country') );
 
-				$url['first'] = add_query_arg( $queryVars , $permalink . 'pg/' . $page['first'] );
+				$url['first']    = add_query_arg( $queryVars , $permalink . 'pg/' . $page['first'] );
 				$url['previous'] = add_query_arg( $queryVars , $permalink . 'pg/' . $page['previous'] );
-				$url['next'] = add_query_arg( $queryVars , $permalink . 'pg/' . $page['next'] );
-				$url['last'] = add_query_arg( $queryVars , $permalink . 'pg/' . $page['last'] );
+				$url['next']     = add_query_arg( $queryVars , $permalink . 'pg/' . $page['next'] );
+				$url['last']     = add_query_arg( $queryVars , $permalink . 'pg/' . $page['last'] );
 
 			} else {
 
@@ -748,22 +831,22 @@ class cnTemplatePart {
 				// Add back on the URL any other Connections query vars.
 				$permalink = add_query_arg( $queryVars , $permalink );
 
-				$url['first'] = add_query_arg( array( 'cn-pg' => $page['first'] ) , $permalink );
+				$url['first']    = add_query_arg( array( 'cn-pg' => $page['first'] ) , $permalink );
 				$url['previous'] = add_query_arg( array( 'cn-pg' => $page['previous'] ) , $permalink );
-				$url['next'] = add_query_arg( array( 'cn-pg' => $page['next'] ) , $permalink );
-				$url['last'] = add_query_arg( array( 'cn-pg' => $page['last'] ) , $permalink );
+				$url['next']     = add_query_arg( array( 'cn-pg' => $page['next'] ) , $permalink );
+				$url['last']     = add_query_arg( array( 'cn-pg' => $page['last'] ) , $permalink );
 			}
 
 			// Build the html page nav.
 			$out .= '<span class="cn-page-nav" id="cn-page-nav">';
 
-			$out .= '<a href="' . $url['first'] . '" title="' . __('First Page', 'connections') . '" class="cn-first-page' . $disabled['first'] . '">&laquo;</a> ';
-			$out .= '<a href="' . $url['previous'] . '" title="' . __('Previous Page', 'connections') . '" class="cn-prev-page' . $disabled['previous'] . '" rel="prev">&lsaquo;</a> ';
+			$out .= '<a href="' . esc_url( $url['first'] ) . '" title="' . __('First Page', 'connections') . '" class="cn-first-page' . $disabled['first'] . '">&laquo;</a> ';
+			$out .= '<a href="' . esc_url( $url['previous'] ) . '" title="' . __('Previous Page', 'connections') . '" class="cn-prev-page' . $disabled['previous'] . '" rel="prev">&lsaquo;</a> ';
 
 			$out .= '<span class="cn-paging-input"><input type="text" size="1" value="' . $current . '" name="cn-pg" title="' . __('Current Page', 'connections') . '" class="current-page"> ' . __('of', 'connections') . ' <span class="total-pages">' . $pageCount . '</span></span> ';
 
-			$out .= '<a href="' . $url['next'] . '" title="' . __('Next Page', 'connections') . '" class="cn-next-page' . $disabled['next'] . '" rel="next">&rsaquo;</a> ';
-			$out .= '<a href="' . $url['last'] . '" title="' . __('Last Page', 'connections') . '" class="cn-last-page' . $disabled['last'] . '">&raquo;</a>';
+			$out .= '<a href="' . esc_url( $url['next'] ) . '" title="' . __('Next Page', 'connections') . '" class="cn-next-page' . $disabled['next'] . '" rel="next">&rsaquo;</a> ';
+			$out .= '<a href="' . esc_url( $url['last'] ) . '" title="' . __('Last Page', 'connections') . '" class="cn-last-page' . $disabled['last'] . '">&raquo;</a>';
 
 			$out .= '</span>';
 		}
@@ -1004,16 +1087,31 @@ class cnTemplatePart {
 		}
 		// $strSelected = $selected ? ' SELECTED ' : '';
 
+		$class = 'class="cn-cat-level-' . $level . '"';
+
 		// Category count to be appended to the category name.
 		$count = ( $atts['show_count'] ) ? ' (' . $category->count . ')' : '';
 
 		// If option grouping is TRUE, show only the select option if it is a descendant. The root parent was used as the option group label.
 		if ( ( $atts['group'] && $level > 1 ) && ( $atts['show_empty'] || ! empty( $category->count ) || ! empty( $category->children ) ) ) {
-			$out .= sprintf('<option style="padding-left: %1$dpx !important" value="%2$s"%3$s>' . /*$pad .*/ $category->name . $count . '</option>' , $pad , $category->term_id , $strSelected );
+
+			$out .= sprintf('<option %1$s style="padding-left: %2$dpx !important" value="%3$s"%4$s>' . /*$pad .*/ $category->name . $count . '</option>',
+				$class,
+				$pad,
+				$category->term_id,
+				$strSelected
+				);
 		}
+
 		// If option grouping is FALSE, show the root parent and descendant options.
 		elseif ( ! $atts['group'] && ( $atts['show_empty'] || ! empty($category->count) || ! empty($category->children) ) ) {
-			$out .= sprintf('<option style="padding-left: %1$dpx !important" value="%2$s"%3$s>' . /*$pad .*/ $category->name . $count . '</option>' , $pad , $category->term_id , $strSelected );
+
+			$out .= sprintf('<option %1$s style="padding-left: %2$dpx !important" value="%3$s"%4$s>' . /*$pad .*/ $category->name . $count . '</option>',
+				$class,
+				$pad,
+				$category->term_id,
+				$strSelected
+				);
 		}
 
 		/*

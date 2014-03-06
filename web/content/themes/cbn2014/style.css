@@ -4,7 +4,10 @@
    Author: JKB, University Publishing, Washington State University
    ========================================================================== */
 
-body { background:#fff url('img/Header-background.png') repeat-x top center; }
+body { background:#fff url('img/body-content-background.png') no-repeat top center; }
+#body_wrap {  background:transparent url('img/Header-background.png') repeat-x top center; }
+
+
 .row{max-width: 1260px;}
 a { color:#981e32; }
 a:visited { color: #981e32; }
@@ -20,21 +23,11 @@ h2, h4, h6 { color:#981e32; }
 header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; background:transparent url('img/Header-WSU-background.png') no-repeat top center;}
 #displayheader{ height: 200px; }
 
-#main { margin:25px auto 10px auto; background-color:#fff; color:#000; text-align:center; width:85%; float:left; clear:both; margin-left:7.5%; margin-right:7.5%; overflow:auto;
-
-	/* rounding corners */
-	-webkit-border-radius:10px 10px 10px 10px;
-	-moz-border-radius:10px 10px 10px 10px;
-	border-radius:10px 10px 10px 10px;	
-
-	background:none repeat scroll 0 0 #ffffff;
-	box-shadow:0 1px 4px rgba(0, 0, 0, 0.1) inset;
-
-	/* adding drop shadow */
-	-webkit-box-shadow:0 8px 20px -3px #000000;
-	-moz-box-shadow:0 8px 20px -3px #000000;
-	box-shadow:0 8px 20px -3px #000000;
- 
+#main { background: none repeat scroll 0 0 #FFFFFF;
+margin: 0;
+overflow: auto;
+text-align: center;
+width: 100%;
 }
 .admin #main {    clear: none;
     float: left;
@@ -95,6 +88,7 @@ header { height:255px; margin-top:50px; text-align:center; color:#b6bcbf; backgr
 .navbar ul li > a {
   height: 55px;
   line-height: 55px;
+  color:#000000;
 }
 
 #nav2{ position: relative;}
@@ -195,20 +189,12 @@ background:transparent url('img/Header-butch.png') no-repeat center center;
 
 
 
-#footer { text-align:center; color:#b6bcbf; font-size:0.75em; line-height:1.5; float:left; clear:both; width:100%; }
+#footer { text-align:center; color:#b6bcbf; font-size:0.75em; line-height:1.5; float:left; clear:both; width:100%; background-color:#5e6a71; }
 #footer a { color:#b6bcbf; }
 #footer a:visited { color:#b6bcbf; }
 #footer #footer-bkgrd a:hover { color:#981e32; }
-
-#footer #footer-crimson { background-color:#981e32; border-top:1px solid #000; height:4px; }
-
-#footer #footer-bkgrd { margin-top:4px; background:url('img/bkgrd/footer-texture.jpg') repeat-x top center; padding:13px; text-align:center; color:#b6bcbf; 
-
-	/* adding drop shadow underneath */
-	-webkit-box-shadow:0 8px 20px 0px #000000;
-	-moz-box-shadow:0 8px 20px 0px #000000;
-	box-shadow:0 8px 20px 0px #000000;
-
+#footer #footer-bkgrd { margin-top:4px; background:url('img/footer-background.jpg') no-repeat top center; padding:13px; text-align:center; color:#b6bcbf; 
+height:350px;
 }
 
 
@@ -244,12 +230,12 @@ position: relative;
 .col_2{width:50%;float:left;display:inline-block;height: 55px;position:relative}
 .col_2 input[type="submit"],.col_2 input[type="button"]{position:absolute;bottom:0px; right:0px;}
 
-
+/*
 body.page.page-id-9 #main-content {
 	background:#ffffff url('img/bkgrd/page-corner.jpg') no-repeat top left;
 	padding-left:146px;
 	padding-top:53px;
-}
+}*/
 
 
 .search-select{margin-bottom:15px;display:inline-block;}

@@ -11,6 +11,7 @@ $translations = array(
 	'Logged as: %s' => 'Zalogowany jako: %s',
 	'Logout successful.' => 'Wylogowano pomyślnie.',
 	'Invalid credentials.' => 'Nieprawidłowe dane logowania.',
+	'Master password expired. <a href="http://www.adminer.org/en/extension/" target="_blank">Implement</a> %s method to make it permanent.' => 'Ważność hasła głównego wygasła. <a href="http://www.adminer.org/pl/extension/" target="_blank">Zaimplementuj</a> własną metodę %s, aby ustawić je na stałe.',
 	'Language' => 'Język',
 	'Invalid CSRF token. Send the form again.' => 'Nieprawidłowy token CSRF. Spróbuj wysłać formularz ponownie.',
 	'No extension' => 'Brak rozszerzenia',
@@ -64,6 +65,7 @@ $translations = array(
 	'Unable to upload a file.' => 'Wgranie pliku było niemożliwe.',
 	'Maximum allowed file size is %sB.' => 'Maksymalna wielkość pliku to %sB.',
 	'Too big POST data. Reduce the data or increase the %s configuration directive.' => 'Przesłano zbyt dużo danych. Zmniejsz objętość danych lub zwiększ zmienną konfiguracyjną %s.',
+	'You can upload a big SQL file via FTP and import it from server.' => 'Większe pliki SQL możesz wgrać na serwer poprzez FTP przed zaimportowaniem.',
 	
 	'Export' => 'Eksport',
 	'Dump' => 'Eksport',
@@ -144,7 +146,6 @@ $translations = array(
 	'No tables.' => 'Brak tabel.',
 	'Alter table' => 'Zmień tabelę',
 	'Create table' => 'Utwórz tabelę',
-	'Create new table' => 'Utwórz nową tabelę',
 	'Table has been dropped.' => 'Tabela została usunięta.',
 	'Tables have been dropped.' => 'Tabele zostały usunięte.',
 	'Tables have been optimized.' => 'Tabele zostały zoptymalizowane.',
@@ -166,7 +167,7 @@ $translations = array(
 	'Move up' => 'Przesuń w górę',
 	'Move down' => 'Przesuń w dół',
 	'Remove' => 'Usuń',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Przekroczono maksymalną liczbę pól. Zwiększ %s i %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Przekroczono maksymalną liczbę pól. Zwiększ %s.',
 	
 	'Partition by' => 'Partycjonowanie',
 	'Partitions' => 'Partycje',
@@ -227,17 +228,20 @@ $translations = array(
 	'Limit' => 'Limit',
 	'Text length' => 'Długość tekstu',
 	'Action' => 'Czynność',
+	'Full table scan' => 'Wymaga pełnego przeskanowania tabeli',
 	'Unable to select the table' => 'Nie udało się pobrać danych z tabeli',
 	'No rows.' => 'Brak rekordów.',
 	'%d row(s)' => array('%d rekord', '%d rekordy', '%d rekordów'),
 	'Page' => 'Strona',
 	'last' => 'ostatni',
-	'Last page' => 'Ostatnia strona',
+	'Load more data' => 'Wczytaj więcej danych',
+	'Loading' => 'Wczytywanie',
 	'whole result' => 'wybierz wszystkie',
 	'%d byte(s)' => array('%d bajt', '%d bajty', '%d bajtów'),
 	
 	'Import' => 'Import',
 	'%d row(s) have been imported.' => array('%d rekord został zaimportowany.', '%d rekordy zostały zaimportowane.', '%d rekordów zostało zaimportowanych.'),
+	'File must be in UTF-8 encoding.' => 'Kodowanie pliku musi być ustawione na UTF-8.',
 	
 	// in-place editing in select
 	'Ctrl+click on a value to modify it.' => 'Ctrl+kliknij wartość, aby ją edytować.',
@@ -260,6 +264,7 @@ $translations = array(
 	'Save and insert next' => 'Zapisz i dodaj następny',
 	'Clone' => 'Duplikuj',
 	'Delete' => 'Usuń',
+	'You have no privileges to update this table.' => 'Brak uprawnień do edycji tej tabeli',
 	
 	'E-mail' => 'E-mail',
 	'From' => 'Nadawca',

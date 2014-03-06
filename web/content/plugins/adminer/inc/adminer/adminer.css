@@ -1,7 +1,8 @@
 /**
- * Alternative style for Adminer by Frank Bueltge
+ * Alternative style for Adminer by Frank Bültge
+ * 
  * @link     http://bueltge.de/
- * @version  01/10/2013
+ * @version  01/26/2014
  */
 
 body {
@@ -98,7 +99,6 @@ border-top-width: 0;
 }
 td:first-child, th:first-child {
 border-left-width: 0;
-text-align: center;
 }
 thead {
 display: table-header-group;
@@ -141,7 +141,6 @@ padding-top: 14px;
 legend {
 font-weight: 900; 
 color: #000;
-position: absolute;
 top: -1.666em;
 left: -1em;
 padding: 0 4px;
@@ -396,7 +395,7 @@ position: absolute;
 position: absolute;
 }
 .js .hidden {
-display: inline;
+display: hidden;
 }
 .js td.hidden, .js input.hidden {
 display: none;

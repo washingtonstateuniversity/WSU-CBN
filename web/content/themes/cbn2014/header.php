@@ -52,15 +52,18 @@
     
 </head>
  <body <?php body_class(); ?>>
+ <div id="body_wrap"> 
+ 
+ 
  <div class="row">
      <header class="row">
      	<div id="displayheader" class="twelve columns row">
-            <nav role="navigation" class="ten columns" id="nav2">
+            <!--<nav role="navigation" class="ten columns" id="nav2">
 
     	        <?php wp_nav_menu( array( 'menu' => 'quickaction', 'menu_class' => 'vrt-nav-menu' ) ); ?>
 				<span id="butch-nav">&nbsp;</span>
             </nav>
-        
+        -->
         
             <h1 class="two columns logo">
                 <a href="#">

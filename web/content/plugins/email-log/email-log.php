@@ -5,7 +5,7 @@ Plugin URI: http://sudarmuthu.com/wordpress/email-log
 Description: Logs every email sent through WordPress
 Donate Link: http://sudarmuthu.com/if-you-wanna-thank-me
 Author: Sudar
-Version: 1.6.1
+Version: 1.6.2
 Author URI: http://sudarmuthu.com/
 Text Domain: email-log
 Domain Path: languages/
@@ -353,8 +353,7 @@ class EmailLogInit {
      * @global object $wpdb
      * @global string $smel_table_name Table Name
      */
-    function on_activate() {
-
+    public static function on_activate() {
         global $wpdb;
         $table_name = $wpdb->prefix . EmailLog::TABLE_NAME;
 

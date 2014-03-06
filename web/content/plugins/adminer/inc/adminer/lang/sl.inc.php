@@ -140,7 +140,6 @@ $translations = array(
 	'No tables.' => 'Ni tabel.',
 	'Alter table' => 'Spremeni tabelo',
 	'Create table' => 'Ustvari tabelo',
-	'Create new table' => 'Ustvari novo tabelo',
 	'Table has been dropped.' => 'Tabela je zavržena.',
 	'Tables have been dropped.' => 'Tabele so zavržene.',
 	'Table has been altered.' => 'Tabela je spremenjena.',
@@ -161,7 +160,7 @@ $translations = array(
 	'Move up' => 'Premakni gor',
 	'Move down' => 'Premakni dol',
 	'Remove' => 'Odstrani',
-	'Maximum number of allowed fields exceeded. Please increase %s and %s.' => 'Največje število dovoljenih polje je preseženo. Prosimo, povečajte %s in %s.',
+	'Maximum number of allowed fields exceeded. Please increase %s.' => 'Največje število dovoljenih polje je preseženo. Prosimo, povečajte %s.',
 	
 	'Partition by' => 'Porazdeli po',
 	'Partitions' => 'Porazdelitve',
@@ -227,7 +226,6 @@ $translations = array(
 	'%d row(s)' => array('%d vrstica', '%d vrstici', '%d vrstice', '%d vrstic'),
 	'Page' => 'Stran',
 	'last' => 'Zadnja',
-	'Last page' => 'Zadnja stran',
 	'whole result' => 'cel razultat',
 	'%d byte(s)' => array('%d bajt', '%d bajta', '%d bajti', '%d bajtov'),
 	
