@@ -36,7 +36,8 @@ class cnTemplatePartExended {
             'depth' => 0,
             'parent_id' => array(),
             'exclude' => array(),
-            'return' => FALSE
+            'return' => FALSE,
+			'onSelect' => FALSE
         );
         $atts       = wp_parse_args($atts, $defaults);
         if (!is_array($atts['parent_id'])) {
@@ -55,7 +56,7 @@ class cnTemplatePartExended {
 		
         $out .= "\n" . '<select class="cn-cat-select " name="'.(($atts['type'] == 'multiselect') ? 'cn-cat[]' : 'cn-cat').'" ' 
 					. (($atts['type'] == 'multiselect') ? ' MULTIPLE ' : '') 
-					. (($atts['type'] == 'multiselect') ? '' : ' onchange="this.form.submit()" ') 
+					. (($atts['type'] == 'multiselect'  || $atts['onSelect']==false ) ? '' : ' onchange="this.form.submit()" ') 
 					. ' data-placeholder="' . esc_attr($atts['default']) . '" >';
         $out .= "\n" . '<option value=""></option>';
         if ($atts['show_select_all'])

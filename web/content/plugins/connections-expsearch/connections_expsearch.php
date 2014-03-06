@@ -37,7 +37,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 
 			add_action( 'wp_print_styles', array( $this, 'loadStyles' ) );
 			add_action( 'init', array($this, 'loadJs') );
-			
+			add_filter('wp_head', array($this, 'add_cnexpsh_data'));
 			if (isset($_POST['start_search'])) {// Check if option save is performed
 				add_filter('the_content', array( $this, 'doSearch' ));
 			}
@@ -71,6 +71,22 @@ if (!class_exists('connectionsExpSearchLoad')) {
 
 		public function loadJs(){
 			if ( ! is_admin() )wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
+			
+			
+			
+			
+			
+		}
+		// Add items to the footer
+		function add_cnexpsh_data() {
+			global $connections;
+			$homeID = $connections->settings->get( 'connections', 'connections_home_page', 'page_id' );
+			if ( in_the_loop() && is_page() ) {
+				$permalink = trailingslashit ( get_permalink() );
+			} else {
+				$permalink = trailingslashit ( get_permalink( $homeID ) );
+			}
+			echo '<script type="text/javascript">var cn_search_form_url = "'.$permalink.'";</script>';
 		}
 
 		/**
@@ -259,7 +275,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 							$catblock = connectionsList( $permittedAtts,NULL,'connections' );
 							//var_dump($catblock);
 							if(!empty($catblock) && strpos($catblock,'No results')===false){
-								$out .= '<h3>'.$state.$cat->name.'</h3>';
+								$out .= '<h2>'.$state.$cat->name.'</h2>';
 								$out .= '<div class="accordion">';
 								$out .= $catblock;
 								$out .= '</div>';
@@ -268,7 +284,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					}else{
 						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
 						$category = $connections->retrieve->category($permittedAtts['category']);
-						$out .= '<h3>'.$state.$category->name.'</h3>';
+						$out .= '<h2>'.$state.$category->name.'</h2>';
 						$out .= '<div class="accordion">';
 						$out .= connectionsList( $permittedAtts,NULL,'connections' );
 						$out .= '</div>';
@@ -363,6 +379,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$use_geolocation = $connections->settings->get( 'connections_expsearch' , 'connections_expsearch_defaults' , 'use_geolocation' );
 			// switch out for a template that can be changed. ie: {$category_select}, {$state_dropdown} etc.
 			$out .= '<div id="cn-form-container">' . "\n";
+				$out .= '<input type="hidden" value="'.get_bloginfo('wpurl').'" name="wpurl">';
 				$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
 				$out .= '<form id="cn-search-form" method="POST" enctype="multipart/form-data">' . "\n";
 	
