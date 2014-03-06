@@ -9,8 +9,8 @@ Gumby.ready(function() {
 
 	// skip link and toggle on one element
 	// when the skip link completes, trigger the switch
-	$('#skip-switch').on('gumby.onComplete', function() {
-		$(this).trigger('gumby.trigger');
+	jQuery('#skip-switch').on('gumby.onComplete', function() {
+		jQuery(this).trigger('gumby.trigger');
 	});
 
 // Oldie document loaded

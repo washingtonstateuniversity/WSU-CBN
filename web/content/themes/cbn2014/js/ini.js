@@ -249,7 +249,7 @@ function iniSingleMap(obj,callback){
 		*/
 		
 		
-		/*jQuery('.accordion').accordion({ header: '.biz',collapsible: true,active: false });*/
+		jQuery('.accordion').accordion({ header: '.biz',collapsible: true,active: false });/**/
 	}
 	
 	if(jQuery('#cbn_map').length){
