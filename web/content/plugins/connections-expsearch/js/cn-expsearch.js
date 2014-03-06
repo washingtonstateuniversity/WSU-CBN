@@ -46,10 +46,46 @@
 		
 		function setup_location_alert(){
 			//alert('I would have suggested something to you.');
+			navigator.geolocation.getCurrentPosition(function(Pos){
+					//var cn_search_form_url = "http://cbn.wsu.edu/wordpress/cbn-search/";
+					$.ajax({
+						type: "POST",
+						url: cn_search_form_url,
+						cache: false,
+						data: {
+							"cn-cat	":"",
+							"cn-state":"",
+							"cn-near_addr":"",
+							"cn-latitude":""+Pos.coords.latitude,
+							"cn-longitude":""+Pos.coords.longitude,
+							"cn-radius":"10",
+							"cn-unit":"mi",
+							"start_search":"Submit"
+						},
+						success: function(data, textStatus, jqXHR){
+							var count = $(data).find('.cn-entry').length;
+							//alert("found "+count+" locations");
+							
+							$('body').append('<div id="location_alert">There are '+count+' businesses that are near you <a href="#" id="veiw_locations">Click to find veiw them.</a> <a href="#" id="close_alert">[x]</a></div>');
+							$('#location_alert').slideDown();
+							$('#close_alert').off().on("click", function(e){
+								e.preventDefault();
+								$('#location_alert').slideUp();
+							});
+							var Form = '<form id="location_search_target" action="'+cn_search_form_url+'" enctype="multipart/form-data" method="POST" style="height:0px;width:0px; overflow:hidden;"><input type="hidden" name="cn-cat"><input type="hidden" name="cn-state"><input type="hidden" name="cn-near_addr"><input type="hidden" name="cn-latitude" value="'+Pos.coords.latitude+'"><input type="hidden" name="cn-longitude" value="'+Pos.coords.longitude+'"><input type="hidden" name="cn-radius" value="10"><input type="hidden" name="cn-unit" value="mi"><input type="submit" name="start_search" value="Submit"></form>';
+							$('body').append(Form);
+							$('#veiw_locations').off().on("click", function(e){
+								e.preventDefault();
+								//$("#location_search_target").submit();
+								$("#location_search_target").find('[type="submit"]').trigger('click');
+							});
+							
+							
+						}
+					});
+				},showError);
 		}
-			
-		
-		
+
 		
 		if( $('html').is($('.geolocation '))){
 			$('#mylocation').on('click',function(e){
@@ -63,23 +99,6 @@
 		}else{
 			$('#mylocation').closest('h2').remove();
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+	
 	});
 }(this,document,jQuery));

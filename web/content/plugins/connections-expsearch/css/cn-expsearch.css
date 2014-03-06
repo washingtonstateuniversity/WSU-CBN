@@ -150,3 +150,36 @@
 	margin: 0 6px;
 	padding: 2px 4px;
 }
+
+#location_alert{
+	background-color: #FFE11A;
+	bottom: 0;
+	color: #313131;
+	font-size: 25px;
+	height: 50px;
+	left: 0;
+	margin: 0 5%;
+	padding: 11px 15px;
+	position: fixed;
+	width: 90%;
+}
+
+#close_alert{
+	position: absolute;
+	right: 14px;
+	top: 11px;	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
