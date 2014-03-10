@@ -3,15 +3,17 @@
 This is the base project for CBN.  Put all found site related issues in the github issue tracker
 
 
-### WSUWP Single Site Dev Configuration
+### WSUWP Indie Development Configuration
 
-For use under [WSUWP Single Site Dev](https://github.com/washingtonstateuniversity/WSUWP-Single-Site-Dev)
+For use under [WSUWP Indie Development](https://github.com/washingtonstateuniversity/wsuwp-indie-development)
 
-ensure the following is in the `projects.sls` pillar file:
+Ensure the following is in the `sites.sls` pillar file:
 
 ```
-wp-single-projects:
+wsuwp-indie-sites:
   cbn.wsu.edu:
-    name: cbn.wsu.edu
-    database: wsu_cbn
+    directory: cbn.wsu.edu
+    database: cbn_wsu
+    nginx:
+      server_name: dev.cbn.wsu.edu
 ```
