@@ -66,13 +66,13 @@
 							var count = $(data).find('.cn-entry').length;
 							//alert("found "+count+" locations");
 							
-							$('body').append('<div id="location_alert">There are '+count+' businesses that are near you <a href="#" id="veiw_locations">Click to find veiw them.</a> <a href="#" id="close_alert">[x]</a></div>');
+							$('body').append('<div id="location_alert">There are '+count+' businesses that are near you <a href="#" id="veiw_locations">Click to  veiw them.</a> <a href="#" id="close_alert">[x]</a></div>');
 							$('#location_alert').slideDown();
 							$('#close_alert').off().on("click", function(e){
 								e.preventDefault();
 								$('#location_alert').slideUp();
 							});
-							var Form = '<form id="location_search_target" action="'+cn_search_form_url+'" enctype="multipart/form-data" method="POST" style="height:0px;width:0px; overflow:hidden;"><input type="hidden" name="cn-cat"><input type="hidden" name="cn-state"><input type="hidden" name="cn-near_addr"><input type="hidden" name="cn-latitude" value="'+Pos.coords.latitude+'"><input type="hidden" name="cn-longitude" value="'+Pos.coords.longitude+'"><input type="hidden" name="cn-radius" value="10"><input type="hidden" name="cn-unit" value="mi"><input type="submit" name="start_search" value="Submit"></form>';
+							var Form = '<form id="location_search_target" action="'+cn_search_form_url+'" enctype="multipart/form-data" method="POST" style="height:0px;width:0px; overflow:hidden;"><input type="hidden" name="location_alert" value="true"><input type="hidden" name="cn-cat"><input type="hidden" name="cn-state"><input type="hidden" name="cn-near_addr"><input type="hidden" name="cn-latitude" value="'+Pos.coords.latitude+'"><input type="hidden" name="cn-longitude" value="'+Pos.coords.longitude+'"><input type="hidden" name="cn-radius" value="10"><input type="hidden" name="cn-unit" value="mi"><input type="submit" name="start_search" value="Submit"></form>';
 							$('body').append(Form);
 							$('#veiw_locations').off().on("click", function(e){
 								e.preventDefault();
@@ -93,7 +93,7 @@
 				e.preventDefault();
 				getLocation();
 			});
-			if (navigator.geolocation){
+			if (navigator.geolocation && $('.location_posted').length<=0 && $('#cn-form').length<=0){
 				setup_location_alert();
 			}
 		}else{
