@@ -50,16 +50,16 @@
    
     
     
-    <!-- <script type="text/javascript" src="/content/themes/cbn2014/js/markerclusterer.min.js"></script>
-    <script type="text/javascript" src="/content/themes/cbn2014/js/jquery.ui.map.js"></script>
-    <script type="text/javascript" src="/content/themes/cbn2014/js/infobox.js"></script>
+    <!-- <script type="text/javascript" src="/wp-content/themes/cbn2014/js/markerclusterer.min.js"></script>
+    <script type="text/javascript" src="/wp-content/themes/cbn2014/js/jquery.ui.map.js"></script>
+    <script type="text/javascript" src="/wp-content/themes/cbn2014/js/infobox.js"></script>
     scripts concatenated and minified via build script 
     
     
     
     
     
-    <script type="text/javascript" src="/content/themes/cbn2014/js/plugins.js"></script>
+    <script type="text/javascript" src="/wp-content/themes/cbn2014/js/plugins.js"></script>
     
   -->
 
@@ -84,28 +84,28 @@
   <script>
   if(!window.jQuery) {
     if(!oldieCheck) {
-      document.write('<script src="/content/themes/cbn2014/js/libs/jquery-2.0.2.min.js"><\/script>');
+      document.write('<script src="/wp-content/themes/cbn2014/js/libs/jquery-2.0.2.min.js"><\/script>');
     } else {
-      document.write('<script src="/content/themes/cbn2014/js/libs/jquery-1.10.1.min.js"><\/script>');
+      document.write('<script src="/wp-content/themes/cbn2014/js/libs/jquery-1.10.1.min.js"><\/script>');
     }
   }
   </script>
   <script type="text/javascript" src="http://code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/jquery.defaultvalue.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/jquery.defaultvalue.js"></script>
   <!--
   Include gumby.js followed by UI modules followed by gumby.init.js
   Or concatenate and minify into a single file -->
-  <script type="text/javascript" gumby-touch="js/libs" src="/content/themes/cbn2014/js/libs/gumby.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.retina.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.fixed.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.skiplink.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.toggleswitch.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.checkbox.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.radiobtn.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.tabs.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/gumby.navbar.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/ui/jquery.validation.js"></script>
-  <script type="text/javascript" src="/content/themes/cbn2014/js/libs/gumby.init.js"></script>
+  <script type="text/javascript" gumby-touch="js/libs" src="/wp-content/themes/cbn2014/js/libs/gumby.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.retina.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.fixed.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.skiplink.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.toggleswitch.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.checkbox.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.radiobtn.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.tabs.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/gumby.navbar.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/ui/jquery.validation.js"></script>
+  <script type="text/javascript" src="/wp-content/themes/cbn2014/js/libs/gumby.init.js"></script>
 
   <!--
   Google's recommended deferred loading of JS
@@ -113,7 +113,7 @@
   <script type="text/javascript">
   function downloadJSAtOnload() {
   var element = document.createElement("script");
-  element.src="/content/themes/cbn2014/js/libs/gumby.min.js";
+  element.src="/wp-content/themes/cbn2014/js/libs/gumby.min.js";
   document.body.appendChild(element);
   }
   if (window.addEventListener)
@@ -122,10 +122,10 @@
   window.attachEvent("onload", downloadJSAtOnload);
   else window.onload = downloadJSAtOnload;
   </script> -->
-<script type="text/javascript" src="/content/themes/cbn2014/js/ini.js"></script>
-<script type="text/javascript" src="/content/themes/cbn2014/js/plugins.js"></script>
-<script type="text/javascript" src="/content/themes/cbn2014/js/main.js"></script>
-<script type="text/javascript" src="/content/themes/cbn2014/js/script.js"></script>
+<script type="text/javascript" src="/wp-content/themes/cbn2014/js/ini.js"></script>
+<script type="text/javascript" src="/wp-content/themes/cbn2014/js/plugins.js"></script>
+<script type="text/javascript" src="/wp-content/themes/cbn2014/js/main.js"></script>
+<script type="text/javascript" src="/wp-content/themes/cbn2014/js/script.js"></script>
 
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
      chromium.org/developers/how-tos/chrome-frame-getting-started -->
