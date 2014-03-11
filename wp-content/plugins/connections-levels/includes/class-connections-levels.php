@@ -67,7 +67,7 @@ if (!class_exists('Connections_Levels')) {
 			// Filter for WordPress languages directory.
 			$wpLanguagesDirectory = apply_filters(
 				'connections_wp_lang_dir',
-				WP_LANG_DIR . '/connections-levels/' . sprintf( '%1$s-%2$s.mo', $textdomain, $locale )
+				WP_LANG_DIR . '/connections-emails/' . sprintf( '%1$s-%2$s.mo', $textdomain, $locale )
 			);
 
 			// Translations: First, look in WordPress' "languages" folder = custom & update-secure!
@@ -76,7 +76,50 @@ if (!class_exists('Connections_Levels')) {
 			// Translations: Secondly, look in plugin's "languages" folder = default.
 			load_plugin_textdomain( $textdomain, FALSE, $languagesDirectory );
 		}
-
+        /**
+         * Adds the menu as a sub item of Connections.
+         *
+         * @access  private
+         * @since  unkown
+         * @param array $menu
+         * @return array
+         */
+        public static function addMenu($menu) {
+            $menu[70] = array(
+                'hook' => 'emails',
+                'page_title' => 'Connections : Levels',
+                'menu_title' => 'Levels',
+                'capability' => 'connections_add_entry',
+                'menu_slug' => 'connections_levels',
+                'function' => array(
+                    __CLASS__,
+                    'showPage'
+                )
+            );
+            return $menu;
+        }
+        /**
+         * Renders the admin page.
+         *
+         * @access  private
+         * @since  unknown
+         * @return void
+         */
+        public static function showPage() {
+            if (!isset($_GET['page']))
+                return;
+            switch ($_GET['page']) {
+                case 'connections_levels':
+                    include_once(dirname(__FILE__) . '/admin/pages/emails.php');
+                    connectionsLevelsPage();
+                    break;
+            }
+        }
+		
+		
+		
+		
+		
 		
 		
 		
@@ -84,7 +127,7 @@ if (!class_exists('Connections_Levels')) {
 		public static function registerMetabox( $metabox ) {
 			$atts = array(
 				'id'       => 'leveled',
-				'title'    => __( 'Membership Level', 'said_level' ),
+				'title'    => __( 'Membership Levels', 'sent_datetime' ),
 				'context'  => 'side',
 				'priority' => 'core',
 				'fields'   => array(
@@ -97,30 +140,26 @@ if (!class_exists('Connections_Levels')) {
 			$metabox::add( $atts );
 		}
 		public static function field( $field, $value ) {
-			//this would be pulled from the ?options?
+			
 			$levels = array(
 				//'pending'=>__('Pending', 'connections_levels' ),
 				'member'=>__('Member', 'connections_levels' ),
 				'affiliate'=>__('Affiliate', 'connections_levels' )
-			);	
-			$out='';
-			if (is_admin()) {		
-				$out .='<select name="cnlevels" >';
-				if(empty($value)){
-					$value = 'pending';
-				}
-	
-				foreach($levels as $slug=>$label){
-					$out .='<option value="'.$slug.'" '.selected($value, $slug, false).'>'.$label.'</option>';	
-				}
-				$out .='</select>';
-			}else{
-				foreach($levels as $slug=>$label){
-					$out .='<label><input type="radio" value="'.$slug.'" name="cnlevels" /> '.$label.'</label><br/>';	
-				}
+			);			
+			
+			$out ='<select name="cnlevels" >';
+			$out .='<option value="">'.__('Must choose', 'connections_levels' ).'</option>';	
+			//this would be pulled from the ?options?
+		
+			foreach($levels as $slug=>$label){
+				$out .='<option value="'.$slug.'" '.selected($value, $slug, false).'>'.$label.'</option>';	
 			}
-			printf( '%s', $out);
- 
+			$out .='</select>';
+			if(is_admin()){
+				printf( '<label>%s</label>%s', __( 'Level', 'connections_levels' ), $out);	
+			}else{
+				printf('<div class="postbox" id="metabox-leveled"><h3 class="hndle"><span>%s</span></h3><div class="cnf-inside"><div class="form-field" id="cn-leveled"><div class="cn-float-left" id="leveled"><label>%s</label></div></div><div class="cn-clear"></div></div></div>', __( 'Level', 'connections_levels' ), $out);	
+			}
 		}
 
 		/**
