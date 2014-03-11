@@ -47,6 +47,8 @@
 		function setup_location_alert(){
 			//alert('I would have suggested something to you.');
 			navigator.geolocation.getCurrentPosition(function(Pos){
+				
+					$('body').append('<div id="location_alert">Finding deals near you ...</div>');
 					//var cn_search_form_url = "http://cbn.wsu.edu/wordpress/cbn-search/";
 					$.ajax({
 						type: "POST",
@@ -66,7 +68,7 @@
 							var count = $(data).find('.cn-entry').length;
 							//alert("found "+count+" locations");
 							
-							$('body').append('<div id="location_alert">There are '+count+' businesses that are near you <a href="#" id="veiw_locations">Click to  veiw them.</a> <a href="#" id="close_alert">[x]</a></div>');
+							$('#location_alert').html('There are '+count+' businesses that are near you <a href="#" id="veiw_locations">Click to  veiw them.</a> <a href="#" id="close_alert">[x]</a>');
 							$('#location_alert').slideDown();
 							$('#close_alert').off().on("click", function(e){
 								e.preventDefault();
@@ -93,7 +95,7 @@
 				e.preventDefault();
 				getLocation();
 			});
-			if (navigator.geolocation && $('.location_posted').length<=0 && $('#cn-form').length<=0){
+			if (navigator.geolocation && $('[rel="location_posted"]').length<=0 && $('#cn-form').length<=0){
 				setup_location_alert();
 			}
 		}else{
