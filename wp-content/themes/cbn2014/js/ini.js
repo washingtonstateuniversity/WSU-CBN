@@ -216,7 +216,7 @@ function iniSingleMap(obj,callback){
 
 
 	if(jQuery('#tabs').length>0){
-		/*jQuery( "#tabs" ).tabs({
+		jQuery( "#tabs" ).tabs({
 			activate: function( event, ui ) {
 				if(ui.newPanel.attr('id')=="tabs-1"){
 					//map.gmap("refresh");
@@ -226,7 +226,7 @@ function iniSingleMap(obj,callback){
 				}
 			}
 		});
-
+/*
 		jQuery.each(jQuery('.accordion'),function(){
 			jQuery(this).accordion({collapsible: true,active: false, heightStyle: "content" ,
 				activate: function(event, ui) { 

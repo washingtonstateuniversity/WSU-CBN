@@ -436,7 +436,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					}
 					
 					if($use_geolocation){
-						$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">Search near my location</a></h2>';
+						$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">[-]</a> Search near my location</h2>';
 						$out .= '<input type="hidden" name="cn-near_addr" />';
 						$out .= '<input type="hidden" name="cn-latitude" />';
 						$out .= '<input type="hidden" name="cn-longitude" />';
