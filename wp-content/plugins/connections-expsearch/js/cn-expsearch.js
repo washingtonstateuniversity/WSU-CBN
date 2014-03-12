@@ -92,7 +92,6 @@
 					});
 				},showError);
 		}
-
 		
 		if( $('html').is($('.geolocation '))){
 			$('#mylocation').on('click',function(e){
@@ -100,7 +99,11 @@
 				e.preventDefault();
 				getLocation();
 			});
-			if (navigator.geolocation && $('#cn-form,.entry-content,[rel="location_posted"]').length<=0){
+			if (navigator.geolocation 
+				&& $('#cn-form').length<=0
+				&& $('.cn-template').length<=0
+				&& $('[rel="location_posted"]').length<=0
+				){
 				setup_location_alert();
 			}
 		}else{

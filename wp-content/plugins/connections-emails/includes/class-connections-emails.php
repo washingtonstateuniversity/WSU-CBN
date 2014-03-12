@@ -26,6 +26,7 @@ if (!class_exists('Connections_Emails')) {
 			
 			// Business Hours uses a custom field type, so let's add the action to add it.
 			add_action( 'cn_meta_field-last_emailed', array( __CLASS__, 'field' ), 10, 2 );
+			add_action( 'cn_meta_field-email_count', array( __CLASS__, 'field' ), 10, 2 );
 			
 			add_action( 'cn_meta_output_field-cnemail', array( __CLASS__, 'block' ), 10, 3 );
         }
@@ -140,7 +141,16 @@ if (!class_exists('Connections_Emails')) {
 			$metabox::add( $atts );
 		}
 		public static function field( $field, $value ) {
-			printf( '<label>%s</label><p><strong>%s</strong></p><input type="hidden" value="%s" name="cnemail" />', __( 'Last Sent', 'connections_emails' ), ($value!=NULL && !empty($value))?date("m/d/Y h:i:s a",$value): "Never sent", $value);
+			
+			if(empty($value)){
+				$value=array(
+					'last'=>'',
+					'count'=>0
+				);	
+			}
+			
+			
+			printf( '<label>%s</label><p><strong>%s</strong></p><input type="hidden" value="%s" name="cnemail[\'last\']" /><input type="hidden" value="%s" name="cnemail[\'count\']" />', __( 'Last Sent', 'connections_emails' ), (!empty($value['last']))?date("m/d/Y h:i:s a",$value['last']): "Never sent", $value['last'],$value['count']);
  
 		}
 
@@ -154,10 +164,11 @@ if (!class_exists('Connections_Emails')) {
 		 * @return text
 		 */
 		public static function sanitize( $value ) {
+			$return=array();
+			$return['last'] = cnSanitize::string( 'text', $value['\'last\''] );
+			$return['count'] = $value['\'count\''];
 
-			$value=cnSanitize::string( 'text', $value );
-
-			return $value;
+			return $return;
 		}
 		
 		
