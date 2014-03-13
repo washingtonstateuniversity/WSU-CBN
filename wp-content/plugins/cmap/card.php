@@ -73,7 +73,7 @@
                             $atts['str_bio_hide']
                         );
                     }
-            
+            /*
                     if ( ( $atts['enable_note'] && $entry->getNotes() != '' ) && ( $atts['enable_bio'] && $entry->getBio() != '' ) ) {
                         echo ' | ';
                     }
@@ -85,7 +85,7 @@
                             $atts['str_note_show'],
                             $atts['str_note_hide']
                         );
-                    }
+                    }*/
             
                     ?>
                 </div>
@@ -107,13 +107,13 @@
                         $mapDiv = '<div class="cn-gmap" id="map-container-' . $entry->getRuid() . '" style="display: none;">' . $gMap . '</div>';
 						
 						//@todo come back to and clean this up
-        				$address = trim(strip_tags(str_replace('  ',' ',str_replace('<span class="type" style="display: none;">work</span>',
-															'',
-															$entry->getAddressBlock( array( 'format' => '%line1% %line2% %city% %state% %zipcode% %country%' ,
+						$lookupaddy = $entry->getAddressBlock( array( 'format' => '%line1% %line2% %city% %state% %zipcode% %country%' ,
 																	'link' => array('locality'=>false,'region'=>false,'postal_code'=>false,'country'=>false),
 																	 'return'=>true
-																	) )
-												) ) ) );
+																	) );
+        				$address = trim(strip_tags(str_replace('  ',' ',str_replace('<span class="type" style="display: none;">work</span>',
+															'', str_replace('<span class="type" style="display: none;">home</span>',
+															'', $lookupaddy)) ) ) );
                         printf( '<a class="cn-map-anchor toggle-map" id="map-anchor-%1$s" href="#" data-uuid="%1$s" data-str-show="%2$s" data-str-hide="%3$s">%2$s</a><span class="tolocation"> | <a class="cn-map-get-directions" target="_blank" href="https://maps.google.com/maps?daddr=%4$s" data-uuid="%1$s">%5$s</a></span>',
                             $entry->getRuid(),
                             $atts['str_map_show'],

@@ -180,6 +180,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'category'              => isset($_POST['cn-cat'])&& !empty($_POST['cn-cat']) ?$_POST['cn-cat']:NULL,
 				'enable_category_select'	=>false,
 				'enable_search'			=> false,
+				'cards_only'			=> true,
 				/*'category_in'           => NULL,
 				'exclude_category'      => NULL,
 				'category_name'         => NULL,
@@ -255,11 +256,11 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					}
 				}
 				$markerJson=json_encode($markers);
-	
+				$location_posted=isset($_POST['location_alert']) ? $_POST['location_alert'] : false;
 	
 				
 				$out .= '
-				<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
+				<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all" rel="'.($location_posted?"location_posted":"").'">
 					<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
 						
 						<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tabs-2">Listings</a></li>
@@ -291,17 +292,17 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					}
 		
 					$out .='
+					</div>
+					<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ">
+						<h2>Hover on a point to find a business and click for more information</h2>
+						<div id="mapJson">'.$markerJson.'</div>
+						<div id="front_cbn_map" class="byState " rel="'.$_POST['cn-state'].'" style="width:100%;height:450px;"></div>
+						<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;">
+							<div id="data_display"></div>
+							<div style="clear:both;"></div>
 						</div>
-						<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ">
-							<h2>Hover on a point to find a business and click for more information</h2>
-							<div id="mapJson">'.$markerJson.'</div>
-							<div id="front_cbn_map" class="byState " rel="'.$_POST['cn-state'].'" style="width:100%;height:450px;"></div>
-							<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;">
-								<div id="data_display"></div>
-								<div style="clear:both;"></div>
-							</div>
-						</div>
-					</div>';
+					</div>
+				</div>';
 			}else{
 				$out = "No results";	
 			}
@@ -435,7 +436,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					}
 					
 					if($use_geolocation){
-						$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">Search near my location</a></h2>';
+						$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">[-]</a> Search near my location</h2>';
 						$out .= '<input type="hidden" name="cn-near_addr" />';
 						$out .= '<input type="hidden" name="cn-latitude" />';
 						$out .= '<input type="hidden" name="cn-longitude" />';

@@ -47,7 +47,7 @@ function centerOnAddress(map,add,city,state,zip,contry,calllback){
 
 function iniMap(url,callback){	
 	var json = jQuery.parseJSON(jQuery('#mapJson').text());
-	var map_op = {'zoom':15, "center":pullman };
+	var map_op = {'zoom':15};//, "center":pullman };
 	map_op = jQuery.extend(map_op,{"mapTypeControl":false,"panControl":false});
 	jQuery('#front_cbn_map').gmap(map_op).bind('init', function() { 
 		var map = jQuery('#front_cbn_map').gmap("get","map");
@@ -81,7 +81,7 @@ function iniMap(url,callback){
 				'position': new google.maps.LatLng(marker.position.latitude, marker.position.longitude),
 				'z-index':1,
 				'bounds':true,
-				'icon':'../Content/img/biz_map_icon.png'
+				'icon':THEME_PATH+'/img/biz_map_icon.png'
 			},{}),function(ops,marker){
 				markerLog[i]=marker;
 			})
@@ -102,7 +102,7 @@ function iniMap(url,callback){
 		  maxZoom: null,
           gridSize: 60,
           styles: [{
-					url: '../Content/img/m1.png',
+					url: THEME_PATH+'/img/m1.png',
 					height: 52,
 					width: 53,
 					anchor: [20, 0],
@@ -110,7 +110,7 @@ function iniMap(url,callback){
 					fontWeight:"bold",
 					textSize: 10
 				  }, {
-					url: '../Content/img/m2.png',
+					url: THEME_PATH+'/img/m2.png',
 					height: 55,
 					width: 56,
 					anchor: [20, 0],
@@ -118,7 +118,7 @@ function iniMap(url,callback){
 					fontWeight:"bold",
 					textSize: 11
 				  }, {
-					url: '../Content/img/m3.png',
+					url: THEME_PATH+'/img/m3.png',
 					height: 65,
 					width: 66,
 					anchor: [25, 0],
@@ -182,7 +182,7 @@ function iniSingleMap(obj,callback){
 				'position': new google.maps.LatLng(marker.position.latitude, marker.position.longitude),
 				'z-index':1,
 				'bounds':true,
-				'icon':'../Content/img/biz_map_icon.png'
+				'icon':THEME_PATH+'/img/biz_map_icon.png'
 			},{}),function(ops,marker){
 				markerLog[i]=marker;
 				mapObj.gmap("setOptions",{'zoom':13});
@@ -216,7 +216,7 @@ function iniSingleMap(obj,callback){
 
 
 	if(jQuery('#tabs').length>0){
-		/*jQuery( "#tabs" ).tabs({
+		jQuery( "#tabs" ).tabs({
 			activate: function( event, ui ) {
 				if(ui.newPanel.attr('id')=="tabs-1"){
 					//map.gmap("refresh");
@@ -226,7 +226,8 @@ function iniSingleMap(obj,callback){
 				}
 			}
 		});
-
+		$(".accordion" ).accordion({collapsible: true,active:false,heightStyle: "content"});
+/*
 		jQuery.each(jQuery('.accordion'),function(){
 			jQuery(this).accordion({collapsible: true,active: false, heightStyle: "content" ,
 				activate: function(event, ui) { 
@@ -249,7 +250,7 @@ function iniSingleMap(obj,callback){
 		*/
 		
 		
-		jQuery('.accordion').accordion({ header: '.biz',collapsible: true,active: false });/**/
+		//jQuery('.accordion').accordion({ header: '.biz',collapsible: true,active: false });/**/
 	}
 	
 	if(jQuery('#cbn_map').length){
@@ -318,7 +319,7 @@ function iniSingleMap(obj,callback){
 
 			jQuery('#cbn_map').gmap('addMarker', jQuery.extend({ 
 				'position': (typeof(lat)==='undefined' || lat=='')?pullman:new google.maps.LatLng(lat,lng),
-				'icon':'../Content/img/biz_map_icon.png'
+				'icon':THEME_PATH+'/img/biz_map_icon.png'
 			},{'draggable':true}),function(markerOptions, marker){
 				markerLog[0]=marker;
 

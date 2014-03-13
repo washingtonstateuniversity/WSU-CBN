@@ -770,7 +770,7 @@ class cnMetabox_Render {
 
 			} elseif ( ! isset( $field['show_label'] ) || $field['show_label'] == FALSE ) {
 
-				echo '<th>&nbsp;</th>';
+				//echo '<th>&nbsp;</th>';
 			}
 
 			echo '<td>';

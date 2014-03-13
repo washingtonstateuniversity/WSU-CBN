@@ -78,8 +78,8 @@ jQuery(document).ready(function ($) {
 		return false
 	});
 
-	$(".accordion" ).accordion({collapsible: true,active:false,heightStyle: "content"});
-	$('#tabs').tabs();
+	//$(".accordion" ).accordion({collapsible: true,active:false,heightStyle: "content"});
+	//$('#tabs').tabs();
 	
 	
 	$('select[name^=cn-cat]').chosen();

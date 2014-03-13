@@ -19,15 +19,15 @@
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
 	<!--[if lt IE 9]><script src="<?php echo get_template_directory_uri(); ?>/js/html5.js"></script><![endif]-->
-    <script src="/content/themes/cbn2014/js/libs/modernizr-2.5.3.min.js"></script>
-    <link rel="stylesheet" href="/content/themes/cbn2014/css/gumby.css">
+    <script src="/wp-content/themes/cbn2014/js/libs/modernizr-2.5.3.min.js"></script>
+    <link rel="stylesheet" href="/wp-content/themes/cbn2014/css/gumby.css">
     
     
 	<?php wp_head(); ?>
     
     
 
-    <!--<link type="text/css" rel="stylesheet" href="/content/css/style.css" />-->
+    <!--<link type="text/css" rel="stylesheet" href="/wp-content/css/style.css" />-->
 	<style  type="text/css">
         /*h2 { 
             color:#1B67B3;
@@ -67,7 +67,7 @@
         
             <h1 class="two columns logo">
                 <a href="#">
-                    <img src="/content/themes/cbn2014/img/wsuaa-logo-w-trans.png" gumby-retina />
+                    <img src="/wp-content/themes/cbn2014/img/wsuaa-logo-w-trans.png" gumby-retina />
                 </a>
             </h1>
         </div>
