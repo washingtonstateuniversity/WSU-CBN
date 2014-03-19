@@ -102,18 +102,18 @@ if (!class_exists('Connections_Education')) {
 			);
 			if (!is_admin()) {			
 				$out .='			
-				<div id="metabox-bio" class="postbox"><h3 class="hndle"><span>Biography</span></h3><div class="cnf-inside"><div id="wp-cn-form-bio-wrap" class="wp-core-ui wp-editor-wrap tmce-active">';
+				<div id="metabox-bio" class="postbox"><h3 class="hndle"><span>'.__( 'Education', 'connections_education' ).'</span></h3><div class="cnf-inside"><div id="wp-cn-form-bio-wrap" class="wp-core-ui wp-editor-wrap tmce-active">';
 			}
 			foreach($education as $slug=>$label){
-				$out .='<label>'.$label.'</label><br/><input type="text" name="education[\''.$slug.'\']" value="'.$value.'" /><br/>';	
+				$out .='<label>'.$label.'<br/><input type="text" name="education[\''.$slug.'\']" value="'.$value.'" /></label><br/>';	
 			}
-			$out .='</select>';
+			//$out .='</select>';
 			if (!is_admin()) {			
 				$out .='
 				</div>
 				</div>';
 			}
-			printf( '<label>%s</label>%s', __( 'Education', 'connections_education' ), $out);
+			printf( '%s', $out);
  
 		}
 

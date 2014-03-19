@@ -29,6 +29,12 @@ function connectionsEmailsPage() {
         $action = isset($_REQUEST['action']) && !isset($_REQUEST['filter']) ? $_REQUEST['action'] : 'start';
         switch ($action) {
             case 'send_email':
+			
+				$from_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'from_email' );
+				$from_name_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'from_name_email' );
+				$to_name_format_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'to_name_format_email' );
+			
+			
                 $subject        = $_REQUEST['sub'];
                 $measage        = str_replace('\"', '"', $_REQUEST['mess']);
                 $proccessOutput = "";
@@ -51,13 +57,16 @@ function connectionsEmailsPage() {
                 /* the reason for the one by one is that there is a flaw in 
                 wp_mail where it will die and f the whole email list if the server
                 sends back a 503.5 error.*/
+				
+
+				
                 foreach ($_REQUEST['id'] as $id) {
                     $entry = new cnEntry($connections->retrieve->entry($id));
                     $email = new cnEmail;
                     // Set email to be sent as HTML.
                     $email->html(); // should be optional
                     // Set from whom the email is being sent.
-                    $email->from('webmaster@wsu.edu', 'Name set in settings');
+                    $email->from($from_email, $from_name_email);
                     // Send to multiple email addesses.
                     // Call for each address to which the email is to be sent.
                     $emails  = $entry->getEmailAddresses(array(), TRUE, TRUE);
@@ -76,7 +85,7 @@ function connectionsEmailsPage() {
                         $address  = $emailObj->address;
                     }
                     $email->to($address, $entry->getName(array(
-                        'format' => '%last%, %first%'
+                        'format' => $to_name_format_email//'%last%, %first%'
                     )));
                     $proccessOutput .= "<strong>" . $address . "</strong><br/>";
                     $email->subject($subject);
@@ -115,15 +124,18 @@ function connectionsEmailsPage() {
                 wp_nonce_field('cnemails-nonce-send_email', 'cncsv_nonce');
 					?>
 					  Subject:
-					  <input type="text" name="sub" />
-					  <br/>
-					  Message:
 					  <?php
-									wp_editor(' ', 'mess', array(
-										"teeny" => true,
-										"wpautop" => false
-									));
-					?>
+					  	$default_subject_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'default_subject_email' );
+						?>
+					  <input type="text" name="sub" value="<?=$default_subject_email?>"/>
+					  <br/>
+					  <label>Message:<?php
+					  	$default_html_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'default_html_email' );
+						wp_editor($default_html_email, 'mess', array(
+							"teeny" => true,
+							"wpautop" => false
+						));
+						?></label>
 					  <p class="submit">
 						<input class="button-primary" type="submit" name="submit_csv" value="send_email" />
 					  </p>

@@ -108,24 +108,25 @@ if (!class_exists('Connections_benefits')) {
 			}
 			//var_dump($value);
 			$out ="";
-if (!is_admin()) {			
-$out .='			
-<div id="metabox-bio" class="postbox"><h3 class="hndle"><span>Biography</span></h3><div class="cnf-inside"><div id="wp-cn-form-bio-wrap" class="wp-core-ui wp-editor-wrap tmce-active">';
-}
+			if (!is_admin()) {			
+			$out .='<div id="metabox-bio" class="postbox"><h3 class="hndle"><span>Benefit offering</span></h3><div class="cnf-inside"><div id="wp-cn-form-bio-wrap" class="wp-core-ui wp-editor-wrap tmce-active">';
+			}
 			
 			
 			
 			$out .='
-			<div>Benefit description:
+			<div><label>Benefit description:
 			<br/><textarea name="cnbenefits[\'description\']" rows="5" cols="30">'.$value['description'].'</textarea>
+			</label>
 			<br/><br/>
 			
-			<label>Is this offer for only WSUAA Members?:</label><br/>
+			<label>Is this offer for only WSUAA Members?:<br/>
             
 			<input name="cnbenefits[\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts"  type="radio" value="1" '.($value['description']>0?"checked":"").'> Yes 
             <input name="cnbenefits[\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts" type="radio" value="0" '.($value['description']>0?"":"checked").'> No 
+			</label>
 			<br/><br/>
-            <label>Discount Category:</label>
+            <label>Discount Category:
             <br/>
 			<select name="cnbenefits[\'categories\']" id="discounts_0_categories_id">
 				<option value="" '.($value['categories']==""?"selected":"").'></option>
@@ -139,11 +140,12 @@ $out .='
 				<option value="8" '.($value['categories']=="8"?"selected":"").'>Services</option>
 				<option value="9" '.($value['categories']=="9"?"selected":"").'>Shopping</option>
 				<option value="10" '.($value['categories']=="10"?"selected":"").'>Travel</option>
-			</select> 	<br/><br/>
-			<label>Is this an online offer?:</label>
+			</select></label> 	<br/><br/>
+			<label>Is this an online offer?:
             <br/>
             <input name="cnbenefits[\'online\']" id="discounts_0_online" type="radio" value="1" '.($value['online']>0?"checked":"").'> Yes 
             <input name="cnbenefits[\'online\']" id="discounts_0_online" type="radio" value="0" '.($value['online']>0?"":"checked").'> No 
+			</label>
 			<br/>
             <!--<em><strong>Note:</strong> to check if the online use is WSUAA Member have your web developer use this url http://cbn.wsu.edu/Business/is_member.castle with a url query of "Wsuid".  <br>The example is [ <strong>http://cbn.wsu.edu/Business/is_member.castle?Wsuid=47614823</strong> ]</em>-->
 			';
