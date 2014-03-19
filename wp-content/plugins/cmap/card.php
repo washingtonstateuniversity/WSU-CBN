@@ -14,24 +14,29 @@
         <div class="businesscontainer connections-list cn-clear" rel="">
         
             <div id="entry-id-<?php echo $entry->getRuid(); ?>" class="cn-entry" rel="<?php echo $entry->getRuid(); ?>">
-                <div class="cn-left">
-                    <?php
-                        $entry->getImage( array(
-                            'image'    => $atts['image'] ,
-                            'height'   => $atts['image_height'] ,
-                            'width'    => $atts['image_width'] ,
-                            'fallback' => array(
-                                'type'     => $atts['image_fallback'] ,
-                                'string'   => $atts['str_image']
-                                )
-                            )
-                        );
-                    ?>
-                </div>
+                
+				<?php
+					$hasImg = false;
+					$block=$entry->getImage( array(
+						'image'    => $atts['image'] ,
+						'height'   => $atts['image_height'] ,
+						'width'    => $atts['image_width'] ,
+						'return' => TRUE,
+						'fallback' => array(
+							'type'     => $atts['image_fallback'] ,
+							'string'   => $atts['str_image']
+							)
+						)
+					);
+					if(strpos($block,"cn-image-none")===false){	
+						echo '<div class="cn-right" style="float:right">'.$block.'</div>';
+						$hasImg = true;
+					}
+				?>
+                
             
-                <div class="cn-right">
+                <div class="<?php echo ($hasImg?"cn-left":"");?>">
                     <div style="margin-bottom: 5px;">
-            
                         <h3> <?php $entry->getNameBlock( array( 'format' => $atts['name_format'], 'link' => $atts['link'] ) ); ?></h3>
                         <?php if ( $atts['show_title'] ) $entry->getTitleBlock(); ?>
                         <?php if ( $atts['show_org'] ) $entry->getOrgUnitBlock(); ?>
