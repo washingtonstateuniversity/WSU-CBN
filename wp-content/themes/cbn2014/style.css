@@ -5,6 +5,7 @@
    ========================================================================== */
 
 body { background:#fff url('img/body-content-background.png') no-repeat top center; }
+body  { text-rendering: optimizeLegibility;font-weight: normal; }
 #body_wrap {  background:transparent url('img/Header-background.png') repeat-x top center; }
 
 
@@ -255,7 +256,12 @@ body.page.page-id-9 #main-content {
 #cn_category_chosen{width:100% !important;}
 
 
-
+#cn-form label{
+	font-weight:normal !important;
+    font-size: 12px !important;
+    line-height: 1.6;
+    padding: 0 2px;
+}
 
 
 

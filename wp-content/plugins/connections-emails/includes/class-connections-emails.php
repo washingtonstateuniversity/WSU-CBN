@@ -21,6 +21,13 @@ if (!class_exists('Connections_Emails')) {
 				add_filter( 'cn_meta_sanitize_field-last_emailed', array( __CLASS__, 'sanitize') );
 
             }
+				$this->settings = cnSettingsAPI::getInstance();
+				add_filter( 'cn_register_settings_tabs' , array(  $this,  'registerSettingsTabs' ) );
+				add_filter( 'cn_register_settings_sections' , array( $this, 'registerSettingsSections' ) );
+				add_filter( 'cn_register_settings_fields' , array( $this, 'registerSettingsFields' ) );
+				
+				$this->settings->init();
+			
 			// Register the metabox and fields.
 			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
 			
@@ -33,16 +40,7 @@ if (!class_exists('Connections_Emails')) {
         public function start() {
             if (class_exists('connectionsLoad')) {
                 //load_plugin_textdomain( 'connections_emails' , false , CNFM_DIR_NAME . '/lang' );//comeback to 
-                $this->settings = cnSettingsAPI::getInstance();
-                /*
-                 * Register the settings tabs shown on the Settings admin page tabs, sections and fields.
-                 * Init the registered settings.
-                 * NOTE: The init method must be run after registering the tabs, sections and fields.
-                 */
-                add_filter('cn_register_settings_tabs', array( $this, 'registerSettingsTab' ));
-                add_filter('cn_register_settings_sections', array( $this, 'registerSettingsSections' ));
-                add_filter('cn_register_settings_fields', array( $this, 'registerSettingsFields' ));
-                $this->settings->init();
+
                 //add_action( 'admin_init' , array( $this, 'adminInit' ) );
                 add_action('init', array( $this, 'init' ));
             } else {
@@ -116,15 +114,116 @@ if (!class_exists('Connections_Emails')) {
                     break;
             }
         }
+
+		public static function registerSettingsTabs( $tabs ) {
+			global $connections;
 		
+			$settings = 'connections_page_connections_settings';
 		
+			// Register the core tab banks.
+			$tabs[] = array(
+				'id'        => 'email' ,
+				'position'  => 30 ,
+				'title'     => __( 'Emails' , 'connections' ) ,
+				'page_hook' => $settings
+			);
 		
+			return $tabs;
+		}
+		public function registerSettingsSections( $sections ) {
+			global $connections;
+
+			$settings = 'connections_page_connections_settings';
+
+			// Register the core setting sections.
+			$sections[] = array(
+				'tab'       => 'email' ,
+				'id'        => 'connections_email_defaults' ,
+				'position'  => 20 ,
+				'title'     => __( 'Email defaults' , 'connections_emails' ) ,
+				'callback'  => '' ,
+				'page_hook' => $settings );
+			return $sections;
+		}
+
 		
-		
-		
-		
-		
-		
+		public function registerSettingsFields( $fields ) {
+			$current_user = wp_get_current_user();
+
+			$settings = 'connections_page_connections_settings';
+
+			$fields[] = array(
+				'plugin_id' => 'connections_emails',
+				'id'        => 'from_email',
+				'position'  => 101,
+				'page_hook' => $settings,
+				'tab'       => 'email',
+				'section'   => 'connections_email_defaults',
+				'title'     => __('Sender Email', 'connections_emails'),
+				'desc'      => __('', 'connections_emails'),
+				'help'      => __('', 'connections_emails'),
+				'type'      => 'text',
+				'default'   => get_bloginfo( 'admin_email' )
+			);
+			
+			$fields[] = array(
+				'plugin_id' => 'connections_emails',
+				'id'        => 'from_name_email',
+				'position'  => 102,
+				'page_hook' => $settings,
+				'tab'       => 'email',
+				'section'   => 'connections_email_defaults',
+				'title'     => __('Sender Name', 'connections_emails'),
+				'desc'      => __('', 'connections_emails'),
+				'help'      => __('', 'connections_emails'),
+				'type'      => 'text',
+				'default'   => get_bloginfo( 'description' )
+			);
+			
+			$fields[] = array(
+				'plugin_id' => 'connections_emails',
+				'id'        => 'to_name_format_email',
+				'position'  => 103,
+				'page_hook' => $settings,
+				'tab'       => 'email',
+				'section'   => 'connections_email_defaults',
+				'title'     => __('Recipient Name Format', 'connections_emails'),
+				'desc'      => __('', 'connections_emails'),
+				'help'      => __('Look to the connections web site for more info on formats for names', 'connections_emails'),
+				'type'      => 'text',
+				'default'   => '%last%, %first%'
+			);
+			
+
+			$fields[] = array(
+				'plugin_id' => 'connections_emails',
+				'id'        => 'default_subject_email',
+				'position'  => 104,
+				'page_hook' => $settings,
+				'tab'       => 'email',
+				'section'   => 'connections_email_defaults',
+				'title'     => __('Default email subject', 'connections_emails'),
+				'desc'      => __('', 'connections_emails'),
+				'help'      => __('', 'connections_emails'),
+				'type'      => 'text',
+				'default'   => ' '
+			);						
+			$fields[] = array(
+				'plugin_id' => 'connections_emails',
+				'id'        => 'default_html_email',
+				'position'  => 105,
+				'page_hook' => $settings,
+				'tab'       => 'email',
+				'section'   => 'connections_email_defaults',
+				'title'     => __('Default HTML email', 'connections_emails'),
+				'desc'      => __('', 'connections_emails'),
+				'help'      => __('', 'connections_emails'),
+				'type'      => 'rte',
+				'default'   => ' '
+			);
+			return $fields;
+		}
+
 		public static function registerMetabox( $metabox ) {
 			$atts = array(
 				'id'       => 'last-emailed',
@@ -165,8 +264,8 @@ if (!class_exists('Connections_Emails')) {
 		 */
 		public static function sanitize( $value ) {
 			$return=array();
-			$return['last'] = cnSanitize::string( 'text', $value['\'last\''] );
-			$return['count'] = $value['\'count\''];
+			$return['last'] = isset($value['\'last\''])?cnSanitize::string( 'text', $value['\'last\''] ):"";
+			$return['count'] =isset($value['\'count\''])? $value['\'count\'']:0;
 
 			return $return;
 		}

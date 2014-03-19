@@ -586,7 +586,7 @@ class cnCSV {
 						if ( $term != FALSE ) $this->cache['category'][ $category ] = $term;
 					}
 
-					if ( $term->name == $category ) {
+					if ( isset($term->name) && $term->name == $category ) {
 
 						$termIDs[] = $term->term_id;
 
