@@ -5,6 +5,7 @@
    ========================================================================== */
 
 body { background:#fff url('img/body-content-background.png') no-repeat top center; }
+body  { text-rendering: optimizeLegibility;font-weight: normal; }
 #body_wrap {  background:transparent url('img/Header-background.png') repeat-x top center; }
 
 

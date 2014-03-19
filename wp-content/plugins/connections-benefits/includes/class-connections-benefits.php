@@ -106,7 +106,7 @@ if (!class_exists('Connections_benefits')) {
 					'online'=>0
 				);	
 			}
-			
+			//var_dump($value);
 			$out ="";
 if (!is_admin()) {			
 $out .='			
@@ -117,33 +117,33 @@ $out .='
 			
 			$out .='
 			<div>Benefit description:
-			<br/><textarea name="benefited[0][\'description\']" rows="5" cols="30">'.$value['description'].'</textarea>
+			<br/><textarea name="cnbenefits[\'description\']" rows="5" cols="30">'.$value['description'].'</textarea>
 			<br/><br/>
 			
 			<label>Is this offer for only WSUAA Members?:</label><br/>
             
-			<input name="discounts[0][\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts"  type="radio" value="1"> Yes 
-            <input name="discounts[0][\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts" type="radio" value="0"> No 
+			<input name="cnbenefits[\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts"  type="radio" value="1" '.($value['description']>0?"checked":"").'> Yes 
+            <input name="cnbenefits[\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts" type="radio" value="0" '.($value['description']>0?"":"checked").'> No 
 			<br/><br/>
             <label>Discount Category:</label>
             <br/>
-			<select name="discounts[0][\'categories\']" id="discounts_0_categories_id">
-				<option value=""></option>
-				<option value="1">Automotive</option>
-				<option value="2">Dining</option>
-				<option value="3">Entertainment</option>
-				<option value="4">Financial</option>
-				<option value="5">Health</option>
-				<option value="6">Insurance</option>
-				<option value="7">Lodging</option>
-				<option value="8">Services</option>
-				<option value="9">Shopping</option>
-				<option value="10">Travel</option>
+			<select name="cnbenefits[\'categories\']" id="discounts_0_categories_id">
+				<option value="" '.($value['categories']==""?"selected":"").'></option>
+				<option value="1" '.($value['categories']=="1"?"selected":"").'>Automotive</option>
+				<option value="2" '.($value['categories']=="2"?"selected":"").'>Dining</option>
+				<option value="3" '.($value['categories']=="3"?"selected":"").'>Entertainment</option>
+				<option value="4" '.($value['categories']=="4"?"selected":"").'>Financial</option>
+				<option value="5" '.($value['categories']=="5"?"selected":"").'>Health</option>
+				<option value="6" '.($value['categories']=="6"?"selected":"").'>Insurance</option>
+				<option value="7" '.($value['categories']=="7"?"selected":"").'>Lodging</option>
+				<option value="8" '.($value['categories']=="8"?"selected":"").'>Services</option>
+				<option value="9" '.($value['categories']=="9"?"selected":"").'>Shopping</option>
+				<option value="10" '.($value['categories']=="10"?"selected":"").'>Travel</option>
 			</select> 	<br/><br/>
 			<label>Is this an online offer?:</label>
             <br/>
-            <input name="discounts[0][\'online\']" id="discounts_0_online" onclick="disableFields(false);" type="radio" value="1"> Yes 
-            <input name="discounts[0][\'online\']" id="discounts_0_online" onclick="disableFields(true);" type="radio" value="0"> No 
+            <input name="cnbenefits[\'online\']" id="discounts_0_online" type="radio" value="1" '.($value['online']>0?"checked":"").'> Yes 
+            <input name="cnbenefits[\'online\']" id="discounts_0_online" type="radio" value="0" '.($value['online']>0?"":"checked").'> No 
 			<br/>
             <!--<em><strong>Note:</strong> to check if the online use is WSUAA Member have your web developer use this url http://cbn.wsu.edu/Business/is_member.castle with a url query of "Wsuid".  <br>The example is [ <strong>http://cbn.wsu.edu/Business/is_member.castle?Wsuid=47614823</strong> ]</em>-->
 			';
@@ -167,10 +167,15 @@ $out .='
 		 * @return text
 		 */
 		public static function sanitize( $value ) {
-
-			$value=cnSanitize::string( 'text', $value );
-
-			return $value;
+			var_dump($value);
+			$return=array(
+				'description'=>isset($value['\'description\''])?cnSanitize::string( 'text', $value['\'description\''] ):"",
+				'wsuaa_discounts'=>isset($value['\'wsuaa_discounts\''])?$value['\'wsuaa_discounts\'']:"",
+				'categories'=>isset($value['\'categories\''])?$value['\'categories\'']:"",
+				'online'=>isset($value['\'online\''])?$value['\'online\'']:0
+			);
+			var_dump($return);
+			return $return ;
 		}
 		
 		
