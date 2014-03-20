@@ -382,7 +382,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$out .= '<div id="cn-form-container">' . "\n";
 				$out .= '<input type="hidden" value="'.get_bloginfo('wpurl').'" name="wpurl">';
 				$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
-				$out .= '<form id="cn-search-form" method="POST" enctype="multipart/form-data">' . "\n";
+				$out .= '<form id="cn-search-form" method="POST" enctype="multipart/form-data">';
 	
 					$defaults = array(
 						'show_label' => TRUE
@@ -391,8 +391,14 @@ if (!class_exists('connectionsExpSearchLoad')) {
 					$atts = wp_parse_args( $atts, $defaults );	
 					$searchValue = ( get_query_var('cn-s') ) ? get_query_var('cn-s') : '';
 
+					$sixLeftOpen = '<div class="six columns">';
+					$fourRightOpen = '<div class="push_two four columns">';
+
+					$out .= '<div class="row">';
+
+					$fieldCount = 0;
 					if(in_array('category',$visiblefields)){
-						$out .= '<div>';
+						$out .= $sixLeftOpen;
 						$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(array('order'=>'parent ASC, name ASC')),array(
 							'type'            => 'select',
 							'group'           => FALSE,
@@ -409,11 +415,11 @@ if (!class_exists('connectionsExpSearchLoad')) {
 							'class'				=>'search-select'
 						));
 						$out .= '<hr/></div>';
+						$fieldCount++;
 					}
-					
+					$out .= $fieldCount%2<1?'</div><div class="row">':'';
 					if(in_array('region',$visiblefields)){
-						$out .= '<div>';
-	
+						$out .= $fieldCount%2<1?$sixLeftOpen:$fourRightOpen;
 						$out 			.= '<label class="search-select"><strong>Search by state:</strong></label><br/>';
 						$display_code 	= $connections->settings->get('connections_form', 'connections_form_preferences', 'form_preference_regions_display_code');
 						$out          	.= '<select name="cn-state">';
@@ -424,27 +430,48 @@ if (!class_exists('connectionsExpSearchLoad')) {
 						}
 						$out .= '</select>';
 						$out .= '<hr/></div>';
+						$fieldCount++;
 					}
-
+					
+					$out .= $fieldCount%2<1?'</div><div class="row">':'';
+					if(in_array('country',$visiblefields)){
+						$out .= $fieldCount%2<1?$sixLeftOpen:$fourRightOpen;
+						$out 			.= '<label class="search-select"><strong>Search by country:</strong></label><br/>';
+						$display_code 	= $connections->settings->get('connections_form', 'connections_form_preferences', 'form_preference_countries_display_code');
+						$out          	.= '<select name="cn-country">';
+						$out 			.= '<option value="" selected >Any</option>';
+						foreach (cnDefaultValues::getCountriesCodeToName() as $code => $country) {
+							$lable = $display_code ? $code : $country;
+							$out .= '<option value="' . $code . '" >' . $lable . '</option>';
+						}
+						$out .= '</select>';
+						$out .= '<hr/></div>';
+						$fieldCount++;
+					}
+					$out .= '</div>';
+					
 					if(in_array('keywords',$visiblefields)){
-						$out .= '<div>';
+						$out .= '<div class="row"><div class="twelve columns">';
 						$out .= '<label for="cn-s"><strong>Keywords:</strong></label><br/>';
 						$out .= '<span class="cn-search" style="width:50%; display:inline-block">';
 							$out .= '<input type="text" id="cn-search-input" name="cn-keyword" value="' . esc_attr( $searchValue ) . '" placeholder="' . __('Search', 'connections') . '"/>';
 						$out .= '</span>';
-						$out .= '<hr/></div>';
+						$out .= '<hr/></div></div>';
 					}
-					
+
 					if($use_geolocation){
+						$out .= '<div class="row"><div class="twelve columns">';
 						$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">[-]</a> Search near my location</h2>';
 						$out .= '<input type="hidden" name="cn-near_addr" />';
 						$out .= '<input type="hidden" name="cn-latitude" />';
 						$out .= '<input type="hidden" name="cn-longitude" />';
 						$out .= '<input type="hidden" name="cn-radius" value="10" />';
 						$out .= '<input type="hidden" name="cn-unit" value="mi" />';
+						$out .= '</div></div>';
 					}
-					$out .=  '<hr/><br/><p class="cn-add"><input class="cn-button-shell cn-button red" id="cn-form-search" type="submit" name="start_search" value="' . __('Submit' , 'connections_form' ) . '" /></p><br/>' . "\n";
-	
+					$out .=  '<div class="row"><div class="twelve columns"><hr/><br/><p class="cn-add"><input class="cn-button-shell cn-button red" id="cn-form-search" type="submit" name="start_search" value="' . __('Submit' , 'connections_form' ) . '" /></p><br/></div></div>';
+					
+					
 				$out .= '</form>';
 			$out .= '</div>';
 
@@ -470,8 +497,6 @@ if (!class_exists('connectionsExpSearchLoad')) {
 	 * @return mixed (object)|(bool)
 	 */
 	function connectionsExpSearchLoad() {
-
-
 			if ( class_exists('connectionsLoad') ) {
 					return new connectionsExpSearchLoad();
 			} else {
