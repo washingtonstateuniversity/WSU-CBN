@@ -70,11 +70,10 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		}
 
 		public function loadJs(){
-			if ( ! is_admin() )wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
-			
-			
-			
-			
+			if ( ! is_admin() ){ 
+				wp_enqueue_script( 'jquery-chosen-min' );
+				wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
+			}
 			
 		}
 		// Add items to the footer
@@ -422,7 +421,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 						$out .= $fieldCount%2<1?$sixLeftOpen:$fourRightOpen;
 						$out 			.= '<label class="search-select"><strong>Search by state:</strong></label><br/>';
 						$display_code 	= $connections->settings->get('connections_form', 'connections_form_preferences', 'form_preference_regions_display_code');
-						$out          	.= '<select name="cn-state">';
+						$out          	.= '<select name="cn-state" class="cn-state-select" id="cn-state" >';
 						$out 			.= '<option value="" selected >Any</option>';
 						foreach (cnDefaultValues::getRegions() as $code => $regions) {
 							$lable = $display_code ? $code : $regions;
@@ -438,7 +437,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 						$out .= $fieldCount%2<1?$sixLeftOpen:$fourRightOpen;
 						$out 			.= '<label class="search-select"><strong>Search by country:</strong></label><br/>';
 						$display_code 	= $connections->settings->get('connections_form', 'connections_form_preferences', 'form_preference_countries_display_code');
-						$out          	.= '<select name="cn-country">';
+						$out          	.= '<select name="cn-country" class="cn-country-select" id="cn-country" >';
 						$out 			.= '<option value="" selected >Any</option>';
 						foreach (cnDefaultValues::getCountriesCodeToName() as $code => $country) {
 							$lable = $display_code ? $code : $country;

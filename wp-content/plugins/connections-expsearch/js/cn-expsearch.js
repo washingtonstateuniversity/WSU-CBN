@@ -109,6 +109,8 @@
 		}else{
 			$('#mylocation').closest('h2').remove();
 		}
-	
+		if($('#cn-state').length)$('#cn-state').chosen();
+		if($('#cn-country').length)$('#cn-country').chosen();
+		if($('.cn-cat-select').length)$('.cn-cat-select').chosen();
 	});
 }(this,document,jQuery));
