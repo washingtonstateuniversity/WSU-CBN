@@ -1,0 +1,293 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Connections Form\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-03-14 13:05-0500\n"
+"PO-Revision-Date: 2014-03-14 13:05-0500\n"
+"Last-Translator: Steven A. Zahm <helpdesk@connections-pro.com>\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e;_c;_ngettext\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.6.4\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../connections_form.php:182
+msgid "Please wait, your submission is being processed."
+msgstr ""
+
+#: ../connections_form.php:183
+msgid "Submission received."
+msgstr ""
+
+#: ../connections_form.php:184
+msgid "We will review and approve your submission soon."
+msgstr ""
+
+#: ../connections_form.php:185
+msgid "Entry updated. The page will automatically refresh, please wait..."
+msgstr ""
+
+#: ../connections_form.php:186
+msgid "An error adding entry has occurred."
+msgstr ""
+
+#: ../connections_form.php:187
+msgid "Token mismatch. Cheating?"
+msgstr ""
+
+#: ../connections_form.php:188
+msgid "Nonce validation failed."
+msgstr ""
+
+#: ../connections_form.php:189
+msgid "Invalid AJAX action."
+msgstr ""
+
+#: ../connections_form.php:223 ../connections_form.php:239
+msgid "Form"
+msgstr ""
+
+#: ../connections_form.php:264
+msgid "Require Login"
+msgstr ""
+
+#: ../connections_form.php:272
+msgid "Content Blocks"
+msgstr ""
+
+#: ../connections_form.php:280
+msgid "Email Notifications"
+msgstr ""
+
+#: ../connections_form.php:303
+msgid "Login Required"
+msgstr ""
+
+#: ../connections_form.php:304
+msgid ""
+"Require registered users to login before showing the entry submission form."
+msgstr ""
+
+#: ../connections_form.php:305
+msgid ""
+"Check this option if you wish to only allow registered users to submit "
+"entries for your review and approval."
+msgstr ""
+
+#: ../connections_form.php:316
+msgid "Message"
+msgstr ""
+
+#: ../connections_form.php:320
+msgid "Please login in order to submit your entry to our directory."
+msgstr ""
+
+#: ../connections_form.php:355
+msgid "Entry Type"
+msgstr ""
+
+#: ../connections_form.php:356
+msgid "Permit the user to select the entry type to be submitted."
+msgstr ""
+
+#: ../connections_form.php:369
+msgid "Default Entry Type"
+msgstr ""
+
+#: ../connections_form.php:370
+msgid ""
+"If the user is permitted to choose the entry type, this option sets the "
+"entry type that is selected by default."
+msgstr ""
+
+#: ../connections_form.php:388
+msgid ""
+"Whether or not a content block should be shown. Content blocks can be "
+"dragged and dropped in the desired order to be shown. NOTE: The shortcode "
+"options will override these settings."
+msgstr ""
+
+#: ../connections_form.php:405
+msgid "Auto Reply"
+msgstr ""
+
+#: ../connections_form.php:406
+msgid "Send an email notice of receipt."
+msgstr ""
+
+#: ../connections_form.php:418
+msgid "Auto Reply From Name"
+msgstr ""
+
+#: ../connections_form.php:419
+msgid "The name in which the email is said to come from."
+msgstr ""
+
+#: ../connections_form.php:431
+msgid "Auto Reply From Email"
+msgstr ""
+
+#: ../connections_form.php:432
+msgid ""
+"The address in which email is said to come from. This will set the \"from\" "
+"and \"reply to\" address."
+msgstr ""
+
+#: ../connections_form.php:444
+msgid "Auto Reply Subject"
+msgstr ""
+
+#: ../connections_form.php:445
+msgid "The auto reply email subject."
+msgstr ""
+
+#: ../connections_form.php:449
+msgid "Your directory entry submission has been received."
+msgstr ""
+
+#: ../connections_form.php:458
+msgid "Auto Reply Message"
+msgstr ""
+
+#: ../connections_form.php:462
+msgid ""
+"Thank you for your submission. We will review and approve your submission "
+"soon."
+msgstr ""
+
+#: ../connections_form.php:475
+msgid "Submission Notice"
+msgstr ""
+
+#: ../connections_form.php:476
+msgid "Send an email notice of entry submission."
+msgstr ""
+
+#: ../connections_form.php:489
+msgid "Submission Notice To"
+msgstr ""
+
+#: ../connections_form.php:490
+msgid "The email address in which to send the entry submission notice to."
+msgstr ""
+
+#: ../connections_form.php:502
+msgid "Submission Notice Subject"
+msgstr ""
+
+#: ../connections_form.php:503
+msgid "The submission notice subject."
+msgstr ""
+
+#: ../connections_form.php:507
+msgid "You have received a new directory entry submission."
+msgstr ""
+
+#: ../connections_form.php:516
+msgid "Submission Notice Message"
+msgstr ""
+
+#: ../connections_form.php:520
+msgid ""
+"You have recieved a new directory submission. Please visit your moderation "
+"queue to review and approve it."
+msgstr ""
+
+#: ../connections_form.php:538
+msgid "Category"
+msgstr ""
+
+#: ../connections_form.php:548
+msgid "Visibility"
+msgstr ""
+
+#: ../connections_form.php:813
+msgid ""
+"When this option is enabled a \"Submit Entry\" link will be displayed. When "
+"a user clicks this link they will be taken to a page where they can submit "
+"their entry to the directory."
+msgstr ""
+
+#: ../connections_form.php:820
+msgid ""
+"When this option is enabled a \"Edit Entry\" link will be displayed. When a "
+"user clicks this link they will be taken to a page where they can edit entry."
+msgstr ""
+
+#: ../connections_form.php:841
+msgid "Submit Entry"
+msgstr ""
+
+#: ../connections_form.php:869
+msgid "Edit Entry"
+msgstr ""
+
+#: ../connections_form.php:983
+msgid "Name"
+msgstr ""
+
+#: ../connections_form.php:1052
+msgid "Submit"
+msgstr ""
+
+#: ../connections_form.php:1102
+msgid "Public"
+msgstr ""
+
+#: ../connections_form.php:1103
+msgid "Private"
+msgstr ""
+
+#: ../connections_form.php:1159
+msgid "Prefix"
+msgstr ""
+
+#: ../connections_form.php:1173
+msgid "First Name"
+msgstr ""
+
+#: ../connections_form.php:1183
+msgid "Middle Name"
+msgstr ""
+
+#: ../connections_form.php:1193
+msgid "Last Name"
+msgstr ""
+
+#: ../connections_form.php:1203
+msgid "Suffix"
+msgstr ""
+
+#: ../connections_form.php:1218
+msgid "Title"
+msgstr ""
+
+#: ../connections_form.php:1231 ../connections_form.php:1261
+#: ../connections_form.php:1322
+msgid "Organization"
+msgstr ""
+
+#: ../connections_form.php:1244 ../connections_form.php:1274
+msgid "Department"
+msgstr ""
+
+#: ../connections_form.php:1287
+msgid "Contact First Name"
+msgstr ""
+
+#: ../connections_form.php:1297
+msgid "Contact Last Name"
+msgstr ""
+
+#: ../connections_form.php:1321
+msgid "Individual"
+msgstr ""
+
+#: ../connections_form.php:1325
+msgid "I am an"
+msgstr ""

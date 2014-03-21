@@ -252,7 +252,7 @@ body.page.page-id-9 #main-content {
 	float:right;
 	}
 
-
+.chosen-container.chosen-container-multi,
 #cn_category_chosen{width:100% !important;}
 
 
@@ -263,10 +263,14 @@ body.page.page-id-9 #main-content {
     padding: 0 2px;
 }
 
+#cn-metabox-leveled th,
+#cn-metabox-benefited th ,
+#cn-metabox-id-cneducation th 
+{
+  width: 0px !important;
+}
 
-
-
-
+#cn-form table{ background:transparent;}
 
 
 

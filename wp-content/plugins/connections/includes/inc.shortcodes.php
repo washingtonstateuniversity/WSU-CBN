@@ -39,7 +39,7 @@ function connectionsEntryList($atts) {
  * @param string $content [optional]
  * @return string
  */
-function connectionsView( $atts , $content = NULL ) {
+function connectionsView( $atts, $content = '', $tag = 'connections' ) {
 	global $connections;
 
 	/*$getAllowPublic = $connections->options->getAllowPublic();
@@ -69,6 +69,19 @@ function connectionsView( $atts , $content = NULL ) {
 	}
 
 	switch ( get_query_var('cn-view') ) {
+
+		case 'submit':
+
+			if ( has_action( 'cn_submit_entry_form' ) ) {
+
+				ob_start();
+
+				do_action( 'cn_submit_entry_form', $atts, $content, $tag );
+
+				return ob_get_clean();
+			}
+
+			break;
 
 		case 'landing':
 
@@ -107,20 +120,53 @@ function connectionsView( $atts , $content = NULL ) {
 		// Show the entry detail using a template based on the entry type.
 		case 'detail':
 
-			// Ensure an array is passed the the cnRetrieve::entries method.
-			if ( ! is_array( $atts ) ) $atts = (array) $atts;
+			switch ( get_query_var('cn-process') ) {
 
-			$results = $connections->retrieve->entries( $atts );
-			//var_dump($results);
+				case 'edit':
 
-			$atts['list_type'] = $connections->settings->get( 'connections', 'connections_display_single', 'template' ) ? $results[0]->entry_type : NULL;
+					if ( has_action( 'cn_edit_entry_form' ) ) {
 
-			// Disable the output of the following because they do no make sense to display for a single entry.
-			$atts['show_alphaindex']   = FALSE;
-			$atts['repeat_alphaindex'] = FALSE;
-			$atts['show_alphahead']    = FALSE;
+						/*
+						 * The `cn_edit_entry_form` action should only be execusted if the user is
+						 * logged in and they have the `connections_manage` capability and either the
+						 * `connections_edit_entry` or `connections_edit_entry_moderated` capability.
+						 */
 
-			return connectionsList( $atts, $content );
+						if ( is_user_logged_in() &&
+							current_user_can( 'connections_manage' ) &&
+							( current_user_can( 'connections_edit_entry' ) || current_user_can( 'connections_edit_entry_moderated' ) )
+							) {
+
+							ob_start();
+
+							do_action( 'cn_edit_entry_form', $atts, $content, $tag );
+
+							return ob_get_clean();
+						}
+
+					}
+
+					break;
+
+				default:
+
+					// Ensure an array is passed the the cnRetrieve::entries method.
+					if ( ! is_array( $atts ) ) $atts = (array) $atts;
+
+					$results = $connections->retrieve->entries( $atts );
+					//var_dump($results);
+
+					$atts['list_type'] = $connections->settings->get( 'connections', 'connections_display_single', 'template' ) ? $results[0]->entry_type : NULL;
+
+					// Disable the output of the following because they do no make sense to display for a single entry.
+					$atts['show_alphaindex']   = FALSE;
+					$atts['repeat_alphaindex'] = FALSE;
+					$atts['show_alphahead']    = FALSE;
+
+					return connectionsList( $atts, $content );
+
+					break;
+			}
 
 			break;
 
@@ -281,7 +327,6 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 		'width'                 => NULL,
 		'lock'                  => FALSE,
 		'force_home'            => FALSE,
-		'cards_only'			=> FALSE,
 		'home_id'               => in_the_loop() && is_page() ? get_the_id() : cnSettingsAPI::get( 'connections', 'home_page', 'page_id' ),
 	);
 
@@ -343,14 +388,14 @@ function connectionsList( $atts, $content = NULL, $tag = 'connections' ) {
 
 		// Prints the template's CSS file.
 		do_action( 'cn_action_css-' . $template->getSlug() , $atts );
-if(!$atts['cards_only']){
+
 		// The return to top anchor
 		do_action( 'cn_action_return_to_target', $atts );
-}
+
 		$out .= ob_get_contents();
 	ob_end_clean();
 
-if(!$atts['cards_only']){
+
 	$out .= sprintf( '<div class="cn-list" id="cn-list" data-connections-version="%1$s-%2$s"%3$s>',
 				$connections->options->getVersion(),
 				$connections->options->getDBVersion(),
@@ -369,8 +414,8 @@ if(!$atts['cards_only']){
 
 					// List actions template part.
 					ob_start();
-						do_action( 'cn_action_list_actions-before', $atts );
-						do_action( 'cn_action_list_actions', $atts );
+						do_action( 'cn_list_actions-before', $atts );
+						do_action( 'cn_list_actions', $atts );
 						$out .= ob_get_contents();
 					ob_end_clean();
 
@@ -416,7 +461,7 @@ if(!$atts['cards_only']){
 			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-head -->' : '' ) . "\n";
 
 			$out .= '<div class="connections-list cn-clear" id="cn-list-body">' . "\n";
-}
+
 			// If there are no results no need to proceed and output message.
 			if ( empty( $results ) ) {
 
@@ -458,13 +503,13 @@ if(!$atts['cards_only']){
 
 						// Entry actions template part.
 						ob_start();
-							do_action( 'cn_action_entry_actions-before', $atts , $entry );
-							do_action( 'cn_action_entry_actions', $atts , $entry );
+							do_action( 'cn_entry_actions-before', $atts , $entry );
+							do_action( 'cn_entry_actions', $atts , $entry );
 							$out .= ob_get_contents();
 						ob_end_clean();
 
 					}
-if(!$atts['cards_only']){
+
 					$currentLetter = strtoupper( mb_substr( $entry->getSortColumn(), 0, 1 ) );
 
 					if ( $currentLetter != $previousLetter ) {
@@ -479,7 +524,7 @@ if(!$atts['cards_only']){
 
 						$previousLetter = $currentLetter;
 					}
-}
+
 					// Before entry actions.
 					ob_start();
 						do_action( 'cn_action_entry_before' , $atts , $entry );
@@ -492,7 +537,7 @@ if(!$atts['cards_only']){
 
 						$out .= ob_get_contents();
 					ob_end_clean();
-if(!$atts['cards_only']){
+
 					$out .= sprintf( '<div class="cn-list-row%1$s vcard %2$s %3$s" id="%4$s" data-entry-type="%2$s" data-entry-id="%5$d" data-entry-slug="%4$s">',
 							$alternate = $alternate == '' ? '-alternate' : '',
 							$entry->getEntryType(),
@@ -500,7 +545,7 @@ if(!$atts['cards_only']){
 							$entry->getSlug(),
 							$entry->getId()
 						);
-}
+
 						$out .= apply_filters( 'cn_list_entry_before' , '' , $entry );
 						$out .= apply_filters( 'cn_list_entry_before-' . $template->getSlug() , '' , $entry );
 						$filterRegistry[] = 'cn_list_entry_before-' . $template->getSlug();
@@ -522,14 +567,12 @@ if(!$atts['cards_only']){
 						$out .= apply_filters( 'cn_list_entry_after' , '' , $entry );
 						$out .= apply_filters( 'cn_list_entry_after-' . $template->getSlug() , '' , $entry );
 						$filterRegistry[] = 'cn_list_entry_after-' . $template->getSlug();
-if(!$atts['cards_only']){
+
 					$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #' . $entry->getSlug() . ' -->' : '' ) . "\n";
-}
+
 					// After entry actions.
 					ob_start();
-if(!$atts['cards_only']){ // this one had to be done due to the JSON usage, but maybe we can move that json so by default all acction are return nothing?
 						do_action( 'cn_action_entry_after' , $atts , $entry );
-}
 						do_action( 'cn_action_entry_after-' . $template->getSlug() , $atts , $entry );
 						$filterRegistry[] = 'cn_action_entry_after-' . $template->getSlug();
 
@@ -545,11 +588,11 @@ if(!$atts['cards_only']){ // this one had to be done due to the JSON usage, but 
 
 				}
 			}
-if(!$atts['cards_only']){
+
 			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-body -->' : '' ) . "\n";
 
 			$out .= "\n" . '<div class="cn-clear" id="cn-list-foot">' . "\n";
-}
+
 				$out .= apply_filters( 'cn_list_after' , '' , $results );
 				$out .= apply_filters( 'cn_list_after-' . $template->getSlug() , '' , $results );
 				$filterRegistry[] = 'cn_list_after-' . $template->getSlug();
@@ -567,18 +610,18 @@ if(!$atts['cards_only']){
 					if ( ! get_query_var( 'cn-entry-slug' ) ) {
 
 						// List actions template part.
-						do_action( 'cn_action_list_actions-after', $atts );
+						do_action( 'cn_list_actions-after', $atts );
 					}
 
 					$out .= ob_get_contents();
 				ob_end_clean();
-if(!$atts['cards_only']){
+
 			$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list-foot -->' : '' ) . "\n";
 
 		$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-' . $template->getSlug() . ' -->' : '' ) . "\n";
 
 	$out .= "\n" . '</div>' . ( WP_DEBUG ? '<!-- END #cn-list -->' : '' ) . "\n";
-}
+
 	/*
 	 * Remove any filters a template may have added
 	 * so it is not run again if more than one template

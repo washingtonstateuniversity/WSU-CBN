@@ -131,15 +131,7 @@ class cnMetaboxAPI {
 			// because the admin menu pages must be registered so we can use the page hooks.
 			// In the front end, just hook into the `init` hook since the page hooks are not needed.
 
-			if ( is_admin() ) {
-
-				add_action( 'admin_init', array( __CLASS__, 'process' ) );
-
-			} else {
-
-				add_action( 'init', array( __CLASS__, 'process' ) );
-			}
-
+			add_action( 'init', array( __CLASS__, 'process' ), 0 );
 		}
 	}
 
@@ -190,11 +182,11 @@ class cnMetaboxAPI {
 		if ( is_admin() ) {
 
 			// Grab an instance of Connections.
-			$instance = Connections_Directory();
+			// $instance = Connections_Directory();
 
 			// Define the core pages and use them by default if no page where defined.
 			// Check if doing AJAX because the page hooks are not defined when doing an AJAX request which cause undefined property errors.
-			$pages = defined('DOING_AJAX') && DOING_AJAX ? array() : array( $instance->pageHook->add, $instance->pageHook->manage );
+			$pages = defined('DOING_AJAX') && DOING_AJAX ? array() : array( 'connections_page_connections_add', 'connections_page_connections_manage' );
 
 			$metabox['pages'] = empty( $metabox['pages'] ) ? $pages : $metabox['pages'];
 
@@ -509,6 +501,7 @@ class cnMetabox_Render {
 	 * Accepted option for the $atts property are:
 	 * 	id (array) The metabox ID to render.
 	 * 	order (array) An indexed array of metabox IDs that should be rendered in the order in the array.
+	 * 		NOTE: Any registered metabox ID not supplied in `order` means `exclude` is implied.
 	 * 	exclude (array) An indexed array of metabox IDs that should be excluded from being rendered.
 	 * 	include (array) An indexed array of metabox IDs that should be rendered.
 	 * 		NOTE: Metabox IDs in `exclude` outweigh metabox IDs in include. Meaning if the same metabox ID
@@ -525,11 +518,12 @@ class cnMetabox_Render {
 
 		$metaboxes = array();
 
-		$defaults = array(
+		$defaults  = array(
 			'id'      => '',
 			'order'   => array(),
 			'exclude' => array(),
 			'include' => array(),
+			'hide'    => array(),
 			);
 
 		$atts = wp_parse_args( $atts, $defaults );
@@ -555,19 +549,21 @@ class cnMetabox_Render {
 		foreach ( $metaboxes as $id => $metabox ) {
 
 			// Exclude/Include the metaboxes that have been requested to exclude/include.
-			if( ! empty( $atts['exclude'] ) ) {
+			if ( ! empty( $atts['exclude'] ) ) {
 
-				if ( in_array( $id, $atts['exclude'] ) ) continue;
+				if ( in_array( $id, $atts['exclude'] ) && ! in_array( $id, $atts['hide'] ) ) continue;
 
 			} else {
 
 				if ( ! empty( $atts['include'] ) ) {
 
-					if ( ! in_array( $id, $atts['include'] ) ) continue;
+					if ( ! in_array( $id, $atts['include'] ) && ! in_array( $id, $atts['hide'] ) ) continue;
 				}
 			}
 
-			echo '<div id="cn-metabox-' . $metabox['id'] . '" class="cn-metabox">';
+			$display = in_array( $id, $atts['hide'] ) ? 'none' : 'block';
+
+			echo '<div id="cn-metabox-' . $metabox['id'] . '" class="cn-metabox" style="display: ' . $display . '">';
 				echo '<h3 class="cn-metabox-title">' . $metabox['title'] . '</h3>';
 				echo '<div class="cn-metabox-inside">';
 
@@ -770,7 +766,7 @@ class cnMetabox_Render {
 
 			} elseif ( ! isset( $field['show_label'] ) || $field['show_label'] == FALSE ) {
 
-				//echo '<th>&nbsp;</th>';
+				echo '<th>&nbsp;</th>';
 			}
 
 			echo '<td>';

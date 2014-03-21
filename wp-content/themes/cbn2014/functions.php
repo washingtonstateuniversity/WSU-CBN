@@ -566,33 +566,35 @@ function set_js_theme_path() {
 add_action( 'wp_head', 'set_js_theme_path' );
 
 function load_theme_js() {
-	$THEME=get_template_directory_uri();
-	wp_enqueue_script( 'jquery-ui-accordion' );
-	wp_enqueue_script( 'jquery-ui-tabs' );	
-	/* mapping */
-	wp_enqueue_script( 'googleapis', '//maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), '2014.12.3', true );
-	wp_enqueue_script( 'googleapis', '//www.google.com/uds/api?file=uds.js&amp;v=1.0', array('jquery'), '2014.12.3', true );
-	wp_enqueue_script( 'ui.map',  $THEME. '/js/jquery.ui.map.js', array( 'googleapis' ), '2014.12.3', true );
-	wp_enqueue_script( 'markerclusterer',  $THEME. '/js/markerclusterer.min.js', array( 'ui.map' ), '2014.12.3', true );
-	wp_enqueue_script( 'infobox',  $THEME. '/js/infobox.js', array( 'ui.map' ), '2014.12.3', true );
+	if (!is_admin()) {
+		$THEME=get_template_directory_uri();
+		wp_enqueue_script( 'jquery-ui-accordion' );
+		wp_enqueue_script( 'jquery-ui-tabs' );	
+		/* mapping */
+		wp_enqueue_script( 'googleapis', '//maps.googleapis.com/maps/api/js?sensor=false', array('jquery'), '2014.12.3', true );
+		wp_enqueue_script( 'googleapis', '//www.google.com/uds/api?file=uds.js&amp;v=1.0', array('jquery'), '2014.12.3', true );
+		wp_enqueue_script( 'ui.map',  $THEME. '/js/jquery.ui.map.js', array( 'googleapis' ), '2014.12.3', true );
+		wp_enqueue_script( 'markerclusterer',  $THEME. '/js/markerclusterer.min.js', array( 'ui.map' ), '2014.12.3', true );
+		wp_enqueue_script( 'infobox',  $THEME. '/js/infobox.js', array( 'ui.map' ), '2014.12.3', true );
+		
+		wp_enqueue_script( 'defaultvalue',  $THEME. '/js/jquery.defaultvalue.js', array( 'jquery' ), '2014.12.3', true );
+		
+		wp_enqueue_script( 'gumby',  $THEME. '/js/libs/gumby.js', array( 'jquery' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.retina',  $THEME. '/js/libs/ui/gumby.retina.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.fixed',  $THEME. '/js/libs/ui/gumby.fixed.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.skiplink',  $THEME. '/js/libs/ui/gumby.skiplink.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.toggleswitch',  $THEME. '/js/libs/ui/gumby.toggleswitch.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.checkbox',  $THEME. '/js/libs/ui/gumby.checkbox.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.radiobtn',  $THEME. '/js/libs/ui/gumby.radiobtn.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.tabs',  $THEME. '/js/libs/ui/gumby.tabs.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.navbar',  $THEME. '/js/libs/ui/gumby.navbar.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.navbar',  $THEME. '/js/libs/ui/jquery.validation.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.init',  $THEME. '/js/libs/gumby.init.js', array( 'gumby' ), '2014.12.3', true );
 	
-	wp_enqueue_script( 'defaultvalue',  $THEME. '/js/jquery.defaultvalue.js', array( 'jquery' ), '2014.12.3', true );
-	
-	wp_enqueue_script( 'gumby',  $THEME. '/js/libs/gumby.js', array( 'jquery' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.retina',  $THEME. '/js/libs/ui/gumby.retina.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.fixed',  $THEME. '/js/libs/ui/gumby.fixed.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.skiplink',  $THEME. '/js/libs/ui/gumby.skiplink.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.toggleswitch',  $THEME. '/js/libs/ui/gumby.toggleswitch.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.checkbox',  $THEME. '/js/libs/ui/gumby.checkbox.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.radiobtn',  $THEME. '/js/libs/ui/gumby.radiobtn.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.tabs',  $THEME. '/js/libs/ui/gumby.tabs.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.navbar',  $THEME. '/js/libs/ui/gumby.navbar.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.navbar',  $THEME. '/js/libs/ui/jquery.validation.js', array( 'gumby' ), '2014.12.3', true );
-	wp_enqueue_script( 'gumby.init',  $THEME. '/js/libs/gumby.init.js', array( 'gumby' ), '2014.12.3', true );
-
-	wp_enqueue_script( 'plugins',  $THEME. '/js/plugins.js', array( 'jquery' ), '2014.12.3', true );
-	wp_enqueue_script( 'iniscript',  $THEME. '/js/ini.js', array( 'jquery' ), '2014.12.3', true );
-	wp_enqueue_script( 'main',  $THEME. '/js/main.js', array( 'jquery' ), '2014.12.3', true );
+		wp_enqueue_script( 'plugins',  $THEME. '/js/plugins.js', array( 'jquery' ), '2014.12.3', true );
+		wp_enqueue_script( 'iniscript',  $THEME. '/js/ini.js', array( 'jquery' ), '2014.12.3', true );
+		wp_enqueue_script( 'main',  $THEME. '/js/main.js', array( 'jquery' ), '2014.12.3', true );
+	}
 
 /*	
 

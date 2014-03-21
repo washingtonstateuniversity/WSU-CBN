@@ -100,19 +100,11 @@ if (!class_exists('Connections_Education')) {
 				'degree_n_year'=>__('Degree & Class Year', 'connections_education' ),
 				'schoolid'=>__('Wsuid', 'connections_education' )
 			);
-			if (!is_admin()) {			
-				$out .='			
-				<div id="metabox-bio" class="postbox"><h3 class="hndle"><span>'.__( 'Education', 'connections_education' ).'</span></h3><div class="cnf-inside"><div id="wp-cn-form-bio-wrap" class="wp-core-ui wp-editor-wrap tmce-active">';
-			}
+
 			foreach($education as $slug=>$label){
 				$out .='<label>'.$label.'<br/><input type="text" name="education[\''.$slug.'\']" value="'.$value.'" /></label><br/>';	
 			}
-			//$out .='</select>';
-			if (!is_admin()) {			
-				$out .='
-				</div>
-				</div>';
-			}
+
 			printf( '%s', $out);
  
 		}
@@ -127,9 +119,7 @@ if (!class_exists('Connections_Education')) {
 		 * @return text
 		 */
 		public static function sanitize( $value ) {
-
 			$value=cnSanitize::string( 'text', $value );
-
 			return $value;
 		}
 		

@@ -9,7 +9,7 @@
  * Text Domain: connections
  * Domain Path: languages
  *
- * Copyright 2009  Steven A. Zahm  ( email : helpdesk@connections-pro.com )
+ * Copyright 2014  Steven A. Zahm  ( email : helpdesk@connections-pro.com )
  *
  * Connections is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License, version 2, as
@@ -25,7 +25,7 @@
  *
  * @package Connections
  * @category Core
- * @author Steven A. ZAhm
+ * @author Steven A. Zahm
  * @version 0.7.9.5
  */
 
@@ -168,6 +168,11 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 			 */
 			define( 'CN_CURRENT_VERSION', '0.7.9.5' );
 			define( 'CN_DB_VERSION', '0.1.9' );
+
+			/*
+			 * Used for EDD SL Updater
+			 */
+			define( 'CN_UPDATE_URL', 'http://connections-pro.com' );
 
 			/*
 			 * Core Constants
@@ -410,6 +415,9 @@ if ( ! class_exists( 'connectionsLoad' ) ) {
 				// The class for registering general admin actions.
 				// Must require AFTER class.metabox-api.php and class.actions.php.
 				require_once CN_PATH . 'includes/admin/class.functions.php';
+
+				// The class for managing license keys and settings.
+				require_once CN_PATH . 'includes/admin/class.license.php';
 
 			} else {
 
