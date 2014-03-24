@@ -64,29 +64,55 @@
 				<span id="butch-nav">&nbsp;</span>
             </nav>
         -->
-        
             <h1 class="two columns logo">
                 <a href="#">
                     <img src="/wp-content/themes/cbn2014/img/wsuaa-logo-w-trans.png" gumby-retina />
                 </a>
             </h1>
         </div>
-        <nav role="navigation" class="navbar twelve columns row" id="nav1">
-            <div class="ten columns">
-                <a class="toggle" gumby-trigger="#nav1 > .row > ul" href="#"><i class="icon-menu"></i></a>
-
-                <?php wp_nav_menu( array( 'theme_location' => 'primary', 'menu_class' => 'nav-menu' ) ); ?>
+        <div class=" twelve columns row navbar" id="nav1">
+			<a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
+			<?php wp_nav_menu( array( 'theme_location' => 'primary','container' => false,  'menu_class' => 'ten columns nav-menu' ) ); ?>
                 <!--<ul>
                 <li><a href="/">CBN Home</a></li> 
                 <li><a href="showSearch.castle">Search CBN</a></li>
                 <li><a href="register.castle">Register</a></li>
                 <li><a href="http://alumni.wsu.edu/olc/pub/WHG/careersupport/main_careersupport_1.jsp">Career Support Home</a></li>
                 <li class="last"><a href="http://alumni.wsu.edu/">WSUAA Home</a></li>
-                </ul>-->
-            </div>
+                </ul>
+				
+<div class="row navbar pretty" id="nav1">
+
+  <a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
+  <h1 class="four columns logo">
+    <a href="#">
+      <img src="/img/gumby_mainlogo.png" gumby-retina />
+    </a>
+  </h1>
+  <ul class="eight columns">
+    <li><a href="#">Features</a></li>
+    <li>
+      <a href="#">Documentation</a>
+      <div class="dropdown">
+        <ul>
+          <li><a href="#">The Grid</a></li>
+          <li><a href="#">UI Kit</a></li>
+          <li><a href="#">Sass</a></li>
+          <li><a href="#">JavaScript</a></li>
+          <li><a href="#">Demo</a></li>
+        </ul>
+      </div>
+    </li>
+    <li><a href="#">Customize</a></li>
+  </ul>
+</div>
+				
+				
+				-->
+            
             <div class="two columns">
             </div>
-        </nav>
+        </div>
     </header>
     <div role="main" id="main" class="twelve columns">
         <!--#parse("layouts/assests/nav.vm")-->
