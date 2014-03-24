@@ -155,11 +155,8 @@ if (!class_exists('Connections_Levels')) {
 				$out .='<option value="'.$slug.'" '.selected($value, $slug, false).'>'.$label.'</option>';	
 			}
 			$out .='</select>';
-			if(is_admin()){
-				printf( '<label>%s</label>%s', __( 'Level', 'connections_levels' ), $out);	
-			}else{
-				printf('<div class="postbox" id="metabox-leveled"><h3 class="hndle"><span>%s</span></h3><div class="cnf-inside"><div class="form-field" id="cn-leveled"><div class="cn-float-left" id="leveled"><label>%s</label></div></div><div class="cn-clear"></div></div></div>', __( 'Level', 'connections_levels' ), $out);	
-			}
+			
+			printf( '%s', $out);	
 		}
 
 		/**

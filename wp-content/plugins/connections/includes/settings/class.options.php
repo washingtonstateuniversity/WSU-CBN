@@ -985,4 +985,31 @@ class cnOptions {
 		return $connections->settings->get( 'connections', 'connections_search', 'fields' );
 	}
 
+	/**
+	 * Get Base Country
+	 *
+	 * @since
+	 * @return string $country The two letter country code for the base country.
+	 */
+	public static function getBaseCountry() {
+
+		// Have to use get_option rather than cnSettingsAPI::get() because the class is not yet intialized.
+		$baseGEO = get_option( 'connections_geo', array( 'base_country' => 'US', 'base_region' => 'WA' ) );
+
+		return apply_filters( 'cn_base_country', $baseGEO['base_country'] );
+	}
+
+	/**
+	 * Get Base State
+	 *
+	 * @since
+	 * @return string $state The base region code.
+	 */
+	public static function getBaseRegion() {
+
+		// Have to use get_option rather than cnSettingsAPI::get() because the class is not yet intialized.
+		$baseGEO = get_option( 'connections_geo', array( 'base_country' => 'US', 'base_region' => 'WA' ) );
+
+		return apply_filters( 'cn_base_region', $baseGEO['base_region'] );
+	}
 }

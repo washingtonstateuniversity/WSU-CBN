@@ -23,9 +23,7 @@ class cnRegisterSettings
 	 * @param $tabs array
 	 * @return array
 	 */
-	public static function registerSettingsTabs( $tabs )
-	{
-		global $connections;
+	public static function registerSettingsTabs( $tabs ) {
 
 		$settings = 'connections_page_connections_settings';
 
@@ -60,14 +58,14 @@ class cnRegisterSettings
 
 		$tabs[] = array(
 			'id'        => 'seo' ,
-			'position'  => 31 ,
+			'position'  => 40 ,
 			'title'     => __( 'SEO' , 'connections' ) ,
 			'page_hook' => $settings
 		);
 
 		$tabs[] = array(
 			'id'        => 'advanced' ,
-			'position'  => 40 ,
+			'position'  => 60 ,
 			'title'     => __( 'Advanced' , 'connections' ) ,
 			'page_hook' => $settings
 		);
@@ -83,9 +81,7 @@ class cnRegisterSettings
 	 * @param array $sections
 	 * @return array
 	 */
-	public static function registerSettingsSections( $sections )
-	{
-		global $connections;
+	public static function registerSettingsSections( $sections ) {
 
 		$settings = 'connections_page_connections_settings';
 
@@ -110,9 +106,18 @@ class cnRegisterSettings
 			'page_hook' => $settings
 		);
 		$sections[] = array(
+			'plugin_id' => 'connections',
+			'tab'       => 'general',
+			'id'        => 'geo',
+			'position'  => 20,
+			'title'     => __( 'Base country and region.' , 'connections' ),
+			'callback'  => '',
+			'page_hook' => $settings
+		);
+		$sections[] = array(
 			'tab'       => 'general',
 			'id'        => 'connections_visibility',
-			'position'  => 20,
+			'position'  => 30,
 			'title'     => __( 'Shortcode Visibility Overrides' , 'connections' ),
 			'callback'  => create_function( '', "_e('The [connections] shortcode has two options available to show an entry or an entire directory
 			if the entry(ies) has been set to private or the user is required to be logged to view the directory. These options, when used,
@@ -140,8 +145,9 @@ class cnRegisterSettings
 			'page_hook' => $settings
 		);
 		$sections[] = array(
+			'plugin_id' => 'connections',
 			'tab'       => 'display',
-			'id'        => 'connections_display_list_actions',
+			'id'        => 'list_actions',
 			'position'  => 15,
 			'title'     => __( 'Result List Actions' , 'connections' ),
 			'callback'  => create_function( '', 'echo \'' . __( 'Enable or disable various actions that are displayed above the result list.', 'connections' ) . '\';' ),
@@ -156,8 +162,9 @@ class cnRegisterSettings
 			'page_hook' => $settings
 		);
 		$sections[] = array(
+			'plugin_id' => 'connections',
 			'tab'       => 'display',
-			'id'        => 'connections_display_entry_actions',
+			'id'        => 'entry_actions',
 			'position'  => 25,
 			'title'     => __( 'Entry Actions' , 'connections' ),
 			'callback'  => create_function( '', 'echo \'' . __( 'Enable or disable various actions that are shown above the single entry in the detail view.', 'connections' ) . '\';' ),
@@ -308,9 +315,7 @@ class cnRegisterSettings
 	 * @author Steven A. Zahm
 	 * @since 0.7.3.0
 	 */
-	public static function registerSettingsFields( $fields )
-	{
-		global $connections;
+	public static function registerSettingsFields( $fields ) {
 
 		$settings = 'connections_page_connections_settings';
 
@@ -358,6 +363,46 @@ class cnRegisterSettings
 			'type'      => 'rte',
 			'default'   => 'Please login to view the directory.'
 		);
+		$fields[] = array(
+			'plugin_id'         => 'connections',
+			'id'                => 'base_country',
+			'position'          => 10,
+			'page_hook'         => $settings,
+			'tab'               => 'general',
+			'section'           => 'geo',
+			'title'             => __('Base Country', 'connections'),
+			'desc'              => '',
+			'help'              => '',
+			'type'              => 'select',
+			'options'           => cnGEO::getCountries(),
+			'default'           => 'US',
+			'sanitize_callback' => array( 'cnRegisterSettings' , 'setGEOBase' ) // Only need to add this once per image size, otherwise it would be run for each field.
+		);
+
+		// cnGEO::getRegions() when called without the $country code @param
+		// will use the result from cnOptions::getBaseCountry() to define which
+		// regions to return. If there are no regions an empty array will be returned.
+		// So, if there are no regions, the is no reason to render this option.
+		$regions = cnGEO::getRegions();
+
+		if ( ! empty( $regions ) ) {
+
+			$fields[] = array(
+				'plugin_id' => 'connections',
+				'id'        => 'base_region',
+				'position'  => 20,
+				'page_hook' => $settings,
+				'tab'       => 'general',
+				'section'   => 'geo',
+				'title'     => __('Base Region', 'connections'),
+				'desc'      => '',
+				'help'      => '',
+				'type'      => 'select',
+				'options'   => cnGEO::getRegions(),
+				'default'   => cnOptions::getBaseRegion()
+			);
+		}
+
 		$fields[] = array(
 			'plugin_id' => 'connections',
 			'id'        => 'allow_public_override',
@@ -456,19 +501,26 @@ class cnRegisterSettings
 			'default'   => 0
 		);
 
+		$listActionsOptions['items']    = apply_filters( 'cn_list_action_options', array( 'view_all' => __('Show a "View All" link. When this option is enabled a "View All" link will be displayed.', 'connections') ) );
+		$listActionsOptions['required'] = apply_filters( 'cn_list_action_options_required', array() );
+
 		$fields[] = array(
 			'plugin_id' => 'connections',
-			'id'        => 'view_all',
+			'id'        => 'actions',
 			'position'  => 10,
 			'page_hook' => $settings,
 			'tab'       => 'display',
-			'section'   => 'connections_display_list_actions',
+			'section'   => 'list_actions',
 			'title'     => '',
-			'desc'      => __('Show a "View All" link. When this option is enabled a "View All" link will be displayed.', 'connections'),
+			'desc'      => __( 'Whether or not a list action should be shown. Actions can be dragged and dropped in the desired order to be shown.', 'connections' ),
 			'help'      => '',
-			'type'      => 'checkbox',
-			'default'   => 0
+			'type'      => 'sortable_checklist',
+			'options'   =>  $listActionsOptions,
+			'default'   => 0,
 		);
+
+		$contentBlockOptions['items']    = apply_filters( 'cn_content_blocks', array( 'meta' => __( 'Custom Fields', 'connections' ) ) );
+		$contentBlockOptions['required'] = apply_filters( 'cn_content_blocks_required', array() );
 
 		$fields[] = array(
 			'plugin_id' => 'connections',
@@ -481,35 +533,39 @@ class cnRegisterSettings
 			'desc'      => __( 'Whether or not a content block should be shown. Content blocks can be dragged and dropped in the desired order to be shown.', 'connections' ),
 			'help'      => '',
 			'type'      => 'sortable_checklist',
-			'options'   =>  apply_filters( 'cn_content_blocks', array( 'meta' => __( 'Custom Fields', 'connections' ) ) ),
+			'options'   =>  $contentBlockOptions,
 			'default'   => 0,
 		);
 
+		$entryActionsOptions['items'] = apply_filters( 'cn_entry_action_options', array(
+			'back'  => __( 'Show the "Back to Directory" link.', 'connections' ),
+			'vcard' => __( 'Show the "Add to Address Book" link. This link allows the download of the entry\'s vCard.', 'connections' ),
+			)
+		);
+		$entryActionsOptions['required'] = apply_filters( 'cn_entry_action_options_required', array() );
+
 		$fields[] = array(
 			'plugin_id' => 'connections',
-			'id'        => 'back',
+			'id'        => 'actions',
 			'position'  => 10,
 			'page_hook' => $settings,
 			'tab'       => 'display',
-			'section'   => 'connections_display_entry_actions',
+			'section'   => 'entry_actions',
 			'title'     => '',
-			'desc'      => __( 'Show the "Back to Directory" link.', 'connections' ),
+			'desc'      => __( 'Whether or not an entry action should be shown. Actions can be dragged and dropped in the desired order to be shown.', 'connections' ),
 			'help'      => '',
-			'type'      => 'checkbox',
-			'default'   => 1
-		);
-		$fields[] = array(
-			'plugin_id' => 'connections',
-			'id'        => 'vcard',
-			'position'  => 20,
-			'page_hook' => $settings,
-			'tab'       => 'display',
-			'section'   => 'connections_display_entry_actions',
-			'title'     => '',
-			'desc'      => __( 'Show the "Add to Address Book" link. This link allows the download of the entry\'s vCard.', 'connections' ),
-			'help'      => '',
-			'type'      => 'checkbox',
-			'default'   => 1
+			'type'      => 'sortable_checklist',
+			'options'   =>  $entryActionsOptions,
+			'default'   => array(
+				'order' => array(
+					'back',
+					'vcard',
+					),
+				'active' => array(
+					'back',
+					'vcard',
+					),
+				),
 		);
 
 		$fields[] = array(
@@ -537,7 +593,7 @@ class cnRegisterSettings
 			'desc'      => __( 'Whether or not a content block should be shown. Content blocks can be dragged and dropped in the desired order to be shown.', 'connections' ),
 			'help'      => '',
 			'type'      => 'sortable_checklist',
-			'options'   =>  apply_filters( 'cn_content_blocks', array( 'meta' => __( 'Custom Fields', 'connections' ) ) ),
+			'options'   =>  $contentBlockOptions,
 			'default'   => 0,
 		);
 
@@ -1466,11 +1522,23 @@ class cnRegisterSettings
 
 		return $settings;
 	}
+
+	public static function setGEOBase( $settings ) {
+
+		$regions = cnGEO::getRegions( $settings['base_country'] );
+
+		if ( ! in_array( $settings['base_region'], $regions ) ) {
+
+			$settings['base_region'] = current( array_keys( $regions ) );
+		}
+
+		return $settings;
+	}
 }
 
 /*
  * Register the settings tabs shown on the Settings admin page tabs, sections and fields.
  */
-add_filter( 'cn_register_settings_tabs' , array( 'cnRegisterSettings', 'registerSettingsTabs' ) , 10 , 1 );
-add_filter( 'cn_register_settings_sections' , array( 'cnRegisterSettings', 'registerSettingsSections' ) , 10 , 1 );
-add_filter( 'cn_register_settings_fields' , array( 'cnRegisterSettings', 'registerSettingsFields' ) , 10 , 1 );
+add_filter( 'cn_register_settings_tabs', array( 'cnRegisterSettings', 'registerSettingsTabs' ), 10, 1 );
+add_filter( 'cn_register_settings_sections', array( 'cnRegisterSettings', 'registerSettingsSections' ), 10, 1 );
+add_filter( 'cn_register_settings_fields', array( 'cnRegisterSettings', 'registerSettingsFields' ), 10, 1 );

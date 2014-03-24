@@ -109,6 +109,10 @@ class cnRewrite {
 		$department   = isset( $base['department_base'] ) && $base['department_base'] ? $base['department_base'] : 'department';
 		$name         = isset( $base['name_base'] ) && $base['name_base'] ? $base['name_base'] : 'name';
 
+		// Submit new entry page.
+		$rule['submit/?$']
+			= 'index.php?page_id=' . $pageID . '&cn-view=submit';
+
 		// Landing page.
 		$rule['landing/?$']
 			= 'index.php?page_id=' . $pageID . '&cn-view=landing';
@@ -241,10 +245,10 @@ class cnRewrite {
 
 		// Edit entry.
 		$rule[ $name . '/([^/]*)/edit/?$']
-			= 'index.php?page_id=' . $pageID . '&cn-entry-slug=$matches[1]&cn-process=edit';
+			= 'index.php?page_id=' . $pageID . '&cn-entry-slug=$matches[1]&cn-view=detail&cn-process=edit';
 
 		// Moderate entry.
-		$rule[ $name . '/([^/]*)/edit/?$']
+		$rule[ $name . '/([^/]*)/moderate/?$']
 			= 'index.php?page_id=' . $pageID . '&cn-entry-slug=$matches[1]&cn-process=moderate';
 
 		// Delete entry.
@@ -311,6 +315,10 @@ class cnRewrite {
 		$organization = isset( $base['organization_base'] ) && $base['organization_base'] ? $base['organization_base'] : 'organization';
 		$department   = isset( $base['department_base'] ) && $base['department_base'] ? $base['department_base'] : 'department';
 		$name         = isset( $base['name_base'] ) && $base['name_base'] ? $base['name_base'] : 'name';
+
+		// Submit entry page.
+		$rule['(.?.+?)/submit/?$']
+			= 'index.php?pagename=$matches[1]&cn-view=submit';
 
 		// Landing page.
 		$rule['(.?.+?)/landing/?$']
@@ -444,10 +452,10 @@ class cnRewrite {
 
 		// Edit entry.
 		$rule['(.?.+?)/' . $name . '/([^/]*)/edit/?$']
-			= 'index.php?pagename=$matches[1]&cn-entry-slug=$matches[2]&cn-process=edit';
+			= 'index.php?pagename=$matches[1]&cn-entry-slug=$matches[2]&cn-view=detail&cn-process=edit';
 
 		// Moderate entry.
-		$rule['(.?.+?)/' . $name . '/([^/]*)/edit/?$']
+		$rule['(.?.+?)/' . $name . '/([^/]*)/moderate/?$']
 			= 'index.php?pagename=$matches[1]&cn-entry-slug=$matches[2]&cn-process=moderate';
 
 		// Delete entry.

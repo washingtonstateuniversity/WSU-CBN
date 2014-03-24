@@ -108,12 +108,7 @@ if (!class_exists('Connections_benefits')) {
 			}
 			//var_dump($value);
 			$out ="";
-			if (!is_admin()) {			
-			$out .='<div id="metabox-bio" class="postbox"><h3 class="hndle"><span>Benefit offering</span></h3><div class="cnf-inside"><div id="wp-cn-form-bio-wrap" class="wp-core-ui wp-editor-wrap tmce-active">';
-			}
-			
-			
-			
+
 			$out .='
 			<div><label>Benefit description:
 			<br/><textarea name="cnbenefits[\'description\']" rows="5" cols="30">'.$value['description'].'</textarea>
@@ -149,11 +144,6 @@ if (!class_exists('Connections_benefits')) {
 			<br/>
             <!--<em><strong>Note:</strong> to check if the online use is WSUAA Member have your web developer use this url http://cbn.wsu.edu/Business/is_member.castle with a url query of "Wsuid".  <br>The example is [ <strong>http://cbn.wsu.edu/Business/is_member.castle?Wsuid=47614823</strong> ]</em>-->
 			';
-if (!is_admin()) {			
-$out .='
-</div>
-</div>';
-}
 
 			printf( '%s', $out);
  

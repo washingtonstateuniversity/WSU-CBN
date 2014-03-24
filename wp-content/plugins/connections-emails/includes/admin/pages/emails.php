@@ -30,9 +30,9 @@ function connectionsEmailsPage() {
         switch ($action) {
             case 'send_email':
 			
-				$from_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'from_email' );
-				$from_name_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'from_name_email' );
-				$to_name_format_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'to_name_format_email' );
+				$from_email = $connections->settings->get( 'connections_emails' , 'defaults' , 'from_email' );
+				$from_name_email = $connections->settings->get( 'connections_emails' , 'defaults' , 'from_name_email' );
+				$to_name_format_email = $connections->settings->get( 'connections_emails' , 'defaults' , 'to_name_format_email' );
 			
 			
                 $subject        = $_REQUEST['sub'];
@@ -125,12 +125,12 @@ function connectionsEmailsPage() {
 					?>
 					  Subject:
 					  <?php
-					  	$default_subject_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'default_subject_email' );
+					  	$default_subject_email = $connections->settings->get( 'connections_emails' , 'defaults' , 'default_subject_email' );
 						?>
 					  <input type="text" name="sub" value="<?=$default_subject_email?>"/>
 					  <br/>
 					  <label>Message:<?php
-					  	$default_html_email = $connections->settings->get( 'connections_emails' , 'connections_email_defaults' , 'default_html_email' );
+					  	$default_html_email = $connections->settings->get( 'connections_emails' , 'defaults' , 'default_html_email' );
 						wp_editor($default_html_email, 'mess', array(
 							"teeny" => true,
 							"wpautop" => false

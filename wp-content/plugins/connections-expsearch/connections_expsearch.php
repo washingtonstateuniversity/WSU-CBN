@@ -70,12 +70,10 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		}
 
 		public function loadJs(){
-			if ( ! is_admin() )wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
-			
-			
-			
-			
-			
+			if ( ! is_admin() ){ 
+				wp_enqueue_script( 'jquery-chosen-min' );
+				wp_enqueue_script( 'cn-expsearch' , CNEXSCH_BASE_URL . 'js/cn-expsearch.js', array('jquery') , CNEXSCH_CURRENT_VERSION , TRUE );
+			}
 		}
 		// Add items to the footer
 		function add_cnexpsh_data() {
@@ -86,7 +84,21 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			} else {
 				$permalink = trailingslashit ( get_permalink( $homeID ) );
 			}
-			echo '<script type="text/javascript">var cn_search_form_url = "'.$permalink.'";</script>';
+
+
+			$use_geolocation	= $connections->settings->get( 'connections_expsearch' , 'exp_defaults' , 'use_geolocation' );
+			$radius				= $connections->settings->get( 'connections_expsearch' , 'exp_defaults' , 'radius' );
+			$unit				= $connections->settings->get( 'connections_expsearch' , 'exp_defaults' , 'unit' );			
+			$homeID 			= $connections->settings->get( 'connections', 'connections_home_page', 'page_id' );
+			$use_autoSearch		= $connections->settings->get( 'connections_expsearch' , 'exp_defaults' , 'use_autosearch' );
+			echo '
+			<script type="text/javascript">
+				var cn_search_use_geolocation = '. ($use_geolocation?1:0).';
+				var cn_search_use_autosearch = '. ($use_autoSearch?1:0).';
+				var cn_search_form_url = "'.$permalink.'";
+				var cn_search_radius = "'.$radius.'";
+				var cn_search_unit = "'.$unit.'";
+			</script>';
 		}
 
 		/**
@@ -105,9 +117,9 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			// Register the core setting sections.
 			$sections[] = array(
 				'tab'       => 'search' ,
-				'id'        => 'connections_expsearch_defaults' ,
-				'position'  => 20 ,
-				'title'     => __( 'Search defaults' , 'connections_expsearch' ) ,
+				'id'        => 'connections_expsearch_exp_defaults' ,
+				'position'  => 1 ,
+				'title'     => __( 'Expanded Search defaults' , 'connections_expsearch' ) ,
 				'callback'  => '' ,
 				'page_hook' => $settings );
 			return $sections;
@@ -124,7 +136,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'position'  => 10,
 				'page_hook' => $settings,
 				'tab'       => 'search',
-				'section'   => 'connections_expsearch_defaults',
+				'section'   => 'connections_expsearch_exp_defaults',
 				'title'     => __('Add geo location to the search', 'connections_expsearch'),
 				'desc'      => __('', 'connections_expsearch'),
 				'help'      => __('', 'connections_expsearch'),
@@ -133,11 +145,24 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			);
 			$fields[] = array(
 				'plugin_id' => 'connections_expsearch',
-				'id'        => 'visiable_search_fields',
-				'position'  => 50,
+				'id'        => 'use_autosearch',
+				'position'  => 10,
 				'page_hook' => $settings,
 				'tab'       => 'search',
-				'section'   => 'connections_expsearch_defaults',
+				'section'   => 'connections_expsearch_exp_defaults',
+				'title'     => __('Use the auto geo location search service', 'connections_expsearch'),
+				'desc'      => __('NOTE: you can use css to configure your alert to match you site.', 'connections_expsearch'),
+				'help'      => __('', 'connections_expsearch'),
+				'type'      => 'checkbox',
+				'default'   => 1
+			);			
+			$fields[] = array(
+				'plugin_id' => 'connections_expsearch',
+				'id'        => 'visiable_search_fields',
+				'position'  => 10.1,
+				'page_hook' => $settings,
+				'tab'       => 'search',
+				'section'   => 'connections_expsearch_exp_defaults',
 				'title'     => __('Choose the visible on search form fields', 'connections_form'),
 				'desc'      => '',
 				'help'      => '',
@@ -145,33 +170,66 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'options'   => $this->getSearchFields(),
 				'default'   => array('region','category','keyword')
 			);
+			$fields[] = array(
+				'plugin_id' => 'connections_expsearch',
+				'id'        => 'unit',
+				'position'  => 10.2,
+				'page_hook' => $settings,
+				'tab'       => 'search',
+				'section'   => 'connections_expsearch_exp_defaults',
+				'title'     => __('The default units for geo location service', 'connections_form'),
+				'desc'      => '',
+				'help'      => '',
+				'type'      => 'select',
+				'options'   => $this->getUnitOptions(),
+				'default'   => array()
+			);			
+			$fields[] = array(
+				'plugin_id' => 'connections_expsearch',
+				'id'        => 'radius',
+				'position'  => 10.3,
+				'page_hook' => $settings,
+				'tab'       => 'search',
+				'section'   => 'connections_expsearch_exp_defaults',
+				'title'     => __('The default Radius for geo location service', 'connections_form'),
+				'desc'      => '',
+				'help'      => '',
+				'type'      => 'text',
+				'default'   => '50'
+			);	
+			
 			return $fields;
 		}
 
-
+		/*
+		* Get the units that the geo service can use
+		* returns array
+		*/
+		public function getUnitOptions(){
+			$options = array(
+				'mi'=>__('Miles', 'connections'),
+				'km'=>__('Kilometre', 'connections')
+			);
+			return $options;
+		}
+		
 		//Note this is hard coded for the tmp need to finish a site
 		public function getSearchFields(){
 			
 			$fields = array(
-				'region'=>'Region',
-				'country'=>'Country',
-				'category'=>'Category',
-				'keywords'=>'Keywords'
+				'region'=>__('Region', 'connections'),
+				'country'=>__('Country', 'connections'),
+				'category'=>__('Category', 'connections'),
+				'keywords'=>__('Keywords', 'connections')
 			);
 			
 			return $fields;
 		}
 
-
-
-
-
-
-
-
-
-
-
+		/*
+		* Do search action 
+		* returns string - The html of the search results
+		*/
 		public function doSearch() {
 			global $post,$connections;
 			$permittedAtts = array(
@@ -228,86 +286,20 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			}
 			
 			$out = '';
-			$categories = $connections->retrieve->categories();
-			$opSortbyCat=true;//would be an option
-			
-			//var_dump($categories);
-			//die();
 
 			$results = $connections->retrieve->entries( $permittedAtts );
-			
-			if(!empty($results)){
-			
-			
-				$markers = new stdClass();
-				$markers->markers=array();
-				foreach($results as $entry){
-					$entryObj=new stdClass();
-					$entryObj->id=$entry->id;
-					$entryObj->title= $entry->organization;
-					$entryObj->position=new stdClass();
-					$addy = unserialize ($entry->addresses);
-					$array = (array) $addy;
-					$addy = array_pop($addy);
-					if(!empty($addy['latitude']) && !empty($addy['longitude'])){
-						$entryObj->position->latitude=$addy['latitude'];
-						$entryObj->position->longitude=$addy['longitude'];
-						$markers->markers[]= $entryObj;
-					}
+			set_transient( "results", $results, 0 );	
+			set_transient( "atts", $permittedAtts, 0 );	
+			ob_start();
+				if ( $overridden_template = locate_template( 'searchResults.php' ) ) {
+					load_template( $overridden_template );
+				} else {
+					load_template( dirname( __FILE__ ) . '/templates/searchResults.php' );
 				}
-				$markerJson=json_encode($markers);
-				$location_posted=isset($_POST['location_alert']) ? $_POST['location_alert'] : false;
-	
-				
-				$out .= '
-				<div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all" rel="'.($location_posted?"location_posted":"").'">
-					<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-						
-						<li class="ui-state-default ui-corner-top ui-tabs-selected ui-state-active"><a href="#tabs-2">Listings</a></li>
-						<li class="ui-state-default ui-corner-top"><a href="#tabs-1">Map</a></li>
-					</ul>
-				
-					<div id="tabs-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
-					';
-					if($permittedAtts['category']==NULL){
-						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
-						foreach($categories as $cat){
-							$permittedAtts['category']=$cat->term_id;
-							$catblock = connectionsList( $permittedAtts,NULL,'connections' );
-							//var_dump($catblock);
-							if(!empty($catblock) && strpos($catblock,'No results')===false){
-								$out .= '<h2>'.$state.$cat->name.'</h2>';
-								$out .= '<div class="accordion">';
-								$out .= $catblock;
-								$out .= '</div>';
-							}
-						}
-					}else{
-						$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
-						$category = $connections->retrieve->category($permittedAtts['category']);
-						$out .= '<h2>'.$state.$category->name.'</h2>';
-						$out .= '<div class="accordion">';
-						$out .= connectionsList( $permittedAtts,NULL,'connections' );
-						$out .= '</div>';
-					}
-		
-					$out .='
-					</div>
-					<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom ">
-						<h2>Hover on a point to find a business and click for more information</h2>
-						<div id="mapJson">'.$markerJson.'</div>
-						<div id="front_cbn_map" class="byState " rel="'.$_POST['cn-state'].'" style="width:100%;height:450px;"></div>
-						<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;">
-							<div id="data_display"></div>
-							<div style="clear:both;"></div>
-						</div>
-					</div>
-				</div>';
-			}else{
-				$out = "No results";	
-			}
-			
-			
+				$out .= ob_get_contents();
+			ob_end_clean();				
+
+			// Output the the search input.
 			return $out;
 		}
 		
@@ -320,143 +312,54 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		public function shortcode( $atts , $content = NULL ) {
 			global $connections;
 
-			$date = new cnDate();
-			$form = new cnFormObjects();
 			$convert = new cnFormatting();
 			$format =& $convert;
-			$entry = new cnEntry();
-			$out = '';
+			$formObject = array();
 
-
-			
-			
 			$atts = shortcode_atts(
 				array(
-					'default_type'     => 'individual',
+					'default_type'		=> 'individual',
 					'show_label'		=> TRUE,
-					'select_type'      => TRUE,
-					'photo'            => FALSE,
-					'logo'             => FALSE,
-					'address'          => TRUE,
-					'phone'            => TRUE,
-					'email'            => TRUE,
-					'messenger'        => TRUE,
-					'social'           => TRUE,
-					'link'             => TRUE,
-					'anniversary'      => FALSE,
-					'birthday'         => FALSE,
-					'category'         => TRUE,
-					'rte'              => TRUE,
-					'bio'              => TRUE,
-					'notes'            => FALSE,
-					'str_contact_name' => __( 'Entry Name' , 'connections_form' ),
-					'str_bio'          => __( 'Biography' , 'connections_form' ),
-					'str_notes'        => __( 'Notes' , 'connections_form' )
+					'select_type'		=> TRUE,
+					'photo'				=> FALSE,
+					'logo'				=> FALSE,
+					'address'			=> TRUE,
+					'phone'				=> TRUE,
+					'email'				=> TRUE,
+					'messenger'			=> TRUE,
+					'social'			=> TRUE,
+					'link'				=> TRUE,
+					'anniversary'		=> FALSE,
+					'birthday'			=> FALSE,
+					'category'			=> TRUE,
+					'rte'				=> TRUE,
+					'bio'				=> TRUE,
+					'notes'				=> FALSE,
+					'str_contact_name'	=> __( 'Entry Name' , 'connections_form' ),
+					'str_bio'			=> __( 'Biography' , 'connections_form' ),
+					'str_notes'			=> __( 'Notes' , 'connections_form' )
 				), $atts );
 
+			$defaults = array(
+				'show_label' => TRUE
+			);
+		
+			$atts = wp_parse_args( $atts, $defaults );
 
-			/*
-			 * Convert some of the $atts values in the array to boolean.
-			 */
-			$convert->toBoolean($atts['select_type']);
-			$convert->toBoolean($atts['photo']);
-			$convert->toBoolean($atts['logo']);
-			$convert->toBoolean($atts['address']);
-			$convert->toBoolean($atts['phone']);
-			$convert->toBoolean($atts['email']);
-			$convert->toBoolean($atts['messenger']);
-			$convert->toBoolean($atts['social']);
-			$convert->toBoolean($atts['link']);
-			$convert->toBoolean($atts['anniversary']);
-			$convert->toBoolean($atts['birthday']);
-			$convert->toBoolean($atts['category']);
-			$convert->toBoolean($atts['rte']);
-			$convert->toBoolean($atts['bio']);
-			$convert->toBoolean($atts['notes']);
-			//$out .= var_dump($atts);
-
-
-			$visiblefields = $connections->settings->get( 'connections_expsearch' , 'connections_expsearch_defaults' , 'visiable_search_fields' );
-			$use_geolocation = $connections->settings->get( 'connections_expsearch' , 'connections_expsearch_defaults' , 'use_geolocation' );
-			// switch out for a template that can be changed. ie: {$category_select}, {$state_dropdown} etc.
-			$out .= '<div id="cn-form-container">' . "\n";
-				$out .= '<input type="hidden" value="'.get_bloginfo('wpurl').'" name="wpurl">';
-				$out .= '<div id="cn-form-ajax-response"><ul></ul></div>' . "\n";
-				$out .= '<form id="cn-search-form" method="POST" enctype="multipart/form-data">' . "\n";
-	
-					$defaults = array(
-						'show_label' => TRUE
-					);
-			
-					$atts = wp_parse_args( $atts, $defaults );	
-					$searchValue = ( get_query_var('cn-s') ) ? get_query_var('cn-s') : '';
-
-					if(in_array('category',$visiblefields)){
-						$out .= '<div>';
-						$out .= cnTemplatePartExended::flexSelect($connections->retrieve->categories(array('order'=>'parent ASC, name ASC')),array(
-							'type'            => 'select',
-							'group'           => FALSE,
-							'default'         => __('Select a category', 'connections'),
-							'label'           => __('Search by category', 'connections'),
-							'show_select_all' => TRUE,
-							'select_all'      => __('Any', 'connections'),
-							'show_empty'      => FALSE,
-							'show_count'      => FALSE,
-							'depth'           => 0,
-							'parent_id'       => array(),
-							'exclude'         => array(),
-							'return'          => TRUE,
-							'class'				=>'search-select'
-						));
-						$out .= '<hr/></div>';
-					}
-					
-					if(in_array('region',$visiblefields)){
-						$out .= '<div>';
-	
-						$out 			.= '<label class="search-select"><strong>Search by state:</strong></label><br/>';
-						$display_code 	= $connections->settings->get('connections_form', 'connections_form_preferences', 'form_preference_regions_display_code');
-						$out          	.= '<select name="cn-state">';
-						$out 			.= '<option value="" selected >Any</option>';
-						foreach (cnDefaultValues::getRegions() as $code => $regions) {
-							$lable = $display_code ? $code : $regions;
-							$out .= '<option value="' . $code . '" >' . $lable . '</option>';
-						}
-						$out .= '</select>';
-						$out .= '<hr/></div>';
-					}
-
-					if(in_array('keywords',$visiblefields)){
-						$out .= '<div>';
-						$out .= '<label for="cn-s"><strong>Keywords:</strong></label><br/>';
-						$out .= '<span class="cn-search" style="width:50%; display:inline-block">';
-							$out .= '<input type="text" id="cn-search-input" name="cn-keyword" value="' . esc_attr( $searchValue ) . '" placeholder="' . __('Search', 'connections') . '"/>';
-						$out .= '</span>';
-						$out .= '<hr/></div>';
-					}
-					
-					if($use_geolocation){
-						$out .= '<h2 ><a id="mylocation" style="" class="button" hidefocus="true" href="#">[-]</a> Search near my location</h2>';
-						$out .= '<input type="hidden" name="cn-near_addr" />';
-						$out .= '<input type="hidden" name="cn-latitude" />';
-						$out .= '<input type="hidden" name="cn-longitude" />';
-						$out .= '<input type="hidden" name="cn-radius" value="10" />';
-						$out .= '<input type="hidden" name="cn-unit" value="mi" />';
-					}
-					$out .=  '<hr/><br/><p class="cn-add"><input class="cn-button-shell cn-button red" id="cn-form-search" type="submit" name="start_search" value="' . __('Submit' , 'connections_form' ) . '" /></p><br/>' . "\n";
-	
-				$out .= '</form>';
-			$out .= '</div>';
+			$formObject = $atts;
+			set_transient( "formObject", $formObject, 0 );	
+			ob_start();
+				if ( $overridden_template = locate_template( 'searchForm.php' ) ) {
+					load_template( $overridden_template );
+				} else {
+					load_template( dirname( __FILE__ ) . '/templates/searchForm.php' );
+				}
+				$out .= ob_get_contents();
+			ob_end_clean();				
 
 			// Output the the search input.
 			return $out;
-		}		
-		
-
-
-		
-
-
+		}
 	}
 
 
@@ -470,23 +373,20 @@ if (!class_exists('connectionsExpSearchLoad')) {
 	 * @return mixed (object)|(bool)
 	 */
 	function connectionsExpSearchLoad() {
-
-
-			if ( class_exists('connectionsLoad') ) {
-					return new connectionsExpSearchLoad();
-			} else {
-					add_action(
-							'admin_notices',
-							 create_function(
-									 '',
-									'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order use Connections Extended Search.</p></div>\';'
-									)
-					);
-					return FALSE;
-			}
+		if ( class_exists('connectionsLoad') ) {
+			return new connectionsExpSearchLoad();
+		} else {
+			add_action(
+				'admin_notices',
+				 create_function(
+					 '',
+					'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order use Connections Extended Search.</p></div>\';'
+				)
+			);
+			return FALSE;
+		}
 	}
-
-
+	
 	/**
 	 * Since Connections loads at default priority 10, and this extension is dependent on Connections,
 	 * we'll load with priority 11 so we know Connections will be loaded and ready first.

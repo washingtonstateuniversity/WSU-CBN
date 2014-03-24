@@ -96,9 +96,6 @@ class cnEntry_Action {
 		// properties and then properties are overwritten by the data as needed.
 		if ( ! empty( $id ) ) $entry->set( absint( $id ) );
 
-		// Set the default visibility.
-		$entry->setVisibility( 'unlisted' );
-
 		if ( isset( $data['entry_type'] ) ) $entry->setEntryType( $data['entry_type'] );
 		if ( isset( $data['family_name'] ) ) $entry->setFamilyName( $data['family_name'] );
 		( isset( $data['family_member'] ) ) ? $entry->setFamilyMembers( $data['family_member'] ) : $entry->setFamilyMembers( array() );
@@ -135,7 +132,7 @@ class cnEntry_Action {
 		/*
 		 * Process the logo upload --> START <--
 		 */
-		if ( $_FILES['original_logo']['error'] != 4 ) {
+		if ( isset( $_FILES['original_logo'] ) && $_FILES['original_logo']['error'] != 4 ) {
 			// If an entry is being updated and a new logo is uploaded, the old logo needs to be deleted.
 			if ( $entry->getLogoName() != NULL ) {
 				@unlink( CN_IMAGE_PATH . $entry->getLogoName() );
@@ -205,7 +202,7 @@ class cnEntry_Action {
 
 
 		// Process the entry image upload.
-		if ( $_FILES['original_image']['error'] != 4 ) {
+		if ( isset( $_FILES['original_image'] ) && $_FILES['original_image']['error'] != 4 ) {
 			// If an entry is being updated and a new image is uploaded, the old images need to be deleted.
 			if ( $entry->getImageNameOriginal() != NULL ) {
 				if ( $compatiblityDate < @filemtime( CN_IMAGE_PATH . $entry->getImageNameOriginal() ) ) {

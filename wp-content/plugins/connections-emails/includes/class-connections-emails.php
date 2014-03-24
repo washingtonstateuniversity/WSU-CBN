@@ -5,28 +5,21 @@
  * Manage the feed item content type used by the WNPA Syndication plugin.
  */
 if (!class_exists('Connections_Emails')) {
-    class Connections_Emails {
-        public static $options;
-        public function __construct() {
-            //self::loadConstants();
-            //self::loadDependencies();
-            //self::initOptions();
-            //register_activation_hook( dirname(__FILE__) . '/connections_emails.php', array( __CLASS__, 'activate' ) );
-            if (is_admin()) {
-                add_action('plugins_loaded', array( $this, 'start' ));
-                add_filter('cn_submenu', array(  __CLASS__, 'addMenu' ));
-				
-				
+	class Connections_Emails {
+		public static $options;
+		public function __construct() {
+			if (is_admin()) {
+				add_action('plugins_loaded', array( $this, 'start' ));
+				add_filter('cn_submenu', array(  __CLASS__, 'addMenu' ));
+
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-last_emailed', array( __CLASS__, 'sanitize') );
-
-            }
-				$this->settings = cnSettingsAPI::getInstance();
-				add_filter( 'cn_register_settings_tabs' , array(  $this,  'registerSettingsTabs' ) );
-				add_filter( 'cn_register_settings_sections' , array( $this, 'registerSettingsSections' ) );
-				add_filter( 'cn_register_settings_fields' , array( $this, 'registerSettingsFields' ) );
-				
-				$this->settings->init();
+			}
+			$this->settings = cnSettingsAPI::getInstance();
+			add_filter( 'cn_register_settings_tabs' , array(  $this,  'registerSettingsTabs' ) );
+			add_filter( 'cn_register_settings_sections' , array( $this, 'registerSettingsSections' ) );
+			add_filter( 'cn_register_settings_fields' , array( $this, 'registerSettingsFields' ) );
+			$this->settings->init();
 			
 			// Register the metabox and fields.
 			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
@@ -36,22 +29,15 @@ if (!class_exists('Connections_Emails')) {
 			add_action( 'cn_meta_field-email_count', array( __CLASS__, 'field' ), 10, 2 );
 			
 			add_action( 'cn_meta_output_field-cnemail', array( __CLASS__, 'block' ), 10, 3 );
-        }
-        public function start() {
-            if (class_exists('connectionsLoad')) {
-                //load_plugin_textdomain( 'connections_emails' , false , CNFM_DIR_NAME . '/lang' );//comeback to 
+		}
+		public function start() {
+			if (class_exists('connectionsLoad')) {
+				//load_plugin_textdomain( 'connections_emails' , false , CNFM_DIR_NAME . '/lang' );//comeback to 
+			} else {
+				add_action('admin_notices', create_function('', 'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order to use Form.</p></div>\';'));
+			}
+		}
 
-                //add_action( 'admin_init' , array( $this, 'adminInit' ) );
-                add_action('init', array( $this, 'init' ));
-            } else {
-                add_action('admin_notices', create_function('', 'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order to use Form.</p></div>\';'));
-            }
-        }
-        public function adminInit() {
-        }
-        public function init() {
-        }
-		
 		public static function loadTextdomain() {
 
 			// Plugin's unique textdomain string.
@@ -75,45 +61,45 @@ if (!class_exists('Connections_Emails')) {
 			// Translations: Secondly, look in plugin's "languages" folder = default.
 			load_plugin_textdomain( $textdomain, FALSE, $languagesDirectory );
 		}
-        /**
-         * Adds the menu as a sub item of Connections.
-         *
-         * @access  private
-         * @since  unkown
-         * @param array $menu
-         * @return array
-         */
-        public static function addMenu($menu) {
-            $menu[71] = array(
-                'hook' => 'emails',
-                'page_title' => 'Connections : Emails',
-                'menu_title' => 'Emails',
-                'capability' => 'connections_add_entry',
-                'menu_slug' => 'connections_emails',
-                'function' => array(
-                    __CLASS__,
-                    'showPage'
-                )
-            );
-            return $menu;
-        }
-        /**
-         * Renders the admin page.
-         *
-         * @access  private
-         * @since  unknown
-         * @return void
-         */
-        public static function showPage() {
-            if (!isset($_GET['page']))
-                return;
-            switch ($_GET['page']) {
-                case 'connections_emails':
-                    include_once(dirname(__FILE__) . '/admin/pages/emails.php');
-                    connectionsEmailsPage();
-                    break;
-            }
-        }
+		/**
+		 * Adds the menu as a sub item of Connections.
+		 *
+		 * @access  private
+		 * @since  unkown
+		 * @param array $menu
+		 * @return array
+		 */
+		public static function addMenu($menu) {
+			$menu[71] = array(
+				'hook' => 'emails',
+				'page_title' => 'Connections : Emails',
+				'menu_title' => 'Emails',
+				'capability' => 'connections_add_entry',
+				'menu_slug' => 'connections_emails',
+				'function' => array(
+					__CLASS__,
+					'showPage'
+				)
+			);
+			return $menu;
+		}
+		/**
+		 * Renders the admin page.
+		 *
+		 * @access  private
+		 * @since  unknown
+		 * @return void
+		 */
+		public static function showPage() {
+			if (!isset($_GET['page']))
+				return;
+			switch ($_GET['page']) {
+				case 'connections_emails':
+					include_once(dirname(__FILE__) . '/admin/pages/emails.php');
+					connectionsEmailsPage();
+					break;
+			}
+		}
 
 		public static function registerSettingsTabs( $tabs ) {
 			global $connections;
@@ -123,7 +109,7 @@ if (!class_exists('Connections_Emails')) {
 			// Register the core tab banks.
 			$tabs[] = array(
 				'id'        => 'email' ,
-				'position'  => 30 ,
+				'position'  => 30.1 ,
 				'title'     => __( 'Emails' , 'connections' ) ,
 				'page_hook' => $settings
 			);
@@ -138,7 +124,7 @@ if (!class_exists('Connections_Emails')) {
 			// Register the core setting sections.
 			$sections[] = array(
 				'tab'       => 'email' ,
-				'id'        => 'connections_email_defaults' ,
+				'id'        => 'connections_emails_defaults' ,
 				'position'  => 20 ,
 				'title'     => __( 'Email defaults' , 'connections_emails' ) ,
 				'callback'  => '' ,
@@ -151,6 +137,11 @@ if (!class_exists('Connections_Emails')) {
 			$current_user = wp_get_current_user();
 
 			$settings = 'connections_page_connections_settings';
+			$admin_email = get_bloginfo( 'admin_email' );
+			$description = get_bloginfo( 'description' );
+			/*
+			 * The General tab fields.
+			 */
 
 			$fields[] = array(
 				'plugin_id' => 'connections_emails',
@@ -158,12 +149,12 @@ if (!class_exists('Connections_Emails')) {
 				'position'  => 101,
 				'page_hook' => $settings,
 				'tab'       => 'email',
-				'section'   => 'connections_email_defaults',
+				'section'   => 'connections_emails_defaults',
 				'title'     => __('Sender Email', 'connections_emails'),
-				'desc'      => __('', 'connections_emails'),
-				'help'      => __('', 'connections_emails'),
+				'desc'      => '',
+				'help'      => '',
 				'type'      => 'text',
-				'default'   => get_bloginfo( 'admin_email' )
+				'default'   => ''
 			);
 			
 			$fields[] = array(
@@ -172,12 +163,12 @@ if (!class_exists('Connections_Emails')) {
 				'position'  => 102,
 				'page_hook' => $settings,
 				'tab'       => 'email',
-				'section'   => 'connections_email_defaults',
+				'section'   => 'connections_emails_defaults',
 				'title'     => __('Sender Name', 'connections_emails'),
-				'desc'      => __('', 'connections_emails'),
-				'help'      => __('', 'connections_emails'),
+				'desc'      => '',
+				'help'      => '',
 				'type'      => 'text',
-				'default'   => get_bloginfo( 'description' )
+				'default'   => ''
 			);
 			
 			$fields[] = array(
@@ -186,9 +177,9 @@ if (!class_exists('Connections_Emails')) {
 				'position'  => 103,
 				'page_hook' => $settings,
 				'tab'       => 'email',
-				'section'   => 'connections_email_defaults',
+				'section'   => 'connections_emails_defaults',
 				'title'     => __('Recipient Name Format', 'connections_emails'),
-				'desc'      => __('', 'connections_emails'),
+				'desc'      => '',
 				'help'      => __('Look to the connections web site for more info on formats for names', 'connections_emails'),
 				'type'      => 'text',
 				'default'   => '%last%, %first%'
@@ -201,10 +192,10 @@ if (!class_exists('Connections_Emails')) {
 				'position'  => 104,
 				'page_hook' => $settings,
 				'tab'       => 'email',
-				'section'   => 'connections_email_defaults',
+				'section'   => 'connections_emails_defaults',
 				'title'     => __('Default email subject', 'connections_emails'),
-				'desc'      => __('', 'connections_emails'),
-				'help'      => __('', 'connections_emails'),
+				'desc'      => '',
+				'help'      => '',
 				'type'      => 'text',
 				'default'   => ' '
 			);						
@@ -214,10 +205,10 @@ if (!class_exists('Connections_Emails')) {
 				'position'  => 105,
 				'page_hook' => $settings,
 				'tab'       => 'email',
-				'section'   => 'connections_email_defaults',
+				'section'   => 'connections_emails_defaults',
 				'title'     => __('Default HTML email', 'connections_emails'),
-				'desc'      => __('', 'connections_emails'),
-				'help'      => __('', 'connections_emails'),
+				'desc'      => '',
+				'help'      => '',
 				'type'      => 'rte',
 				'default'   => ' '
 			);
@@ -274,7 +265,7 @@ if (!class_exists('Connections_Emails')) {
 		
 		
 		
-    }
+	}
 	
 	
 	
@@ -286,25 +277,25 @@ if (!class_exists('Connections_Emails')) {
 	
 	
 	
-    /**
-     * Start up the extension.
-     *
-     * @access public
-     * @since 1.0
-     * @return mixed (object)|(bool)
-     */
-    function Connections_Emails() {
-        if (class_exists('connectionsLoad')) {
-            return new Connections_Emails();
-        } else {
-            add_action('admin_notices', create_function('', 'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order use Connections Emails.</p></div>\';'));
-            return FALSE;
-        }
-    }
-    /**
-     * Since Connections loads at default priority 10, and this extension is dependent on Connections,
-     * we'll load with priority 11 so we know Connections will be loaded and ready first.
-     */
-    add_action('plugins_loaded', 'Connections_Emails', 11);
+	/**
+	 * Start up the extension.
+	 *
+	 * @access public
+	 * @since 1.0
+	 * @return mixed (object)|(bool)
+	 */
+	function Connections_Emails() {
+		if (class_exists('connectionsLoad')) {
+			return new Connections_Emails();
+		} else {
+			add_action('admin_notices', create_function('', 'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order use Connections Emails.</p></div>\';'));
+			return FALSE;
+		}
+	}
+	/**
+	 * Since Connections loads at default priority 10, and this extension is dependent on Connections,
+	 * we'll load with priority 11 so we know Connections will be loaded and ready first.
+	 */
+	add_action('plugins_loaded', 'Connections_Emails', 11);
 }
 

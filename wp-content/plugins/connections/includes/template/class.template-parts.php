@@ -25,8 +25,13 @@ class cnTemplatePart {
 	 */
 	public static function init() {
 
-		add_action( 'cn_action_list_actions', array( __CLASS__, 'listActions' ) );
-		add_action( 'cn_action_entry_actions', array( __CLASS__, 'entryActions' ), 10, 2 );
+		add_action( 'cn_list_actions', array( __CLASS__, 'listActions' ) );
+		add_action( 'cn_entry_actions', array( __CLASS__, 'entryActions' ), 10, 2 );
+
+		add_action( 'cn_list_action-view_all', array( __CLASS__, 'listAction_ViewAll') );
+
+		add_action( 'cn_entry_action-back', array( __CLASS__, 'entryAction_Back'), 10, 2 );
+		add_action( 'cn_entry_action-vcard', array( __CLASS__, 'entryAction_vCard'), 10, 2 );
 
 		add_action( 'cn_action_no_results', array( __CLASS__, 'noResults' ), 10, 2 );
 
@@ -62,22 +67,29 @@ class cnTemplatePart {
 			'return'        => FALSE
 		);
 
-		$atts = wp_parse_args( $atts, $defaults );
+		$atts = wp_parse_args( $atts, apply_filters( 'cn_list_actions_atts', $defaults ) );
 
-		if ( cnSettingsAPI::get( 'connections', 'connections_display_list_actions', 'view_all' ) && get_query_var( 'cn-view' ) !== 'all' )
-			$actions['view_all'] = cnURL::permalink( array( 'type' => 'all', 'text' => __( 'View All', 'connections' ), 'rel' => 'canonical', 'return' => TRUE ) );
+		$settings = cnSettingsAPI::get( 'connections', 'list_actions', 'actions' );
 
-		$actions = apply_filters( 'cn_filter_list_actions', $actions );
+		if ( ! isset( $settings['active'] ) || empty( $settings['active'] ) ) return;
 
-		if ( empty( $actions ) ) return;
+		foreach ( $settings['active'] as $key => $slug ) {
 
-		foreach ( $actions as $key => $action ) {
+			if ( ! has_action( "cn_list_action-{$slug}" ) ) continue;
+
+			ob_start();
+
+			do_action( "cn_list_action-{$slug}", $atts );
+
+			$action = ob_get_clean();
+
+			if ( strlen( $action ) < 1 ) continue;
 
 			$out .= sprintf( '%1$s<%2$s class="cn-list-action-item">%3$s</%2$s>%4$s',
-				empty( $atts['before-item'] ) ? '' : $atts['before-item'],
+				$atts['before-item'],
 				$atts['item_tag'],
 				$action,
-				empty( $atts['after-item'] ) ? '' : $atts['after-item']
+				$atts['after-item']
 			 );
 		}
 
@@ -86,8 +98,115 @@ class cnTemplatePart {
 				$out
 			);
 
-		if ( $atts['return'] ) return "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . "\n";
-		echo "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . "\n";
+		if ( $atts['return'] ) return PHP_EOL . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . PHP_EOL;
+		echo PHP_EOL . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . PHP_EOL;
+	}
+
+	/**
+	 * Callback for the cn_list_action-view_all action which outputs the "View All" link
+	 * in the list actions.
+	 *
+	 * @access private
+	 * @since  0.8
+	 * @param  array  $atts The $atts from self::listActions() passed by the action callback.
+	 *
+	 * @return void
+	 */
+	public static function listAction_ViewAll( $atts ) {
+
+		// No need to display if the user is viewing the "View All" page.
+		if ( get_query_var( 'cn-view' ) == 'all' ) return;
+
+		// Output the "View All" link.
+		cnURL::permalink( array( 'type' => 'all', 'text' => __( 'View All', 'connections' ), 'rel' => 'canonical', 'return' => FALSE ) );
+	}
+
+	/**
+	 * Output the entry list actions.
+	 *
+	 * @access public
+	 * @since 0.7.6.5
+	 * @param (array)  $atts [optional]
+	 * @param (object) $entry Instance of the cnEntry class.
+	 * @uses wp_parse_args()
+	 * @uses apply_filters()
+	 * @return string | void
+	 */
+	public static function entryActions( $atts = array(), $entry ) {
+		$out = '';
+		$actions = array();
+
+		$defaults = array(
+			'container_tag' => 'ul',
+			'item_tag'      => 'li',
+			'before'        => '',
+			'before-item'   => '',
+			'after-item'    => '',
+			'after'         => '',
+			'return'        => FALSE
+		);
+
+		$atts = wp_parse_args( $atts, apply_filters( 'cn_entry_actions_atts', $defaults ) );
+
+		$settings = cnSettingsAPI::get( 'connections', 'entry_actions', 'actions' );
+
+		if ( ! isset( $settings['active'] ) || empty( $settings['active'] ) ) return;
+
+		foreach ( $settings['active'] as $key => $slug ) {
+
+			if ( ! has_action( "cn_entry_action-{$slug}" ) ) continue;
+
+			ob_start();
+
+			do_action( "cn_entry_action-{$slug}", $atts, $entry );
+
+			$action = ob_get_clean();
+
+			if ( strlen( $action ) < 1 ) continue;
+
+			$out .= sprintf( '%1$s<%2$s class="cn-entry-action-item">%3$s</%2$s>%4$s',
+				empty( $atts['before-item'] ) ? '' : $atts['before-item'],
+				$atts['item_tag'],
+				$action,
+				empty( $atts['after-item'] ) ? '' : $atts['after-item']
+			 );
+		}
+
+		$out = sprintf( '<%1$s id="cn-entry-actions">%2$s</%1$s>',
+				$atts['container_tag'],
+				$out
+			);
+
+		if ( $atts['return'] ) return PHP_EOL . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . PHP_EOL;
+		echo PHP_EOL . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . PHP_EOL;
+	}
+
+	/**
+	 * Callback for the cn_entry_action-back action which outputs the "Go back to directory." link.
+	 *
+	 * @access  private
+	 * @since  0.8
+	 * @param  array  $atts  The $atts from self::entryActions() passed by the action callback.
+	 * @param  object $entry An instance of the cnEntry object; passed by the action callback.
+	 * @return void
+	 */
+	public static function entryAction_Back( $atts, $entry ) {
+
+		cnURL::permalink( array( 'type' => 'home', 'text' => __( 'Go back to directory.', 'connections' ), 'on_click' => 'history.back();return false;', 'return' => FALSE ) );
+	}
+
+	/**
+	 * Callback for the cn_entry_action-vcard action which outputs the "Add to Address Book." link.
+	 *
+	 * @access  private
+	 * @since  0.8
+	 * @param  array  $atts  The $atts from self::entryActions() passed by the action callback.
+	 * @param  object $entry An instance of the cnEntry object; passed by the action callback.
+	 * @return void
+	 */
+	public static function entryAction_vCard( $atts, $entry ) {
+
+		$entry->vcard( array( 'return' => FALSE ) );
 	}
 
 	/**
@@ -143,62 +262,6 @@ class cnTemplatePart {
 
 			$out = $category->getDescriptionBlock( array( 'return' => TRUE ) );
 		}
-
-		if ( $atts['return'] ) return "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . "\n";
-		echo "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . "\n";
-	}
-
-	/**
-	 * Output the entry list actions.
-	 *
-	 * @access public
-	 * @since 0.7.6.5
-	 * @param (array)  $atts [optional]
-	 * @param (object) $entry Instance of the cnEntry class.
-	 * @uses wp_parse_args()
-	 * @uses apply_filters()
-	 * @return string | void
-	 */
-	public static function entryActions( $atts = array(), $entry ) {
-		$out = '';
-		$actions = array();
-
-		$defaults = array(
-			'container_tag' => 'ul',
-			'item_tag'      => 'li',
-			'before'        => '',
-			'before-item'   => '',
-			'after-item'    => '',
-			'after'         => '',
-			'return'        => FALSE
-		);
-
-		$atts = wp_parse_args( $atts, $defaults );
-
-		if ( cnSettingsAPI::get( 'connections', 'connections_display_entry_actions', 'back' ) )
-			$actions['back'] = cnURL::permalink( array( 'type' => 'home', 'text' => __( 'Go back to directory.', 'connections' ), 'on_click' => 'history.back();return false;', 'return' => TRUE ) );
-
-		if ( cnSettingsAPI::get( 'connections', 'connections_display_entry_actions', 'vcard' ) )
-			$actions['vcard'] = $entry->vcard( array( 'return' => TRUE ) );
-
-		$actions = apply_filters( 'cn_filter_entry_actions', $actions );
-
-		if ( empty( $actions ) ) return;
-
-		foreach ( $actions as $key => $action ) {
-
-			$out .= sprintf( '%1$s<%2$s class="cn-entry-action-item">%3$s</%2$s>%4$s',
-				empty( $atts['before-item'] ) ? '' : $atts['before-item'],
-				$atts['item_tag'],
-				$action,
-				empty( $atts['after-item'] ) ? '' : $atts['after-item']
-			 );
-		}
-
-		$out = sprintf( '<%1$s id="cn-entry-actions">%2$s</%1$s>',
-				$atts['container_tag'],
-				$out
-			);
 
 		if ( $atts['return'] ) return "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . "\n";
 		echo "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) . $out . ( empty( $atts['after'] ) ? '' : $atts['after'] ) . "\n";
@@ -765,7 +828,7 @@ class cnTemplatePart {
 			$base = get_option('connections_permalink');
 
 			// Store the query vars
-			if ( get_query_var('cn-s') ) $queryVars['cn-s']                       = get_query_var('cn-s');
+			if ( get_query_var('cn-s') ) $queryVars['cn-s']                       = urlencode( get_query_var('cn-s') );
 			if ( get_query_var('cn-char') ) $queryVars['cn-char']                 = get_query_var('cn-char');
 			if ( get_query_var('cn-cat') ) $queryVars['cn-cat']                   = get_query_var('cn-cat');
 			if ( get_query_var('cn-organization') ) $queryVars['cn-organization'] = get_query_var('cn-organization');
@@ -975,13 +1038,18 @@ class cnTemplatePart {
 		}
 
 		$level = 1;
-		$out = '';
+		$out   = '';
 
 		$categories = $connections->retrieve->categories();
 
 		$defaults = array(
 			'type'            => 'select',
 			'group'           => FALSE,
+			'class'           => array( 'cn-category-select' ),
+			'name'            => 'cn-cat',
+			'style'           => array(),
+			'enhanced'        => TRUE,
+			'on_change'       => 'this.form.submit()',
 			'default'         => __( 'Select Category', 'connections' ),
 			'show_select_all' => TRUE,
 			'select_all'      => __( 'Show All Categories', 'connections' ),
@@ -1011,11 +1079,22 @@ class cnTemplatePart {
 			$atts['exclude'] = explode( ',', $atts['exclude'] );
 		}
 
-		$out .= "\n" . '<select class="cn-cat-select" name="' . ( ( $atts['type'] == 'multiselect' ) ? 'cn-cat[]' : 'cn-cat' ) . '"' . ( ( $atts['type'] == 'multiselect' ) ? ' MULTIPLE ' : '' ) . ( ( $atts['type'] == 'multiselect' ) ? '' : ' onchange="this.form.submit()" ' ) . 'data-placeholder="' . esc_attr($atts['default']) . '">';
+		// Add the 'cn-enhanced-select' class for the jQuery Chosen Plugin will enhance the drop down.
+		if ( $atts['enhanced'] ) $atts['class'] = array_merge( (array) $atts['class'], array('cn-enhanced-select') );
 
-		$out .= "\n" . '<option value=""></option>';
+		// $out .= PHP_EOL . '<select class="cn-cat-select" name="' . ( ( $atts['type'] == 'multiselect' ) ? 'cn-cat[]' : 'cn-cat' ) . '"' . ( ( $atts['type'] == 'multiselect' ) ? ' MULTIPLE ' : '' ) . ( ( $atts['type'] == 'multiselect' ) ? '' : ' onchange="this.form.submit()" ' ) . 'data-placeholder="' . esc_attr($atts['default']) . '">';
+		$out .= sprintf( '<select %1$s name="%2$s"%3$s%4$sdata-placeholder="%5$s"%6$s>',
+			empty( $atts['class'] ) ? '' : cnHTML::attribute( 'class', $atts['class'] ),
+			$atts['type'] == 'multiselect' ? esc_attr( $atts['name'] ) . '[]' : esc_attr( $atts['name'] ),
+			empty( $atts['style'] ) ? '' : cnHTML::attribute( 'style', $atts['style'] ),
+			$atts['type'] == 'multiselect' ? '' : ( empty( $atts['on_change'] ) ? '' : sprintf( ' onchange="%s" ', esc_js( $atts['on_change'] ) ) ),
+			esc_attr( $atts['default'] ),
+			$atts['type'] == 'multiselect' ? ' MULTIPLE' : ''
+			);
 
-		if ( $atts['show_select_all'] ) $out .= "\n" . '<option value="">' . esc_attr( $atts['select_all'] ) . '</option>';
+		$out .= PHP_EOL . '<option value=""></option>';
+
+		if ( $atts['show_select_all'] ) $out .= PHP_EOL . '<option value="">' . esc_attr( $atts['select_all'] ) . '</option>';
 
 		foreach ( $categories as $key => $category ) {
 			// Limit the category tree to only the supplied root parent categories.
@@ -1033,12 +1112,12 @@ class cnTemplatePart {
 
 			// If grouping by root parent is enabled, close the optiongroup tag.
 			if ( $atts['group'] && ! empty( $category->children ) )
-				$out .= '</optgroup>' . "\n";
+				$out .= '</optgroup>' . PHP_EOL;
 		}
 
-		$out .= '</select>' . "\n";
+		$out .= '</select>' . PHP_EOL;
 
-		if ( $atts['type'] == 'multiselect' ) $out .= self::submit( array( 'return' => TRUE ) );
+		// if ( $atts['type'] == 'multiselect' ) $out .= self::submit( array( 'return' => TRUE ) );
 
 		if ( $atts['return'] ) return $out;
 		echo $out;

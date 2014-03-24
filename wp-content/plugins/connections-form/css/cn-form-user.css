@@ -1,9 +1,14 @@
 #cn-form .cn-clear { clear: both; }
-#cn-form a, #cn-form a:visited {
-	color: #00ADEE;
+#cn-form a,
+#cn-form a:visited,
+#cn-form a:hover,
+#cn-form a:active {
+	color: #FFF;
 }
-#cn-form a:hover, #cn-form a:active {
-	color: #91BD09;
+
+#cn-form .wp-editor-wrap a,
+#cn-form .wp-editor-tabs a {
+	color: #555;
 }
 
 /*
@@ -15,7 +20,7 @@
 /*
  * Entry Form Widget Styles
  */
-#cn-form .postbox {
+#cn-form .cn-metabox {
 	border-color: #dfdfdf;
 	-moz-box-shadow: inset 0 1px 0 #fff;
 	-webkit-box-shadow: inset 0 1px 0 #fff;
@@ -33,10 +38,10 @@
 	text-align: left;
 	width: 99%;
 	-webkit-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-               -moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
-                    box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+	-moz-box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
+	box-shadow: 0 15px 10px -10px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 0, 0, 0.1) inset;
 }
-#cn-form .widget, #cn-form .postbox {
+#cn-form .widget, #cn-form .cn-metabox {
 	background-color: #f5f5f5;
 	background-image: -ms-linear-gradient(top,#f9f9f9,#f5f5f5);
 	background-image: -moz-linear-gradient(top,#f9f9f9,#f5f5f5);
@@ -45,7 +50,7 @@
 	background-image: -webkit-linear-gradient(top,#f9f9f9,#f5f5f5);
 	background-image: linear-gradient(top,#f9f9f9,#f5f5f5);
 }
-#cn-form .widget .widget-top, #cn-form .postbox h3 {
+#cn-form .widget .widget-top, #cn-form .cn-metabox h3 {
 	margin-top: 1px;
 	border-bottom-width: 1px;
 	border-style: solid;
@@ -54,7 +59,7 @@
 	-khtml-user-select: none;
 	user-select: none;
 }
-#cn-form .postbox h3 {
+#cn-form .cn-metabox h3 {
 	font-size: 15px;
 	font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
 	font-weight: normal;
@@ -62,7 +67,7 @@
 	margin: 0;
 	line-height: normal;
 }
-#cn-form .widget .widget-top, #cn-form .postbox h3 {
+#cn-form .widget .widget-top, #cn-form .cn-metabox h3 {
 	background-color: #f1f1f1;
 	background-image: -ms-linear-gradient(top,#f9f9f9,#ececec);
 	background-image: -moz-linear-gradient(top,#f9f9f9,#ececec);
@@ -71,7 +76,7 @@
 	background-image: -webkit-linear-gradient(top,#f9f9f9,#ececec);
 	background-image: linear-gradient(top,#f9f9f9,#ececec);
 }
-#cn-form .widget .widget-top, #cn-form .postbox h3 {
+#cn-form .widget .widget-top, #cn-form .cn-metabox h3 {
 	border-width: 0;
 	border-bottom: 1px #DFDFDF solid;
 	text-shadow: #fff 0 1px 0;
@@ -79,18 +84,18 @@
 	-webkit-box-shadow: 0 1px 0 #fff;
 	box-shadow: 0 1px 0 #fff;
 }
-#cn-form .postbox h3 {
+#cn-form .cn-metabox h3 {
 	color: #464646;
 }
-#cn-form .postbox label {
+#cn-form .cn-metabox label {
 	display: inline;
 	float: none;
 	width: auto;
 }
-#cn-form .postbox .cnf-inside, #cn-form .stuffbox .cnf-inside {
+#cn-form .cn-metabox .cn-metabox-inside, #cn-form .stuffbox .cn-metabox-inside {
 	padding: 0 10px;
 }
-#cn-form .postbox .cnf-inside, #cn-form .postbox #cn-form .cnf-inside {
+#cn-form .cn-metabox .cn-metabox-inside, #cn-form .cn-metabox #cn-form .cn-metabox-inside {
 	font-size: 12px;
 	margin: 6px 0 8px;
 }
@@ -99,10 +104,10 @@
 	margin-bottom: -1px;
 	font-size: 12px;
 	font-weight: bold;
-	height: 26px;
+	height: auto;
 	overflow: hidden;
 }
-#cn-form .widget, #cn-form .postbox {
+#cn-form .widget {
 	margin-bottom: 20px;
 	padding: 0;
 	border-width: 1px;
@@ -122,7 +127,7 @@
 }
 #cn-form .widget-title h4 {
 	margin: 0;
-	line-height: normal;
+	line-height: 14px;
 	overflow: hidden;
 	white-space: nowrap;
 }
@@ -153,7 +158,7 @@
 	background-color: transparent;
 	border: none;
 	margin: 0;
-	padding: 6px 9px;
+	padding: 4px 12px;
 	overflow: hidden;
 	position: relative;
 }
@@ -162,12 +167,17 @@
 	opacity: 1;
 	overflow: visible;
 	padding: 0;
+	text-transform: none;
+}
+#cn-form div.widget-title span {
+	margin-left: 4px;
+	/*vertical-align: middle;*/
 }
 #cn-form div.widget-title h4 select {
 	display: inline;
-	height: 1.75em;
 	padding: 1px;
-	margin-top: -5px;
+	margin: 0;
+	vertical-align: middle;
 	width: auto;
 }
 #cn-form div.widget .widget-inside, .widget .widget-description {
@@ -194,6 +204,9 @@
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 	color: #333333;
 	font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
 	font-size: 12px;
@@ -201,7 +214,6 @@
 	line-height: 1em;
 	margin: 2px 4px;
 	padding: 5px;
-	width: 100%;
 }
 #cn-form input[type="text"]:focus {
 	background-color: #FFFFFF;
@@ -214,6 +226,11 @@
 	outline: none;
 	border-color: #FDCED0;
 	box-shadow: 0 0 8px #CE0000;
+}
+#cn-form textarea {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
 }
 
 #cn-form #cn-category_chzn ul {
@@ -251,55 +268,60 @@
 	padding: 2px 4px;
 }
 
-#cn-form div.form-field .cn-float-left { float: left; }
-#cn-form div.form-field .half-width { width: 50%; }
-#cn-form input[type="radio"] { margin: 0; padding: 0; vertical-align: text-top; width: auto; }
-#cn-form h3 input[type="radio"] { display: inline; height: auto; margin: 4px; padding: 0; vertical-align: text-top; width: auto; }
-#cn-form div.form-field h3 label { line-height: normal; vertical-align: text-top; }
-#cn-form div.form-field h4 label { line-height: normal; vertical-align: text-top; }
-#cn-form div.form-field h4 span.visibility { position: absolute; right: 0; }
-#cn-form div.form-field h4 span.visibility label { font-weight: normal; }
-#cn-form div.form-field#cn-name { width: 98%; }
-#cn-form div.form-field#cn-org-unit { width: 98%; }
-#cn-form div.form-field #honorific-prefix { margin-right: 5px; width: 10%; }
-#cn-form div.form-field #honorific-prefix input { width: 75%; }
-#cn-form div.form-field #first-name { margin-right: 5px;  width: 25%; }
-#cn-form div.form-field #first-name input { width: 85%; }
-#cn-form div.form-field #middle-name { margin-right: 5px;  width: 25%; }
-#cn-form div.form-field #middle-name input { width: 85%; }
-#cn-form div.form-field #last-name { margin-right: 5px;  width: 25%; }
-#cn-form div.form-field #last-name input { width: 85%; }
-#cn-form div.form-field #honorific-suffix { width: 10%; }
-#cn-form div.form-field #honorific-suffix input { width: 75%; }
-#cn-form div.form-field #contact-first-name input { width: 90%; }
-#cn-form div.form-field #contact-last-name input { width: 90%; }
-#cn-form div.form-field .address-local input { width: 80%; }
-#cn-form div.form-field .address-region input { width: 80%; }
-#cn-form div.form-field .address-city { width: 28%; }
-#cn-form div.form-field .address-city input { width: 86%; }
-#cn-form div.form-field .address-state { width: 20%; }
-#cn-form div.form-field .address-state input { width: 74%; }
-#cn-form div.form-field .address-zipcode { width: 20%; }
-#cn-form div.form-field .address-zipcode input { width: 62%; }
-#cn-form div.form-field .address-country { clear: both; width: 52%; }
-#cn-form div.form-field .address-country input { width: 80%; }
-#cn-form div.form-field .address-latitude { width: 29%; }
-#cn-form div.form-field .address-latitude input { width: 75%; }
-#cn-form div.form-field .address-longitude { width: 29%; }
-#cn-form div.form-field .address-longitude input { width: 70%; }
+#cn-form .cn-float-left { float: left; }
+#cn-form .half-width { width: 50%; }
+#cn-form input[type="radio"] { margin: -4px 0 0 0; padding: 0; vertical-align: middle; width: auto; }
+#cn-form h3 input[type="radio"] { display: inline; height: auto; margin: 4px; padding: 0; vertical-align: middle; width: auto; }
+#cn-form h3 label { line-height: normal; vertical-align: middle; }
+#cn-form h4 label { line-height: normal; vertical-align: baseline; }
+#cn-form h4 span.visibility { position: absolute; right: 0; top: 5px; }
+#cn-form h4 span.visibility label { font-weight: normal; }
 
-#cn-form div.form-field label {font-size: 12px; line-height: 1.6; padding: 0 2px;}
-#cn-form div.form-field span.checkbox {background-color:transparent;float:right;font-size:11px;font-weight:bold;}
-#cn-form div.form-field span.checkbox input {width:16px;}
-#cn-form div.form-field span.selectbox {font-size:11px;font-weight:bold;}
-#cn-form div.form-field span.selectbox select {padding:1px !important;vertical-align:middle !important;}
-#cn-form div.form-field span.radio_group input {height: 13px; margin: 0px 5px 0px 2px; width:13px;}
-#cn-form div.form-field span.radio_group label {float: left; line-height: 30px; padding-right: 15px; white-space: nowrap;}
-#cn-form div.form-field img {-moz-border-radius:4px; background-color: #FFFFFF; border:1px solid #E3E3E3; margin-bottom:10px; padding:5px;}
+/* The "Name" metabox styles. */
+#cn-metabox-name input[type="text"] { width: 100%; }
+#cn-name-prefix { display: inline-block; margin-right: 5px; width: 10%; }
+#cn-name-first { display: inline-block; margin-right: 5px;  width: 25%; }
+#cn-name-middle { display: inline-block; margin-right: 5px;  width: 25%; }
+#cn-name-last { display: inline-block; margin-right: 5px;  width: 25%; }
+#cn-name-suffix { display: inline-block; width: 10%; }
+#cn-contact-first-name { display: inline-block; width: 50%; }
+#cn-contact-last-name { display: inline-block; width: 50%; }
 
-#cn-form div.form-field div.websites label {display: inline;}
-#cn-form div.cnf-inside	span.radio_group label {float: left; line-height: 30px; margin: 6px; padding-right: 12px; white-space: nowrap;}
-#cn-form div.form-field div.email { float: none; }
+/* The "Address" metabox. */
+#cn-metabox-metabox-address .address-local input { width: 80%; }
+#cn-metabox-metabox-address .address-city { float: left; width: 28%; }
+#cn-metabox-metabox-address .address-city input { width: 86%; }
+#cn-metabox-metabox-address .address-state { float: left; width: 20%; }
+#cn-metabox-metabox-address .address-state input { width: 74%; }
+#cn-metabox-metabox-address .address-zipcode { float: left; width: 20%; }
+#cn-metabox-metabox-address .address-zipcode input { width: 62%; }
+#cn-metabox-metabox-address .address-country { clear: both; width: 52%; }
+#cn-metabox-metabox-address .address-country input { width: 80%; }
+#cn-metabox-metabox-address .address-latitude { float: left; width: 29%; }
+#cn-metabox-metabox-address .address-latitude input { width: 75%; }
+#cn-metabox-metabox-address .address-longitude { float: left; width: 29%; }
+#cn-metabox-metabox-address .address-longitude input { width: 70%; }
+#cn-metabox-metabox-address a.geocode.button { display: inline-block; }
+#cn-metabox-metabox-address .map {
+	border: solid 1px #DFDFDF;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	margin: 10px 0px 20px;
+}
+
+#cn-form label {font-size: 12px; line-height: 1.6; padding: 0 2px;}
+/*#cn-form span.checkbox {background-color:transparent;float:right;font-size:11px;font-weight:bold;}
+#cn-form span.checkbox input {width:16px;}
+#cn-form span.selectbox {font-size:11px;font-weight:bold;}
+#cn-form span.selectbox select {padding:1px !important;vertical-align:middle !important;}
+#cn-form span.radio_group input {height: 13px; margin: 0px 5px 0px 2px; width:13px;}
+#cn-form span.radio_group label {float: left; line-height: 30px; padding-right: 15px; white-space: nowrap;}*/
+#cn-form img {-moz-border-radius:4px; background-color: #FFFFFF; border:1px solid #E3E3E3; margin-bottom:10px; padding:5px;}
+
+/*#cn-form div.websites label {display: inline;}*/
+/*#cn-form div.cn-metabox-inside	span.radio_group label {float: left; line-height: 30px; margin: 6px; padding-right: 12px; white-space: nowrap;}
+#cn-form div.email { float: none; }*/
 
 /*
  * Button Styles
@@ -307,24 +329,8 @@
 #cn-form p.submit { font-style: normal; }
 #cn-form p.cn-add  { font-style: normal; margin: 0; padding: 0; text-align: center;}
 #cn-form p.cn-remove-button { bottom: 6px; margin: 0; padding: 0; position: absolute; right: 10px; }
-#cn-form span.cn-button-shell, #cn-form input.cn-button-shell {
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-	color: #FFFFFF;
-	display: inline-block;
-	float: none;
-	font-size: 12px;
-	font-weight: 700;
-	line-height: 1em;
-	padding: 0.5em;
-	position: relative;
-	text-align: center;
-	text-decoration: none;
-	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
-	white-space: nowrap;
-}
-#cn-form .cn-button-shell {
+
+#cn-form .cn-button {
 	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 	-moz-user-select: none;
 	background: none;
@@ -335,19 +341,32 @@
 	background: -ms-linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.2) 100%); /* IE10+ */
 	background: linear-gradient(top, rgba(255,255,255,0.1) 0%,rgba(0,0,0,0.2) 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1affffff', endColorstr='#33000000',GradientType=0 ); /* IE6-9 */
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 	border-color: rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.2) rgba(0, 0, 0, 0.4);
 	border-style: solid;
 	border-width: 1px;
+	color: #FFFFFF;
 	cursor: pointer;
+	display: block;
+	float: none;
+	font-size: 12px;
+	font-weight: 700;
 	line-height: 1em;
+	margin: 0 auto;
 	overflow: hidden;
-	padding: 0;
+	padding: 0.5em;
 	position: relative;
+	text-align: center;
+	text-decoration: none;
+	text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
 	white-space: nowrap;
 	width: 75%;
+	white-space: nowrap;
 }
-#cn-form p.cn-remove-button .cn-button-shell { width: auto; }
-#cn-form .cn-button-shell:hover {
+
+#cn-form .cn-button:hover {
 	background: -moz-linear-gradient(top, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.2)), color-stop(100%,rgba(255,255,255,0.1))); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,0.1) 100%); /* Chrome10+,Safari5.1+ */
@@ -356,7 +375,7 @@
 	background: linear-gradient(top, rgba(255,255,255,0.2) 0%,rgba(255,255,255,0.1) 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33ffffff', endColorstr='#1affffff',GradientType=0 ); /* IE6-9 */
 }
-#cn-form .cn-button-shell:active {
+#cn-form .cn-button:active {
 	background: -moz-linear-gradient(top, rgba(0,0,0,0.2) 0%, rgba(255,255,255,0.1) 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(0,0,0,0.2)), color-stop(100%,rgba(255,255,255,0.1))); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(255,255,255,0.1) 100%); /* Chrome10+,Safari5.1+ */
@@ -365,50 +384,60 @@
 	background: linear-gradient(top, rgba(0,0,0,0.2) 0%,rgba(255,255,255,0.1) 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#33000000', endColorstr='#1affffff',GradientType=0 ); /* IE6-9 */
 }
-#cn-form .cn-button-shell.blue {
+#cn-form .cn-add.cn-button {
 	background-color: #00ADEE;
 }
-#cn-form .cn-button-shell.green {
+#cn-form .cn-button.green {
 	background-color: #91BD09;
 }
-#cn-form .cn-button-shell.red {
+#cn-form .cn-remove.cn-button {
 	background-color: #CE0000;
 }
-#cn-form .cn-button-shell a {
+#cn-form .cn-button a {
 	border: none !important;
 	color: #FFFFFF;
 	display: inline-block;
 	text-decoration: none;
 	width: 100%;
 }
-#cn-form .cn-button-shell a:hover {
+#cn-form .cn-button a:hover {
 	border: none;
 }
 
 /*
- * tincyMCE Styles
+ * Table Styles
  */
 #cn-form table {
 	border: none;
 	margin: 0;
 	text-align: left;
-	width: auto;
+	width: 100%;
 	border-image: initial;
+}
+#cn-form table tr th.cn-metabox-label {
+	width: 200px;
+}
+#cn-form table tr th.cn-metabox-label-empty {
+	width: 0px;
 }
 #cn-form table tr td {
 	border: none;
 	padding: 0;
 }
+/*#cn-form tr#cn-metabox-id-bio > th,
+#cn-form tr#cn-metabox-id-notes > th {
+	display: none;
+}*/
 /*
  * A few styles from Chosen with the selectors more specific so the theme's don't
  * easily override them. I'm sure I'll have to add to this list as I run accross theme conflicts.
  */
-#cn-form ul.chzn-choices { padding: 0 !important; }
-#cn-form ul.chzn-choices li { padding: 3px 19px 3px 6px !important; }
-#cn-form .chzn-container ul.chzn-results .active-result { background: none !important; }
-#cn-form .chzn-container ul li[id*="_chzn_o_"] { list-style: none !important; }
-#cn-form .chzn-container ul.chzn-results .highlighted { background: #3875d7 !important; color: #FFFFFF; }
-#cn-form .chzn-container ul.chzn-results li {
+#cn-form ul.chosen-choices { padding: 0 !important; }
+#cn-form ul.chosen-choices li.search-choice { padding: 3px 20px 3px 5px !important; }
+#cn-form .chosen-container ul.chosen-results .active-result { background: none !important; }
+#cn-form .chosen-container ul li[id*="_chzn_o_"] { list-style: none !important; }
+#cn-form .chosen-container ul.chosen-results .highlighted { background: #3875d7 !important; color: #FFFFFF; }
+#cn-form .chosen-container ul.chosen-results li {
 	line-height: 80% !important;
 	padding: 7px 7px 8px !important;
 	margin: 0;
@@ -419,4 +448,4 @@
 	border: none !important;
 	background-image: none !important;
 }
-#cn-form .chzn-container-single .chzn-single { line-height: 26px !important; }
+#cn-form .chosen-container-single .chosen-single { line-height: 26px !important; }
