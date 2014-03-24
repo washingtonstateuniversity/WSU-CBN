@@ -47,7 +47,7 @@
 							<label class="search-select"><strong><?=__('Search by state' , 'connections_form' )?>:</strong></label><br/>
 							<select name="cn-state" class="cn-state-select" id="cn-state" >
 								<option value="" selected ><?=__('Any' , 'connections_form' )?></option>
-								<?php foreach( cnOptions::getRegions() as $code => $regions ):?>
+								<?php foreach( cnGeo::getRegions() as $code => $regions ):?>
 									<option value="<?=$code?>" ><?=( $display_code ? $code : $regions )?></option>
 								<?php endforeach; ?> 
 							</select>
@@ -60,7 +60,7 @@
 							<label class="search-select"><strong><?=__('Search by country' , 'connections_form' )?>:</strong></label><br/>
 							<select name="cn-country" class="cn-country-select" id="cn-country" >
 								<option value="" selected ><?=__('Any' , 'connections_form' )?></option>
-								<?php foreach( cnOptions::getCountries() as $code => $country ):?>
+								<?php foreach( cnGeo::getCountries() as $code => $country ):?>
 									<option value="<?=$code?>" ><?=( $display_code ? $code : $country )?></option>
 								<?php endforeach; ?> 
 							</select>
@@ -93,6 +93,7 @@
 						<input type="hidden" name="cn-near_addr" />
 						<input type="hidden" name="cn-latitude" />
 						<input type="hidden" name="cn-longitude" />
+						<input type="hidden" name="cn-near-coord" />
 						<input type="hidden" name="cn-radius" value="<?=$radius?>" />
 						<input type="hidden" name="cn-unit" value="<?=$unit?>" />
 					</div>

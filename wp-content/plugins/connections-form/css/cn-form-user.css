@@ -414,17 +414,20 @@
 	width: 100%;
 	border-image: initial;
 }
-#cn-form table tr th {
+#cn-form table tr th.cn-metabox-label {
 	width: 200px;
+}
+#cn-form table tr th.cn-metabox-label-empty {
+	width: 0px;
 }
 #cn-form table tr td {
 	border: none;
 	padding: 0;
 }
-#cn-form tr#cn-metabox-id-bio > th,
+/*#cn-form tr#cn-metabox-id-bio > th,
 #cn-form tr#cn-metabox-id-notes > th {
 	display: none;
-}
+}*/
 /*
  * A few styles from Chosen with the selectors more specific so the theme's don't
  * easily override them. I'm sure I'll have to add to this list as I run accross theme conflicts.

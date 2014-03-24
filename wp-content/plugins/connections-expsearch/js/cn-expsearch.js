@@ -17,6 +17,7 @@
 			$('#mylocation').parent().html('<a href="#" id="clearLocation">[x] </a> Limited to a '+radius+''+unit+' radius of your location ');
 			$('[name="cn-latitude"]').val(position.coords.latitude);
 			$('[name="cn-longitude"]').val(position.coords.longitude);
+			$('[name="cn-near-coord"]').val(position.coords.latitude + "," + ""+position.coords.longitude);
 			$('#clearLocation').off().on('click',function(e){
 				e.preventDefault();
 				clearPosition();
@@ -26,6 +27,7 @@
 			$('#clearLocation').parent().html('<a id="mylocation" style="" hidefocus="true" href="#">[-]</a> Search near my location');
 			$('[name="cn-latitude"]').val('');
 			$('[name="cn-longitude"]').val('');
+			$('[name="cn-near-coord"]').val('');
 			$('#mylocation').off().on('click',function(e){
 				//alert();
 				e.preventDefault();
@@ -69,6 +71,7 @@
 							"cn-near_addr":"",
 							"cn-latitude":""+Pos.coords.latitude,
 							"cn-longitude":""+Pos.coords.longitude,
+							"cn-near-coord":""+Pos.coords.latitude + "," + ""+Pos.coords.longitude,
 							"cn-radius":cn_search_radius,
 							"cn-unit":cn_search_unit,
 							"start_search":"Submit"
@@ -83,7 +86,7 @@
 								e.preventDefault();
 								$('#location_alert').slideUp();
 							});
-							var Form = '<form id="location_search_target" action="'+cn_search_form_url+'" enctype="multipart/form-data" method="POST" style="height:0px;width:0px; overflow:hidden;"><input type="hidden" name="location_alert" value="true"><input type="hidden" name="cn-cat"><input type="hidden" name="cn-state"><input type="hidden" name="cn-near_addr"><input type="hidden" name="cn-latitude" value="'+Pos.coords.latitude+'"><input type="hidden" name="cn-longitude" value="'+Pos.coords.longitude+'"><input type="hidden" name="cn-radius" value="'+cn_search_radius+'"><input type="hidden" name="cn-unit" value="'+cn_search_unit+'"><input type="submit" name="start_search" value="Submit"></form>';
+							var Form = '<form id="location_search_target" action="'+cn_search_form_url+'" enctype="multipart/form-data" method="POST" style="height:0px;width:0px; overflow:hidden;"><input type="hidden" name="location_alert" value="true"><input type="hidden" name="cn-cat"><input type="hidden" name="cn-state"><input type="hidden" name="cn-near_addr"><input type="hidden" name="cn-latitude" value="'+Pos.coords.latitude+'"><input type="hidden" name="cn-longitude" value="'+Pos.coords.longitude+'"><input type="hidden" name="cn-near-coord" value="'+Pos.coords.latitude + "," + ""+Pos.coords.longitude+'"><input type="hidden" name="cn-radius" value="'+cn_search_radius+'"><input type="hidden" name="cn-unit" value="'+cn_search_unit+'"><input type="submit" name="start_search" value="Submit"></form>';
 							$('body').append(Form);
 							$('#veiw_locations').off().on("click", function(e){
 								e.preventDefault();

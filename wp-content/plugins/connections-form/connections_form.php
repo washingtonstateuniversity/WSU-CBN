@@ -86,7 +86,7 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 				}
 
 				// Add the toolbar and menu items.
-				add_action( 'admin_bar_menu', array( __CLASS__, 'toolbar' ), 99 );
+				add_action( 'admin_bar_menu', array( __CLASS__, 'toolbar' ), 100 );
 
 				// Register the shortcode.
 				add_shortcode( 'connections_form', array( __CLASS__, 'shortcode') );
@@ -373,11 +373,10 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 			/*
 			 * The metabox settings field.
 			 */
-			// $metaboxes = cnMetaboxAPI::process();
 			$metaboxes = cnMetaboxAPI::get();
-			// var_dump( $metaboxes );
 			$options   = array();
 			$defaults  = array();
+			$required  = array();
 
 			foreach ( $metaboxes as $id => $metabox ) {
 
@@ -385,7 +384,7 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 				if ( array_search( 'toplevel_page_connections_dashboard', (array) $metabox['pages'] ) !== FALSE ) continue;
 
 				// Do no show the following core metaboxes as options because they are excluded by Form.
-				if ( in_array( $metabox['id'], array( 'name', 'submitdiv', 'metabox-meta' ) ) ) continue;
+				if ( in_array( $metabox['id'], array( /*'name',*/ 'submitdiv', 'metabox-meta' ) ) ) continue;
 
 				// Create the $options array from the registered metaboxes.
 				$options[ $id ] = $metabox['title'];
@@ -394,6 +393,14 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 				$defaults['order'][]  = $id;
 				$defaults['active'][] = $id;
 			}
+
+			// The "Name" metabox is absolutely required, add it to the options array
+			// and add it to the field options required array. The "Name" fields also
+			// needs to be added to $default
+			$options    =  array( 'name' => __( 'Name', 'connections' ) ) + $options;
+			$required[] = 'name';
+			array_unshift( $defaults['order'], 'name' );
+			array_unshift( $defaults['active'], 'name' );
 
 			$fields[] = array(
 				'plugin_id' => 'connections_form',
@@ -438,7 +445,7 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 				'desc'      => __( 'Whether or not a content block should be shown. Content blocks can be dragged and dropped in the desired order to be shown. NOTE: The shortcode options will override these settings.', 'connections_form' ),
 				'help'      => '',
 				'type'      => 'sortable_checklist',
-				'options'   => $options,
+				'options'   => array( 'items' => $options, 'required' => $required ),
 				'default'   => $defaults,
 			);
 
@@ -1051,7 +1058,6 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 			// Exclude the following core metaboxes:
 			$exclude  = array(
 				'visibility',
-				'name',
 				'submitdiv',
 				'metabox-meta',
 				);
@@ -1144,7 +1150,7 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 					ob_start();
 
 					// Render the Name metabox.
-					cnMetabox_Render::metaboxes( array( 'id' => 'name' ), $entry );
+					// cnMetabox_Render::metaboxes( array( 'id' => 'name' ), $entry );
 
 					// If an entry is being edited, the order should include all metaboxes and inactive metaboxes should be hidden instead.
 					// This is because any metabox ID not included in `order` means that it is excluded.
