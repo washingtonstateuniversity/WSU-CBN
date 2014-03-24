@@ -12,7 +12,7 @@
 
 	// load jQuery mobile touch events
 	} else if(Gumby.touchEvents && Gumby.touchDevice) {
-		/*Gumby.debug('Loading jQuery mobile touch events');
+		/*Gumby.debug('Loading jQuery mobile touch events');*/
 		// set timeout to 2sec
 		yepnope.errorTimeout = 2000;
 		Modernizr.load({
@@ -37,7 +37,7 @@
 					Gumby.helpers();
 				}
 			}
-		});*/
+		});
 	}
 
 	// if AMD return Gumby object to define
