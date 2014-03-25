@@ -273,7 +273,10 @@ body.page.page-id-9 #main-content {
 #cn-form table{ background:transparent;}
 
 
+@media screen and (max-width:1024px) and (min-width:0px){
 
+	#main-content { padding:20px 0px}
+}
 
 @media screen and (max-width:750px) and (min-width:0px){
 	.col_1{height:75px;}
