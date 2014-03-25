@@ -132,8 +132,8 @@ function connectionsCSVImportPage()
 											echo '<input type="hidden" name="csv_file" value="' . $csvFile . '">';
 											echo '<input type="hidden" name="csv_delimiter" value="' . esc_attr( $_POST['csv_delimiter'] ) . '">';
 											echo '<input type="hidden" name="csv_enclosure" value="' . esc_attr( $_POST['csv_enclosure'] ) . '">';
-											echo '<input type="hidden" name="csv_import_limit" value="' . absint( $_POST['csv_import_limit'] ) . '">';
-											echo '<input type="hidden" name="csv_import_offset" value="' . absint( $_POST['csv_import_offset'] ) . '">';
+											if ( isset( $_POST['csv_import_limit'] ) ) echo '<input type="hidden" name="csv_import_limit" value="' . absint( $_POST['csv_import_limit'] ) . '">';
+											if ( isset( $_POST['csv_import_offset'] ) ) echo '<input type="hidden" name="csv_import_offset" value="' . absint( $_POST['csv_import_offset'] ) . '">';
 											echo '<input type="hidden" name="csv_row_count" value="' . $csv->count() . '">';
 											wp_nonce_field( 'cncsv-nonce-import', 'cncsv_nonce' );
 
@@ -203,10 +203,13 @@ function connectionsCSVImportPage()
 						'headers'   => array_keys( $_POST['csv_map'] ),
 						'delimiter' => $_POST['csv_delimiter'],
 						'enclosure' => $_POST['csv_enclosure'],
-						'limit'     => $_POST['csv_import_limit'],
-						'offset'    => $_POST['csv_import_offset'],
+						'limit'     => isset( $_POST['csv_import_limit'] ) ? $_POST['csv_import_limit'] : 500,
+						'offset'    => isset( $_POST['csv_import_offset'] ) ? $_POST['csv_import_offset'] : 0,
 						'count'     => $_POST['csv_row_count'],
 						);
+
+					// Since we're starting a new import, let ensure the lock flag definitely does not exist.
+					delete_option( 'cncsv_import_lock' );
 
 					// Save the options to the WP options table for later use.
 					update_option( 'cncsv_import_options', $options );

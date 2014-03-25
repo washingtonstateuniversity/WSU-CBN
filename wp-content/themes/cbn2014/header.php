@@ -8,6 +8,9 @@
  * @subpackage Twenty_Thirteen
  * @since Twenty Thirteen 1.0
  */
+ 
+ $THEME_dir = get_template_directory_uri();
+ 
 ?><!DOCTYPE html>
 <!--[if IE 7]><html class="ie ie7" <?php language_attributes(); ?>><![endif]-->
 <!--[if IE 8]><html class="ie ie8" <?php language_attributes(); ?>><![endif]-->
@@ -18,9 +21,9 @@
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
-	<!--[if lt IE 9]><script src="<?php echo get_template_directory_uri(); ?>/js/html5.js"></script><![endif]-->
-    <script src="/wp-content/themes/cbn2014/js/libs/modernizr-2.5.3.min.js"></script>
-    <link rel="stylesheet" href="/wp-content/themes/cbn2014/css/gumby.css">
+	<!--[if lt IE 9]><script src="<?=$THEME_dir?>/js/html5.js"></script><![endif]-->
+    <script src="<?=$THEME_dir?>/js/libs/modernizr-2.5.3.min.js"></script>
+    <link rel="stylesheet" href="<?=$THEME_dir?>/css/gumby.css">
     
     
 	<?php wp_head(); ?>
@@ -48,105 +51,26 @@
         }
     </style>
     <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.8.22/themes/base/jquery-ui.css" media="all" />
-		<link type='text/css' media='screen' href='http://images.wsu.edu/css/wsu_ui/jquery-ui-1.8.13.custom.css' rel='stylesheet' /> 
+	<link type='text/css' media='screen' href='http://images.wsu.edu/css/wsu_ui/jquery-ui-1.8.13.custom.css' rel='stylesheet' /> 
     
 </head>
- <body <?php body_class(); ?>>
- <div id="body_wrap"> 
- 
- 
- <div class="row">
-     <header class="row">
-     	<div id="displayheader" class="twelve columns row">
-            <!--<nav role="navigation" class="ten columns" id="nav2">
-
-    	        <?php wp_nav_menu( array( 'menu' => 'quickaction', 'menu_class' => 'vrt-nav-menu' ) ); ?>
-				<span id="butch-nav">&nbsp;</span>
-            </nav>
-        -->
-            <h1 class="two columns logo">
-                <a href="#">
-                    <img src="/wp-content/themes/cbn2014/img/wsuaa-logo-w-trans.png" gumby-retina />
-                </a>
-            </h1>
-        </div>
-        <div class=" twelve columns row navbar" id="nav1">
-			<a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
-			<?php wp_nav_menu( array( 'theme_location' => 'primary','container' => false,  'menu_class' => 'ten columns nav-menu' ) ); ?>
-                <!--<ul>
-                <li><a href="/">CBN Home</a></li> 
-                <li><a href="showSearch.castle">Search CBN</a></li>
-                <li><a href="register.castle">Register</a></li>
-                <li><a href="http://alumni.wsu.edu/olc/pub/WHG/careersupport/main_careersupport_1.jsp">Career Support Home</a></li>
-                <li class="last"><a href="http://alumni.wsu.edu/">WSUAA Home</a></li>
-                </ul>
-				
-<div class="row navbar pretty" id="nav1">
-
-  <a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
-  <h1 class="four columns logo">
-    <a href="#">
-      <img src="/img/gumby_mainlogo.png" gumby-retina />
-    </a>
-  </h1>
-  <ul class="eight columns">
-    <li><a href="#">Features</a></li>
-    <li>
-      <a href="#">Documentation</a>
-      <div class="dropdown">
-        <ul>
-          <li><a href="#">The Grid</a></li>
-          <li><a href="#">UI Kit</a></li>
-          <li><a href="#">Sass</a></li>
-          <li><a href="#">JavaScript</a></li>
-          <li><a href="#">Demo</a></li>
-        </ul>
-      </div>
-    </li>
-    <li><a href="#">Customize</a></li>
-  </ul>
-</div>
-				
-				
-				-->
-            
-            <div class="two columns">
-            </div>
-        </div>
-    </header>
-    <div role="main" id="main" class="twelve columns">
-        <!--#parse("layouts/assests/nav.vm")-->
-        
-        
-
-        
-       <!-- 
-        <nav id="site-navigation" class="navigation main-navigation" role="navigation">
-            <h3 class="menu-toggle"><?php _e( 'Menu', 'twentythirteen' ); ?></h3>
-            <a class="screen-reader-text skip-link" href="#content" title="<?php esc_attr_e( 'Skip to content', 'twentythirteen' ); ?>"><?php _e( 'Skip to content', 'twentythirteen' ); ?></a>
-            
-            
-        </nav>-->
-    	<div id="main-content">
- 
- <!--
- 
-	<div id="page" class="hfeed site">
-		<header id="masthead" class="site-header" role="banner">
-			<a class="home-link" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-				<h1 class="site-title"><?php bloginfo( 'name' ); ?></h1>
-				<h2 class="site-description"><?php bloginfo( 'description' ); ?></h2>
-			</a>
-
-			<div id="navbar" class="navbar">
-				<nav id="site-navigation" class="navigation main-navigation" role="navigation">
-					<h3 class="menu-toggle"><?php _e( 'Menu', 'twentythirteen' ); ?></h3>
-					<a class="screen-reader-text skip-link" href="#content" title="<?php esc_attr_e( 'Skip to content', 'twentythirteen' ); ?>"><?php _e( 'Skip to content', 'twentythirteen' ); ?></a>
-					<?php wp_nav_menu( array( 'theme_location' => 'primary', 'menu_class' => 'nav-menu' ) ); ?>
-					<?php get_search_form(); ?>
-				</nav>
-			</div>>
-		</header>
-
-		<div id="main" class="site-main">
--->
+<body <?php body_class(); ?>>
+	<div id="body_wrap">
+		<div class="row">
+			<header class="row">
+				<div id="displayheader" class="twelve columns row">
+					<h1 class="two columns logo">
+						<a href="#">
+							<img src="<?=$THEME_dir?>/img/wsuaa-logo-w-trans.png" gumby-retina />
+						</a>
+					</h1>
+				</div>
+				<div class=" twelve columns row navbar" id="nav1">
+					<a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
+					<?php wp_nav_menu( array( 'theme_location' => 'primary','container' => false,  'menu_class' => 'ten columns nav-menu' ) ); ?>
+					<div class="two columns">
+					</div>
+				</div>
+			</header>
+			<div role="main" id="main" class="twelve columns">
+				<div id="main-content">

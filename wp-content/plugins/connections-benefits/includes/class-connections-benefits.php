@@ -19,7 +19,11 @@ if (!class_exists('Connections_benefits')) {
 				
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-entry_benefit', array( __CLASS__, 'sanitize') );
-
+				add_filter( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
+				add_filter( 'cncsv_import_fields', array( __CLASS__, 'import_fields' ), 10, 2);
+				
+				
+				
             }
 			// Register the metabox and fields.
 			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
@@ -42,17 +46,49 @@ if (!class_exists('Connections_benefits')) {
                 add_filter('cn_register_settings_sections', array( $this, 'registerSettingsSections' ));
                 add_filter('cn_register_settings_fields', array( $this, 'registerSettingsFields' ));
                 $this->settings->init();
-                //add_action( 'admin_init' , array( $this, 'adminInit' ) );
                 add_action('init', array( $this, 'init' ));
             } else {
                 add_action('admin_notices', create_function('', 'echo \'<div id="message" class="error"><p><strong>ERROR:</strong> Connections must be installed and active in order to use Form.</p></div>\';'));
             }
         }
-        public function adminInit() {
-        }
         public function init() {
         }
 		
+		public static function map_import_fields( $fields ){
+			$fields['cnbenefits_description'] = 'Benefits | Description';
+			$fields['cnbenefits_categories'] = 'Benefits | Categories';
+			$fields['cnbenefits_wsuaa_discounts'] = 'Benefits | WSUAA discounts';
+			$fields['cnbenefits_online'] = 'Benefits | online discount';
+			return $fields;
+		}
+		public static function import_fields( $entryId, $row ){
+			$tmp=array(
+				'description'=>'',
+				'wsuaa_discounts'=>1,
+				'categories'=>'',
+				'online'=>0
+			);	
+			if( isset($row->cnbenefits_description) ){
+				$tmp['description'] = $row->cnbenefits_description;
+			}
+			if( isset($row->cnbenefits_categories) ){
+				$tmp['categories'] = $row->cnbenefits_categories;
+			}
+			if( isset($row->cnbenefits_wsuaa_discounts) ){
+				$tmp['wsuaa_discounts'] = $row->cnbenefits_wsuaa_discounts;
+			}
+			if( isset($row->cnbenefits_online) ){
+				$tmp['online'] = $row->cnbenefits_online;
+			}
+			cnEntry_Action::meta('update', $entryId, array(
+				array(
+					'key' => "cnbenefits",
+					'value' =>$tmp
+				)
+			));
+			return;
+		}		
+
 		public static function loadTextdomain() {
 
 			// Plugin's unique textdomain string.
@@ -97,7 +133,7 @@ if (!class_exists('Connections_benefits')) {
 			$metabox::add( $atts );
 		}
 		public static function field( $field, $value ) {
-			
+			//this should be a merge.. no?
 			if(empty($value)){
 				$value=array(
 					'description'=>'',
