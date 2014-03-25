@@ -6,6 +6,7 @@
 			if (navigator.geolocation){
 				navigator.geolocation.getCurrentPosition(setPosition,showError);
 			} else {
+				$('#location_alert').remove();
 				$('#mylocation').parent().html("Geolocation is not supported by this browser.");
 			}
 		}
@@ -38,15 +39,19 @@
 		function showError(error) {
 		  switch(error.code) {
 			case error.PERMISSION_DENIED:
-			  $('#mylocation').parent().html("User denied the request for Geolocation.");
+				$('#location_alert').html("User denied the request for Geolocation.");
+				$('#mylocation').parent().html("User denied the request for Geolocation.");
 			  break;
 			case error.POSITION_UNAVAILABLE:
+				$('#location_alert').html("Location information is unavailable");
 			  $('#mylocation').parent().html("Location information is unavailable.");
 			  break;
 			case error.TIMEOUT:
+				$('#location_alert').html("The request to get user location timed out.");
 			  $('#mylocation').parent().html("The request to get user location timed out.");
 			  break;
 			case error.UNKNOWN_ERROR:
+				$('#location_alert').html("An unknown error occurred.");
 			  $('#mylocation').parent().html("An unknown error occurred.");
 			  break;
 			}
@@ -80,7 +85,7 @@
 							var count = $(data).find('.cn-entry').length;
 							//alert("found "+count+" locations");
 							
-							$('#location_alert').html('There are '+count+' businesses that are near you <a href="#" id="veiw_locations">Click to  veiw them.</a> <a href="#" id="close_alert">[x]</a>');
+							$('#location_alert').html('There are '+count+' businesses that are near you <a href="#" id="veiw_locations">Click to  view them.</a> <a href="#" id="close_alert">[x]</a>');
 							$('#location_alert').slideDown();
 							$('#close_alert').off().on("click", function(e){
 								e.preventDefault();

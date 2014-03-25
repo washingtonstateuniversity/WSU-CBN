@@ -3,7 +3,7 @@
 Plugin Name: Connections CSV
 Plugin URI: http://connections-pro.com/connections-pro/connections-csv-import-pro-module/
 Description: Adds the ability to Import CSV files.
-Version: 1.0.3
+Version: 1.0.4
 Author: Steven A. Zahm
 Author URI: http://connections-pro.com
 
@@ -69,7 +69,7 @@ if ( ! class_exists('Connections_CSV_Import') ) {
 
 		private static function loadConstants() {
 
-			define( 'CNCSV_CURRENT_VERSION', '1.0.3' );
+			define( 'CNCSV_CURRENT_VERSION', '1.0.4' );
 			define( 'CNCSV_BASE_NAME', plugin_basename( dirname( __FILE__ ) ) );
 			define( 'CNCSV_BASE_PATH', WP_PLUGIN_DIR . '/' . plugin_basename( dirname( __FILE__ ) ) );
 			define( 'CNCSV_BASE_URL', WP_PLUGIN_URL . '/' . plugin_basename( dirname( __FILE__ ) ) );
@@ -318,7 +318,7 @@ if ( ! class_exists('Connections_CSV_Import') ) {
 				// Always make sure the limit is set to 100
 				// that way there should not be import issues
 				// with shared hosts.
-				$options['limit'] = 500;
+				$options['limit'] = 100;
 
 				// If the process is locked, send back the $option array for the AJAX handler.
 				if ( get_option( 'cncsv_import_lock' ) ) {

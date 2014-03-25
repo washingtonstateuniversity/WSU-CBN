@@ -26,6 +26,7 @@ class connectionsCSVOptions {
 		$fields = array(
 			'0'                  => 'Do Not Import',
 			'entry_type'         => 'Entry Type',
+			'entry_id'           => 'Entry ID',
 			'visibility'         => 'Visibility',
 			'honorific_prefix'   => 'Honorific Prefix',
 			'first_name'         => 'First Name',

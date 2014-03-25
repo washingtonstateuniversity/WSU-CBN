@@ -16,7 +16,8 @@ if (!class_exists('Connections_Education')) {
                 add_action('plugins_loaded', array( $this, 'start' ));
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-entry_education', array( __CLASS__, 'sanitize') );
-
+				add_filter( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
+				add_filter( 'cncsv_import_fields', array( __CLASS__, 'import_fields' ), 10, 2);
             }
 			// Register the metabox and fields.
 			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
@@ -49,7 +50,35 @@ if (!class_exists('Connections_Education')) {
         }
         public function init() {
         }
-		
+		public static function map_import_fields( $fields ){
+			$fields['cneducation_degree'] = 'Education | Degree';
+			$fields['cneducation_year'] = 'Education | Year';
+			$fields['cneducation_schoolid'] = 'Education | School ID';
+			return $fields;
+		}
+		public static function import_fields( $entryId, $row ){
+			$tmp=array(
+				'degree'=>'',
+				'year'=>'',
+				'schoolid'=>''
+			);	
+			if( isset($row->cneducation_degree) ){
+				$tmp['degree'] = $row->cneducation_degree;
+			}
+			if( isset($row->cneducation_year) ){
+				$tmp['year'] = $row->cneducation_year;
+			}
+			if( isset($row->cneducation_schoolid) ){
+				$tmp['schoolid'] = $row->cneducation_schoolid;
+			}
+			cnEntry_Action::meta('update', $entryId, array(
+				array(
+					'key' => "cneducation",
+					'value' =>$tmp
+				)
+			));
+			return;
+		}	
 		public static function loadTextdomain() {
 
 			// Plugin's unique textdomain string.
@@ -88,7 +117,7 @@ if (!class_exists('Connections_Education')) {
 						array(
 								'id'    => 'cneducation',
 								'type'  => 'entry_education',
-								),
+							),
 						),
 				);
 			$metabox::add( $atts );
@@ -97,12 +126,13 @@ if (!class_exists('Connections_Education')) {
 			
 			$out ='';
 			$education = array(
-				'degree_n_year'=>__('Degree & Class Year', 'connections_education' ),
+				'degree'=>__('Degree', 'connections_education' ),
+				'year'=>__('Class Year', 'connections_education' ),
 				'schoolid'=>__('Wsuid', 'connections_education' )
 			);
 
 			foreach($education as $slug=>$label){
-				$out .='<label>'.$label.'<br/><input type="text" name="education[\''.$slug.'\']" value="'.$value.'" /></label><br/>';	
+				$out .='<label>'.$label.'<br/><input type="text" name="cneducation[\''.$slug.'\']" value="'.(isset($value[$slug])?$value[$slug]:"").'" /></label><br/>';	
 			}
 
 			printf( '%s', $out);

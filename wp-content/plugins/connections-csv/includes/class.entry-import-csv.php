@@ -204,6 +204,8 @@ class cnCSV {
 
 		foreach ( $this->results as $key => $row ) {
 
+			$doUpdate = FALSE;
+
 			@set_time_limit(180);
 
 			// Grab an instance of the Connections object.
@@ -211,6 +213,14 @@ class cnCSV {
 
 			// $date  = new cnDate();
 			$entry = new cnEntry();
+
+			// Let's see if we're performing an update.
+			if ( isset( $row->entry_id ) && ! empty( $row->entry_id ) ) {
+
+				$entry->set( absint( $row->entry_id ) );
+
+				$doUpdate = TRUE;
+			}
 
 			/*
 			 * Attempt to determine the entry type by the data supplied in the CSV
@@ -299,10 +309,13 @@ class cnCSV {
 			// The array passed to the cnEntry object to set the addresses.
 			$addresses             = array();
 
+			$i = 0;
+
 			foreach ( $addressTypes as $addressType ) {
 
+				$i++;
+
 				$address = array();
-				$i       = uniqid();
 
 				foreach ( $addressFields as $addressField ) {
 
@@ -348,9 +361,11 @@ class cnCSV {
 			// The array passed to the cnEntry object to set the phone numbers.
 			$phoneNumbers        = array();
 
+			$i = 0;
+
 			foreach ( $corePhoneTypes as $phoneNumberTypeKey => $phoneNumberValue ) {
 
-				$i = uniqid();
+				$i++;
 
 				$phoneNumberKey = 'phone_' . $phoneNumberTypeKey;
 
@@ -382,9 +397,11 @@ class cnCSV {
 			// The array passed to the cnEntry object to set the email addresses.
 			$emailAddresses      = array();
 
+			$i = 0;
+
 			foreach ( $coreEmailTypes as $emailTypeKey => $emailValue ) {
 
-				$i = uniqid();
+				$i++;
 
 				$emailKey = 'email_' . $emailTypeKey;
 
@@ -417,9 +434,11 @@ class cnCSV {
 			// The array passed to the cnEntry object to set the IM IDs.
 			$imIDs            = array();
 
+			$i = 0;
+
 			foreach ( $coreIMTypes as $imTypeKey => $imValue ) {
 
-				$i = uniqid();
+				$i++;
 
 				$imKey = 'messenger_' . $imTypeKey;
 
@@ -451,9 +470,11 @@ class cnCSV {
 			// The array passed to the cnEntry object to set the social media IDs.
 			$socialIDs            = array();
 
+			$i = 0;
+
 			foreach ( $coreSocialTypes as $socialTypeKey => $socialValue ) {
 
-				$i = uniqid();
+				$i++;
 
 				$socialKey = 'social_' . $socialTypeKey;
 
@@ -485,9 +506,11 @@ class cnCSV {
 			// The array passed to the cnEntry object to set the links.
 			$linkIDs            = array();
 
+			$i = 0;
+
 			foreach ( $coreLinkTypes as $linkTypeKey => $linkValue ) {
 
-				$i = uniqid();
+				$i++;
 
 				$linkKey = 'link_' . $linkTypeKey;
 
@@ -519,9 +542,11 @@ class cnCSV {
 			// The array passed to the cnEntry object to set the links.
 			$dates            = array();
 
+			$i = 0;
+
 			foreach ( $coreDateTypes as $dateTypeKey => $dateValue ) {
 
-				$i = uniqid();
+				$i++;
 
 				$dateKey = 'date_' . $dateTypeKey;
 
@@ -552,8 +577,17 @@ class cnCSV {
 			// Set the notes.
 			if ( isset( $row->notes ) && ! empty( $row->notes ) ) $entry->setNotes( $row->notes );
 
-			// Finally, save the entry.
-			$result = $entry->save();
+
+
+			// Finally, save/update the entry.
+			$result = $doUpdate ? $entry->update() : $entry->save();
+
+			// Set the ID that will be used to set the term relationship.
+			$entryID = $doUpdate ? $entry->getId() : $instance->lastInsertID;
+			
+			//allow plugins to add their data
+			apply_filters( 'cncsv_import_fields',$entryID, $row );
+			
 
 			// If importing the entry was successful, process the categories.
 			if ( $result && ! empty( $row->category ) ) {
@@ -586,7 +620,7 @@ class cnCSV {
 						if ( $term != FALSE ) $this->cache['category'][ $category ] = $term;
 					}
 
-					if ( isset($term->name) && $term->name == $category ) {
+					if ( $term != FALSE && $term->name == $category ) {
 
 						$termIDs[] = $term->term_id;
 
@@ -603,7 +637,7 @@ class cnCSV {
 					}
 				}
 
-				$instance->term->setTermRelationships( $instance->lastInsertID, $termIDs, 'category' );
+				$instance->term->setTermRelationships( $entryID, $termIDs, 'category' );
 
 			// If importing the entry was successful and no categories were supplied, add the "Uncategorized" category.
 			} elseif ( $result && ( ! isset( $row->category ) || empty( $row->category ) ) ) {
@@ -629,7 +663,7 @@ class cnCSV {
 
 				$termIDs[] = $term->term_id;
 
-				$instance->term->setTermRelationships( $instance->lastInsertID, $termIDs, 'category' );
+				$instance->term->setTermRelationships( $entryID, $termIDs, 'category' );
 			}
 
 		}
