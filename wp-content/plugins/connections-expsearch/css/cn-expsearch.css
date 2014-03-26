@@ -159,11 +159,13 @@
 	min-height: 50px;
 	left: 0;
 	margin: 0 5%;
-	padding: 11px 15px;
+	padding: 11px 40px 11px 15px;
 	position: fixed;
 	width: 90%;
 }
-
+#veiw_locations{
+	display: inline-block;
+	}
 #close_alert{
 	position: absolute;
 	right: 14px;
