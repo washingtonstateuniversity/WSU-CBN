@@ -125,15 +125,9 @@ if (!class_exists('Connections_Education')) {
 		public static function field( $field, $value ) {
 			
 			$out ='';
-			$education = array(
-				'degree'=>__('Degree', 'connections_education' ),
-				'year'=>__('Class Year', 'connections_education' ),
-				'schoolid'=>__('Wsuid', 'connections_education' )
-			);
-
-			foreach($education as $slug=>$label){
-				$out .='<label>'.$label.'<br/><input type="text" name="cneducation[\''.$slug.'\']" value="'.(isset($value[$slug])?$value[$slug]:"").'" /></label><br/>';	
-			}
+			$out .='<label>'.__('Degree', 'connections_education' ).'<br/><input type="text" name="cneducation[\'degree\']" value="'.(isset($value['degree'])?$value['degree']:"").'" required /></label><br/>';
+			$out .='<label>'.__('Class Year', 'connections_education' ).'<br/><input type="text" name="cneducation[\'year\']" value="'.(isset($value['year'])?$value['year']:"").'" required /></label><br/>';
+			$out .='<label>'.__('WSUid', 'connections_education' ).'<br/><input type="text" name="cneducation[\'schoolid\']" value="'.(isset($value['schoolid'])?$value['schoolid']:"").'"  /></label><br/>';	
 
 			printf( '%s', $out);
  
@@ -149,8 +143,13 @@ if (!class_exists('Connections_Education')) {
 		 * @return text
 		 */
 		public static function sanitize( $value ) {
-			$value=cnSanitize::string( 'text', $value );
-			return $value;
+			$return=array(
+				'degree'=>isset($value['\'degree\''])?$value['\'degree\'']:"",
+				'year'=>isset($value['\'year\''])?$value['\'year\'']:"",
+				'schoolid'=>isset($value['\'schoolid\''])?$value['\'schoolid\'']:""
+			);
+			
+			return $return ;
 		}
 		
 		
