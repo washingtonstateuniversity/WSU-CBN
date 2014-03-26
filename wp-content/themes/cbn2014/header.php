@@ -25,7 +25,7 @@
 </head>
 <body <?php body_class(); ?>>
 	<div id="body_wrap">
-		<div class="row">
+		<div class="">
 			<header class="row">
 				<div id="displayheader" class="twelve columns">
 					<div class="row">

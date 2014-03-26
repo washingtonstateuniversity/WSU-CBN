@@ -117,6 +117,24 @@ h1, h2 {
   color:#000000;
 }
 
+@media screen and (max-width:850px) and (min-width:486px){.ie #nav{background-image:url(../../Content/img/nav_bk_ln.png);}}
+@media screen and (max-width:485px) and (min-width:0px){
+
+	#body_wrap {
+		background: url("../img/Header-background.png") repeat-x scroll center -70px rgba(0, 0, 0, 0);
+	}
+	.logo img{ height:100px; float:right;margin-top:10px;}
+	#displayheader{
+		height: 130px;
+	}
+	header {
+	  background: url("../img/Header-WSU-background-sm.png") no-repeat scroll center top rgba(0, 0, 0, 0);
+	  color: #B6BCBF;
+	  height: 185px;	  text-align: center;
+	}
+}
+
+
 
 
 #nav2{ position: relative;}
