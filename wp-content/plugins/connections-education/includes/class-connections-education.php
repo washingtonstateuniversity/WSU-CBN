@@ -16,8 +16,8 @@ if (!class_exists('Connections_Education')) {
                 add_action('plugins_loaded', array( $this, 'start' ));
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-entry_education', array( __CLASS__, 'sanitize') );
-				add_action( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
-				add_action( 'cncsv_import_fields', array( __CLASS__, 'import_fields' ), 10, 2);
+				add_filter( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
+				add_filter( 'cncsv_import_fields', array($this, 'import_fields_education' ));
             }
 			// Register the metabox and fields.
 			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
@@ -56,7 +56,8 @@ if (!class_exists('Connections_Education')) {
 			$fields['cneducation_schoolid'] = 'Education | School ID';
 			return $fields;
 		}
-		public static function import_fields( $entryId, $row ){
+		public  function import_fields_education( $row ){
+			$entryId =  $row->entryID;
 			$tmp=array(
 				'degree'=>'',
 				'year'=>'',
@@ -77,7 +78,7 @@ if (!class_exists('Connections_Education')) {
 					'value' =>$tmp
 				)
 			));
-			return;
+			return $row;
 		}	
 		public static function loadTextdomain() {
 

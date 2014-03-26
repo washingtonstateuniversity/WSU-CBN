@@ -19,9 +19,8 @@ if (!class_exists('Connections_benefits')) {
 				
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-entry_benefit', array( __CLASS__, 'sanitize') );
-				add_action( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
-				add_action( 'cncsv_import_fields', array( __CLASS__, 'import_fields' ), 10, 2);
-				
+				add_filter( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
+				add_filter( 'cncsv_import_fields', array($this, 'import_fields_benefit' ));
 				
 				
             }
@@ -61,7 +60,8 @@ if (!class_exists('Connections_benefits')) {
 			$fields['cnbenefits_online'] = 'Benefits | online discount';
 			return $fields;
 		}
-		public static function import_fields( $entryId, $row ){
+		public  function import_fields_benefit( $row ){
+			$entryId =  $row->entryID;
 			$tmp=array(
 				'description'=>'',
 				'wsuaa_discounts'=>1,
@@ -86,7 +86,7 @@ if (!class_exists('Connections_benefits')) {
 					'value' =>$tmp
 				)
 			));
-			return;
+			return $row;
 		}		
 
 		public static function loadTextdomain() {
