@@ -2,7 +2,7 @@
 
 	<div class="cn-left">
 
-		<div style="margin-bottom: 5px;">
+		<div style="margin-bottom: 5px; display:none;">
 			<h3><?php $entry->getNameBlock( array( 'format' => $atts['name_format'], 'link' => $atts['link'] ) ); ?></h3>
 			<?php if ( $atts['show_title'] ) $entry->getTitleBlock(); ?>
 			<?php if ( $atts['show_org'] ) $entry->getOrgUnitBlock(); ?>

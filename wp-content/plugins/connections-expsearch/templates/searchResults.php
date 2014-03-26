@@ -59,7 +59,7 @@
 			$category = $connections->retrieve->category($atts['category']);
 			?>
 			<h2><?=$state.$category->name?></h2>
-			<div class="accordion">
+			<div class="accordion ui-accordion ui-widget ui-helper-reset">
 				<?=connectionsList( $atts,NULL,'connections' )?>
 			</div>
 			<?php
