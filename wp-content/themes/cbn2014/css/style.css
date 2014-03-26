@@ -116,8 +116,12 @@ h1, h2 {
   line-height: 55px;
   color:#000000;
 }
-
+.navbar a.toggle span{ display:none; }
 @media screen and (max-width:850px) and (min-width:486px){.ie #nav{background-image:url(../../Content/img/nav_bk_ln.png);}}
+@media only screen and (max-width: 767px){
+	
+	.logo img{float:right;margin-top:10px;margin-right: 10px;}
+}
 @media screen and (max-width:485px) and (min-width:0px){
 
 	#body_wrap {
@@ -138,7 +142,7 @@ h1, h2 {
 	.navbar ul{
 		top: 0px;
 	}
-	
+	.navbar a.toggle span{ display:block; }
 	.navbar a.toggle{	
 		position: absolute;
 		top: -85px;
