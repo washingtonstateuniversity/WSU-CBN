@@ -580,8 +580,8 @@ function load_theme_js() {
 		wp_enqueue_script( 'modernizr', $THEME. '/js/libs/modernizr-2.5.3.min.js', array(), '2014.12.3', true );
 		
 		//wp_enqueue_script( 'jquery.mobile',  $THEME. '/js/libs/jquery.mobile.custom.min.js', array( 'jquery' ), '2014.12.3', true );
-		//wp_enqueue_script( 'gumby',  $THEME. '/js/libs/gumby.min.js', array( 'modernizr','jquery','jquery.mobile' ), '2014.12.3', true );
-
+		wp_enqueue_script( 'gumby',  $THEME. '/js/libs/gumby.min.js', array( 'modernizr'), '2014.12.3', true );
+/*
 		wp_enqueue_script( 'gumby',  $THEME. '/js/libs/gumby.js', array( 'modernizr' ), '2014.12.3', true );
 		wp_enqueue_script( 'gumby.retina',  $THEME. '/js/libs/ui/gumby.retina.js', array( 'gumby' ), '2014.12.3', true );
 		wp_enqueue_script( 'gumby.fixed',  $THEME. '/js/libs/ui/gumby.fixed.js', array( 'gumby' ), '2014.12.3', true );
@@ -591,7 +591,7 @@ function load_theme_js() {
 		wp_enqueue_script( 'gumby.radiobtn',  $THEME. '/js/libs/ui/gumby.radiobtn.js', array( 'gumby' ), '2014.12.3', true );
 		wp_enqueue_script( 'gumby.tabs',  $THEME. '/js/libs/ui/gumby.tabs.js', array( 'gumby' ), '2014.12.3', true );
 		wp_enqueue_script( 'gumby.navbar',  $THEME. '/js/libs/ui/gumby.navbar.js', array( 'gumby' ), '2014.12.3', true );
-		wp_enqueue_script( 'gumby.validation',  $THEME. '/js/libs/ui/jquery.validation.js', array( 'gumby' ), '2014.12.3', true );
+		wp_enqueue_script( 'gumby.validation',  $THEME. '/js/libs/ui/jquery.validation.js', array( 'gumby' ), '2014.12.3', true );*/
 		wp_enqueue_script( 'gumby.init',  $THEME. '/js/libs/gumby.init.js', array( 'gumby'), '2014.12.3', true );				
 
 		/* mapping */
