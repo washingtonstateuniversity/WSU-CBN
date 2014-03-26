@@ -389,4 +389,11 @@ jQuery(document).ready(function(){
 			jQuery('.expoArea').addClass("active");
 		}
 	});
+	
+	
+	
+	
+	
+	
+	
 });

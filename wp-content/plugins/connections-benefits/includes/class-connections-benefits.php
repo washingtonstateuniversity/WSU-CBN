@@ -19,8 +19,8 @@ if (!class_exists('Connections_benefits')) {
 				
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-entry_benefit', array( __CLASS__, 'sanitize') );
-				add_filter( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
-				add_filter( 'cncsv_import_fields', array( __CLASS__, 'import_fields' ), 10, 2);
+				add_action( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
+				add_action( 'cncsv_import_fields', array( __CLASS__, 'import_fields' ), 10, 2);
 				
 				
 				
@@ -80,7 +80,7 @@ if (!class_exists('Connections_benefits')) {
 			if( isset($row->cnbenefits_online) ){
 				$tmp['online'] = $row->cnbenefits_online;
 			}
-			cnEntry_Action::meta('update', $entryId, array(
+			cnEntry_Action::meta('add', $entryId, array(
 				array(
 					'key' => "cnbenefits",
 					'value' =>$tmp
