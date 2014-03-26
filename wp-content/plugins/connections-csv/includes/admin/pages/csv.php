@@ -53,7 +53,6 @@ function connectionsCSVImportPage()
 					$upload_overrides = array('test_form' => FALSE);
 					$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
 					if ( isset($movefile['file']) ) {
-						if ( isset($movefile['file']) ) {
 
 					    	// Grab the file name.
 					    	$csvFile = $movefile['file'];
@@ -140,11 +139,6 @@ function connectionsCSVImportPage()
 							<?php
 
 							$form->close();
-
-					    } else {
-
-					    	echo '<div id="message" class="error"><p><strong>ERROR: </strong>' . $processCSV->error . '</p></div>';
-					    }
 
 					} else {
 
