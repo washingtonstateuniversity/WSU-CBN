@@ -21,54 +21,25 @@
 	<title><?php wp_title( '|', true, 'right' ); ?></title>
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
-	<!--[if lt IE 9]><script src="<?=$THEME_dir?>/js/html5.js"></script><![endif]-->
-    <script src="<?=$THEME_dir?>/js/libs/modernizr-2.5.3.min.js"></script>
-    <link rel="stylesheet" href="<?=$THEME_dir?>/css/gumby.css">
-    
-    
-	<?php wp_head(); ?>
-    
-    
-
-    <!--<link type="text/css" rel="stylesheet" href="/wp-content/css/style.css" />-->
-	<style  type="text/css">
-        /*h2 { 
-            color:#1B67B3;
-        }*/ 
-        h1, h2 {
-            color:#800000;
-        }
-        .alert h5
-        {
-            color:red;
-        }
-        .ui-accordion .ui-accordion-header {
-            /*position: static !important;*/
-        }
-        .businesscontainer{float:none !important;}
-        .ui-accordion .ui-accordion-content-active {
-            width:auto;
-        }
-    </style>
-    <link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.8.22/themes/base/jquery-ui.css" media="all" />
-	<link type='text/css' media='screen' href='http://images.wsu.edu/css/wsu_ui/jquery-ui-1.8.13.custom.css' rel='stylesheet' /> 
-    
+	<?php wp_head(); ?>    
 </head>
 <body <?php body_class(); ?>>
 	<div id="body_wrap">
 		<div class="row">
 			<header class="row">
-				<div id="displayheader" class="twelve columns row">
-					<h1 class="two columns logo">
-						<a href="#">
-							<img src="<?=$THEME_dir?>/img/wsuaa-logo-w-trans.png" gumby-retina />
-						</a>
-					</h1>
+				<div id="displayheader" class="twelve columns">
+					<div class="row">
+						<h1 class="two columns logo">
+							<a href="http://alumni.wsu.edu/">
+								<img src="<?=$THEME_dir?>/img/wsuaa-logo-w-trans.png" gumby-retina />
+							</a>
+						</h1>
+					</div>
 				</div>
-				<div class=" twelve columns row navbar" id="nav1">
-					<a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
-					<?php wp_nav_menu( array( 'theme_location' => 'primary','container' => false,  'menu_class' => 'ten columns nav-menu' ) ); ?>
-					<div class="two columns">
+				<div class=" twelve columns">
+					<div class="row navbar" id="nav1">
+						<a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i></a>
+						<?php wp_nav_menu( array( 'theme_location' => 'primary','container' => false,  'menu_class' => 'eight columns' ) ); ?>
 					</div>
 				</div>
 			</header>

@@ -28,8 +28,8 @@ get_header(); ?>
 			</article><!-- #post -->
 		<?php endwhile; ?>
 	</div><!-- #content -->
-	<?php if ( is_front_page() ) { ?>
-		<aside class="four columns">
+	<?php if ( is_front_page() ) { //NOTE this is to be replaced by the ad manager ?>
+		<aside id="adspace_home" class="four columns">
 			<a href="https://www.applyonlinenow.com/USCCapp/Ctl/entry?sc=VABJ6K&mboxSession=1357690082163-219380"><img src="/wp-content/themes/cbn/img/sponsors/AlaskaAirlines.png" alt="Alaska Airlines Cougar Visa" title="Alaska Airlines Cougar Visa"></a>
 			<a href="http://www.ryanswansonlaw.com/"><img src="/wp-content/themes/cbn/img/sponsors/RyanSwanson.png" alt="Ryan, Swanson &amp; Cleveland, PLLC" title="Ryan, Swanson &amp; Cleveland, PLLC"></a>
 			<a href="http://www.griffinmaclean.com/"><img src="/wp-content/themes/cbn/img/sponsors/GriffinMacLean.jpg" alt="Griffin MacLean Insurance Brokers" title="Griffin MacLean Insurance Brokers"></a>
@@ -47,9 +47,9 @@ get_header(); ?>
 <?php if ( !is_front_page() ) { ?>
 <div style="clear:both;"></div>
 <div id="details">
-    <hr>    <p><strong>PLEASE NOTE:</strong></p>
-    <p>
-     Cougar-owned or -managed businesses are defined as businesses clearly owned by alumni or friends of WSU, or a business where alumni are the principal executive(s) in a leadership role. Businesses in question will be reviewed and considered by the WSUAA Executive Committee. The WSUAA reserves the right to determine if a business is deemed appropriate for the WSU alumni audience.</p>
+    <hr/>
+	<p><b>PLEASE NOTE:</b></p>
+    <p> Cougar-owned or -managed businesses are defined as businesses clearly owned by alumni or friends of WSU, or a business where alumni are the principal executive(s) in a leadership role. Businesses in question will be reviewed and considered by the WSUAA Executive Committee. The WSUAA reserves the right to determine if a business is deemed appropriate for the WSU alumni audience.</p>
 </div>
 <?php }  // This is a homepage  ?>
 <?php get_footer(); ?>
