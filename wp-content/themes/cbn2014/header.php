@@ -38,7 +38,7 @@
 				</div>
 				<div class=" twelve columns">
 					<div class="row navbar" id="nav1">
-						<a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i>Menu</a>
+						<a class="toggle" gumby-trigger="#nav1 > ul" href="#"><i class="icon-menu"></i><span>Menu</span></a>
 						<?php wp_nav_menu( array( 'theme_location' => 'primary','container' => false,  'menu_class' => 'eight columns' ) ); ?>
 					</div>
 				</div>

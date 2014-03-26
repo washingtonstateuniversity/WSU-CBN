@@ -195,14 +195,14 @@ if (!class_exists('Connections_benefits')) {
 		 * @return text
 		 */
 		public static function sanitize( $value ) {
-			var_dump($value);
+			
 			$return=array(
-				'description'=>isset($value['\'description\''])?cnSanitize::string( 'text', $value['\'description\''] ):"",
+				'description'=>isset($value['\'description\''])?$value['\'description\'']:"",
 				'wsuaa_discounts'=>isset($value['\'wsuaa_discounts\''])?$value['\'wsuaa_discounts\'']:"",
 				'categories'=>isset($value['\'categories\''])?$value['\'categories\'']:"",
 				'online'=>isset($value['\'online\''])?$value['\'online\'']:0
 			);
-			var_dump($return);
+			
 			return $return ;
 		}
 		
