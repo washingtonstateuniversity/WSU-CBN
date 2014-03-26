@@ -13,12 +13,12 @@ jQuery(document).ready(function ($) {
 			$this.data('toggled', false);
 			//$( '#map-container-' + uuid ).slideUp('normal', function() { $(this).remove() } );
 			$( '#map-container-' + uuid ).slideUp();
-			$this.text( strShow );
+			$this.html( '<span class="ui-button-text">'+strShow+'</span>' );
 
 		} else {
 
 			$this.data('toggled', true);
-			$this.text( strHide );
+			$this.html( '<span class="ui-button-text">'+strHide+'</span>' );
 			//$( $this.attr('data-gmap') ).appendTo( '#entry-id-' + uuid );
 			$( '#map-container-' + uuid ).fadeIn();
 
@@ -64,13 +64,13 @@ jQuery(document).ready(function ($) {
 		if ( $this.data('toggled') ) {
 
 			$this.data('toggled', false);
-			$this.text( strShow );
+			$this.html( '<span class="ui-button-text">'+strShow+'</span>' );
 			$( '#' + div ).slideUp();
 
 		} else {
 
 			$this.data('toggled', true);
-			$this.text( strHide );
+			$this.html( '<span class="ui-button-text">'+strHide+'</span>' );
 			$( '#' + div ).slideDown();
 
 		}
