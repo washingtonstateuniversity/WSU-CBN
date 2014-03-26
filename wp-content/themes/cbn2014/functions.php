@@ -571,7 +571,7 @@ function load_theme_js() {
 		wp_enqueue_script( 'jquery' );
 		wp_enqueue_script( 'jquery-ui-accordion' );
 		wp_enqueue_script( 'jquery-ui-tabs' );	
-	
+		wp_enqueue_script( 'jquery-ui-button' );	
 		
 
 		wp_enqueue_script( 'html5', $THEME. '/js/html5.js', array(), '2014.12.3', true );
