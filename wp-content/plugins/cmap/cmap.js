@@ -80,7 +80,7 @@ jQuery(document).ready(function ($) {
 
 	//$(".accordion" ).accordion({collapsible: true,active:false,heightStyle: "content"});
 	//$('#tabs').tabs();
-	 $(".buttons").button();
+	 //$(".buttons").button();
 	
 	$('select[name^=cn-cat]').chosen();
 	// Render map on single entry page
