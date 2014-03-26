@@ -585,8 +585,16 @@ class cnCSV {
 			// Set the ID that will be used to set the term relationship.
 			$entryID = $doUpdate ? $entry->getId() : $instance->lastInsertID;
 			
+			$row = (array)$row;
+			$row['entryID'] = $entryID;
+			$row = (object)$row;
+			
+			
+			
+			$row->entryID = $entryID;
+			
 			//allow plugins to add their data
-			apply_filters( 'cncsv_import_fields',$entryID, $row );
+			apply_filters( 'cncsv_import_fields', $row );
 			
 
 			// If importing the entry was successful, process the categories.

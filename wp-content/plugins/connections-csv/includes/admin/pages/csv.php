@@ -44,31 +44,19 @@ function connectionsCSVImportPage()
 
 					// Uses the upload.class.php to handle file uploading and image manipulation.
 					// GPL PHP upload class from http://www.verot.net/php_class_upload.htm
-					require_once( CN_PATH . '/includes/php_class_upload/class.upload.php');
+					//require_once( CN_PATH . '/includes/php_class_upload/class.upload.php');
 
 					$map = connectionsCSVOptions::map();
 
-					$processCSV = new Upload( $_FILES['csv_file'] );
-
-					if ( $processCSV->uploaded ) {
-
-						$processCSV->file_safe_name		= true;
-						$processCSV->file_auto_rename	= false;
-						$processCSV->file_overwrite		= true;
-						$processCSV->file_new_name_ext	= $processCSV->file_src_name_ext;
-						$processCSV->allowed			= array("text/csv", "text/comma-separated-values", "text/csv", "application/csv", "application/excel", "application/vnd.ms-excel", "application/vnd.msexcel", "text/plain", "text/anytext", "text/*");
-
-						if ( isset($_GET['mime_check']) && $_GET['mime_check'] === 'false') {
-
-							$processCSV->mime_check = FALSE;
-						}
-
-						$processCSV->Process(CNCSV_UPLOAD_PATH);
-
-						if ( $processCSV->processed ) {
+					//$processCSV = new Upload( $_FILES['csv_file'] );
+					$uploadedfile = $_FILES['csv_file'];
+					$upload_overrides = array('test_form' => FALSE);
+					$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+					if ( isset($movefile['file']) ) {
+						if ( isset($movefile['file']) ) {
 
 					    	// Grab the file name.
-					    	$csvFile = $processCSV->file_dst_pathname;
+					    	$csvFile = $movefile['file'];
 
 							// Store the user selected values.
 							$options = array(
@@ -77,12 +65,7 @@ function connectionsCSVImportPage()
 								'enclosure' => $_POST['csv_enclosure'],
 								);
 
-							$processCSV->clean();
-
-							// $csv = new parseCSV();
 							$csv = new cnCSV( $options );
-
-							// $csv->parse($csvFile);
 
 							$attr = array(
 								'action'  => 'admin.php?page=connections_csv&action=import',

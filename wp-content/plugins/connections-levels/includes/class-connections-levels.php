@@ -19,8 +19,8 @@ if (!class_exists('Connections_Levels')) {
 				
 				// Since we're using a custom field, we need to add our own sanitization method.
 				add_filter( 'cn_meta_sanitize_field-entry_level', array( __CLASS__, 'sanitize') );
-				add_action( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
-				add_action( 'cncsv_import_fields', array( __CLASS__, 'import_fields' ), 10, 2);
+				add_filter( 'cncsv_map_import_fields', array( __CLASS__, 'map_import_fields' ));
+				add_filter( 'cncsv_import_fields', array($this, 'import_fields_level' ));
             }
 			// Register the metabox and fields.
 			add_action( 'cn_metabox', array( __CLASS__, 'registerMetabox') );
@@ -57,7 +57,8 @@ if (!class_exists('Connections_Levels')) {
 			$fields['cnlevels'] = 'Membership Level | Level';
 			return $fields;
 		}
-		public static function import_fields( $entryId, $row ){
+		public  function import_fields_level( $row ){
+			$entryId =  $row->entryID;
 			$tmp='';	
 			if( isset($row->cnlevels) ){
 				$tmp = $row->cnlevels;
@@ -68,7 +69,7 @@ if (!class_exists('Connections_Levels')) {
 					'value' =>$tmp
 				)
 			));
-			return;
+			return $row;
 		}		
 		public static function loadTextdomain() {
 
