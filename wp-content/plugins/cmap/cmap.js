@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
 
-	$('a.toggle-map').click( function() {
+	$('a.toggle-map').on('click,', function() {
 		var $this = $(this);
 		var uuid = $this.attr('data-uuid');
 		var strShow = $this.attr('data-str-show');
@@ -54,7 +54,7 @@ jQuery(document).ready(function ($) {
 		return false
 	});
 
-	$('a.toggle-div').click( function() {
+	$('a.toggle-div').on('click', function() {
 		var $this = $(this);
 		var uuid = $this.attr('data-uuid');
 		var strShow = $this.attr('data-str-show');
