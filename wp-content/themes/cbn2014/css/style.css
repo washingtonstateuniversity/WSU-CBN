@@ -123,14 +123,43 @@ h1, h2 {
 	#body_wrap {
 		background: url("../img/Header-background.png") repeat-x scroll center -70px rgba(0, 0, 0, 0);
 	}
-	.logo img{ height:100px; float:right;margin-top:10px;}
+	.logo img{ height:100px; float:right;margin-top:10px;margin-right: 10px;}
 	#displayheader{
 		height: 130px;
 	}
 	header {
 	  background: url("../img/Header-WSU-background-sm.png") no-repeat scroll center top rgba(0, 0, 0, 0);
 	  color: #B6BCBF;
-	  height: 185px;	  text-align: center;
+	  height: 130px;
+	  text-align: center;
+	  padding: 0px !important;
+	}
+	
+	.navbar ul{
+		top: 0px;
+	}
+	
+	.navbar a.toggle{	
+		position: absolute;
+		top: -85px;
+		left: -5px;
+		width: 75px;
+		height: 75px;
+		line-height: 15px;
+		background: none;
+		font-size: 18px;
+	}
+	.navbar a.toggle i{
+		font-size: 50px;
+		font-weight: normal;
+	}
+	.navbar a.toggle:active, .navbar a.toggle.active, .navbar a.toggle:hover {
+		background: none;
+		color:#C7C9CC !important;
+	}	
+	#nav1{
+		min-height: 0px;
+		height: 0px;
 	}
 }
 
