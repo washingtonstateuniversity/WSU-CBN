@@ -1,23 +1,23 @@
-#cn-cmap .cn-clear { clear: both; }
-#cn-cmap { clear: both; line-height: normal; min-height: 300px; }
+.cn-cmap .cn-clear { clear: both; }
+.cn-cmap { clear: both; line-height: normal; min-height: 300px; }
 
-#cn-cmap .cn-alphaindex { text-align: right; }
-#cn-cmap #cn-list-head .cn-alphaindex { position: relative; margin: 12px 0 0; text-align: right; }
+.cn-cmap .cn-alphaindex { text-align: right; }
+.cn-cmap .cn-list-head .cn-alphaindex { position: relative; margin: 12px 0 0; text-align: right; }
 
-#cn-cmap .cn-search { float: right; }
-#cn-cmap .cn-search label { display: none; }
+.cn-cmap .cn-search { float: right; }
+.cn-cmap .cn-search label { display: none; }
 
-#cn-cmap #cn-select-label {
+.cn-cmap #cn-select-label {
 	display: block;
 	font-size: 14px;
 	margin: 10px 0 6px;
 	text-align: left;
 }
 
-#cn-cmap form.cn-form { clear: both; margin: 0 0 10px; text-align: left; }
-#cn-cmap form.cn-form select.cn-cat-select { font-size: 12px; height: auto; min-width: 250px; }
-#cn-list{ margin:0px !important;}
-#cn-cmap .cn-entry {
+.cn-cmap form.cn-form { clear: both; margin: 0 0 10px; text-align: left; }
+.cn-cmap form.cn-form select.cn-cat-select { font-size: 12px; height: auto; min-width: 250px; }
+.cn-list{ margin:0px !important;}
+.cn-cmap .cn-entry {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -38,35 +38,35 @@
 	position: relative;
 }
 
-#cn-cmap .cn-left {
+.cn-cmap .cn-left {
 	float: left;
 }
 
-#cn-cmap .cn-right {
+.cn-cmap .cn-right {
 	text-align: right;
 }
 
-#cn-cmap h3 {
+.cn-cmap h3 {
 	clear: none;
 	font-size: 20px;
 	font-weight: bold;
 	margin: 0 0 6px;
 }
 
-#cn-cmap h4 {
+.cn-cmap h4 {
 	clear: none;
 	font-size: 16px;
 	font-weight: bold;
 	margin: 0 0 6px;
 }
 
-#cn-cmap .cn-label { font-weight: bold; }
-#cn-cmap .fn { display: block; font-size: 16px; /*font-variant: small-caps;*/ font-weight: bolder; }
+.cn-cmap .cn-label { font-weight: bold; }
+.cn-cmap .fn { display: block; font-size: 16px; /*font-variant: small-caps;*/ font-weight: bolder; }
 
-#cn-cmap .link-block { display: inline; margin-bottom: 0; }
-#cn-cmap .link { display: inline; }
+.cn-cmap .link-block { display: inline; margin-bottom: 0; }
+.cn-cmap .link { display: inline; }
 
-#cn-cmap span.cn-image-style {
+.cn-cmap span.cn-image-style {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -81,7 +81,7 @@
 	margin: 0;
 	padding: 5px;
 }
-#cn-cmap .cn-image-style p {
+.cn-cmap .cn-image-style p {
 	color: #AAAAAA;
 	font-weight: 700;
 	text-align: center;
@@ -89,7 +89,7 @@
 	padding: 5px;
 }
 
-#cn-cmap .cn-bio, #cn-cmap .cn-notes, #cn-cmap .cn-gmap {
+.cn-cmap .cn-bio, .cn-cmap .cn-notes, .cn-cmap .cn-gmap {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -99,7 +99,7 @@
 	padding: 6px;
 	text-align: left;
 }
-#cn-cmap .cn-gmap-single {
+.cn-cmap .cn-gmap-single {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
@@ -112,19 +112,19 @@
 /*
  * This should help to keep themes from breaking Google Maps by setting the img to max-width: 100%;
  */
-#cn-cmap .cn-gmap-single img {
+.cn-cmap .cn-gmap-single img {
 	background-color: transparent;
 	max-width: none !important;
 }
 
-#cn-cmap .cn-bio .cn-image-style, #cn-cmap .cn-bio-single .cn-image-style { float: right; }
+.cn-cmap .cn-bio .cn-image-style, .cn-cmap .cn-bio-single .cn-image-style { float: right; }
 
 .ui-accordion-header span{ display:inline-block !important;}
 .ui-accordion-header span.type {display:none !important;}
-#cn-cmap.ui-accordion-content{ padding:0px !important;}
-#cn-cmap .cn-entry{ margin:0px;}
-#cn-cmap h3{margin:6px 0px 0px 0px;}
-#cn-cmap{min-height:50px;}
+.cn-cmap.ui-accordion-content{ padding:0px !important;}
+.cn-cmap .cn-entry{ margin:0px;}
+.cn-cmap h3{margin:6px 0px 0px 0px;}
+.cn-cmap{min-height:50px;}
 .ui-accordion .ui-accordion-header .ui-icon{margin-left:-11px !important;}
 
 
@@ -134,12 +134,12 @@
 @media only screen
 and (max-width : 480px) {
 
-	#cn-cmap .cn-left {
+	.cn-cmap .cn-left {
 		float: none;
 		/*text-align: left;*/
 	}
 
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		/*float: none;*/
 		margin-top: 10px;
 		text-align: left;
@@ -150,7 +150,7 @@ and (max-width : 480px) {
 /* Smartphones (landscape) ----------- */
 /*@media only screen
 and (min-width : 321px) {
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		float: none;
 		text-align: left;
 	}
@@ -159,7 +159,7 @@ and (min-width : 321px) {
 /* Smartphones (portrait) ----------- */
 /*@media only screen
 and (max-width : 320px) {
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		float: none;
 		text-align: left;
 	}
@@ -169,7 +169,7 @@ and (max-width : 320px) {
 /*@media only screen
 and (min-device-width : 768px)
 and (max-device-width : 1024px) {
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		float: right;
 		text-align: right;
 	}
@@ -180,7 +180,7 @@ and (max-device-width : 1024px) {
 and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (orientation : landscape) {
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		float: right;
 		text-align: right;
 	}
@@ -191,7 +191,7 @@ and (orientation : landscape) {
 and (min-device-width : 768px)
 and (max-device-width : 1024px)
 and (orientation : portrait) {
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		float: right;
 		text-align: right;
 	}
@@ -200,7 +200,7 @@ and (orientation : portrait) {
 /* Desktops and laptops ----------- */
 /*@media only screen
 and (min-width : 1224px) {
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		float: right;
 		text-align: right;
 	}
@@ -209,7 +209,7 @@ and (min-width : 1224px) {
 /* Large screens ----------- */
 /*@media only screen
 and (min-width : 1824px) {
-	#cn-cmap .cn-right {
+	.cn-cmap .cn-right {
 		float: right;
 		text-align: right;
 	}
