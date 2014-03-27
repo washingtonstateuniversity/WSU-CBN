@@ -44,15 +44,15 @@
 			  break;
 			case error.POSITION_UNAVAILABLE:
 				$('#location_alert').html("Location information is unavailable");
-			  $('#mylocation').parent().html("Location information is unavailable.");
+				$('#mylocation').parent().html("Location information is unavailable.");
 			  break;
 			case error.TIMEOUT:
 				$('#location_alert').html("The request to get user location timed out.");
-			  $('#mylocation').parent().html("The request to get user location timed out.");
+				$('#mylocation').parent().html("The request to get user location timed out.");
 			  break;
 			case error.UNKNOWN_ERROR:
 				$('#location_alert').html("An unknown error occurred.");
-			  $('#mylocation').parent().html("An unknown error occurred.");
+				$('#mylocation').parent().html("An unknown error occurred.");
 			  break;
 			}
 		}

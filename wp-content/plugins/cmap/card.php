@@ -3,13 +3,15 @@
 ?>
 
 
-<h3 tabindex="0" class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons  ui-corner-top"><a href='#'><em class="right"><?php
+<h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons  ui-corner-top ui-corner-all" aria-selected="false">
+
+<a href='#'><em class="right"><?php
     if ( $atts['show_addresses'] ) $entry->getAddressBlock( array( 'format' => '%city%, %state%' ,'link' => array('locality'=>false,'region'=>false,'postal_code'=>false,'country'=>false) ) );
     ?></em>&nbsp;&nbsp;<?php $entry->getNameBlock( array( 'format' => '%first%', 'link' => false ) );
-?></a></h3>
+?></a>
+</h3>
     
-<div id="cn-cmap" class="cn-template cn-cmap ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom ui-accordion-content-active" id="cn-list-body" role="tabpanel" aria-expanded="true" aria-hidden="false" style="display: block;"  id="cn-list">
-
+<div  id="cn-cmap"  class="cn-template cn-cmap ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="cn-list-body" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display:none;">
     <div id="cn-list"  class="cn-list">
         <div class="businesscontainer connections-list cn-clear" rel="">
         
