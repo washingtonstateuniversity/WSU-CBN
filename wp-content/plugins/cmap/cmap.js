@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
 	$('a.toggle-map').off().on('click', function(e){
 		e.preventDefault();
 		var $this = $(this), fLatitude = 0, fLongitude = 0, uuid = $this.attr('data-uuid');
-
+		
 		if ( $this.data('toggled') ) {
 			$this.data('toggled', false);
 			//$( '#map-container-' + uuid ).slideUp('normal', function() { $(this).remove() } );
@@ -34,7 +34,7 @@ jQuery(document).ready(function ($) {
 			$this.html( '<span class="ui-button-text">'+$this.attr('data-str-hide')+'</span>' );
 			//$( $this.attr('data-gmap') ).appendTo( '#entry-id-' + uuid );
 			$( '#map-container-' + uuid ).fadeIn();
-
+			var icon = ($this.attr('data-memLevel')=="member")?'biz_map_icon.png':'alf_map_icon.png';
 			var strAddress = $( '#map-' + uuid ).attr('data-address');
 			var strMapType = $( '#map-' + uuid ).attr('data-maptype');
 			var intZoom = parseInt( $( '#map-' + uuid ).attr('data-zoom') );
@@ -44,13 +44,15 @@ jQuery(document).ready(function ($) {
 
 			if ( fLatitude == 0 && fLatitude == 0 ) {
 				$( '#map-' + uuid ).goMap({
-					markers: [ { address: '\'' + strAddress + '\'' } ] ,
+					markers: [ { address: '\'' + strAddress + '\'' } ],
+					icon:THEME_PATH+'/img/biz_map_icon.png',
 					zoom: intZoom,
 					maptype: strMapType
 				});
 			} else {
 				$( '#map-' + uuid ).goMap({
-					markers: [ { latitude: fLatitude , longitude: fLongitude } ] ,
+					markers: [ { latitude: fLatitude , longitude: fLongitude } ],
+					icon:THEME_PATH+'/img/'+icon,
 					zoom: intZoom,
 					maptype: strMapType
 				});

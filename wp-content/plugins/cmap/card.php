@@ -1,5 +1,9 @@
 <?php
 //var_dump($atts);
+
+$cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
+
+
 ?>
 
 
@@ -149,12 +153,14 @@
         				$address = trim(strip_tags(str_replace('  ',' ',str_replace('<span class="type" style="display: none;">work</span>',
 															'', str_replace('<span class="type" style="display: none;">home</span>',
 															'', $lookupaddy)) ) ) );
-                        printf( '<a class="cn-map-anchor toggle-map ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="map-anchor-%1$s" href="#" data-uuid="%1$s" data-str-show="%2$s" data-str-hide="%3$s"><span class="ui-button-text">%2$s</span></a><span class="tolocation"> | <a class="cn-map-get-directions  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" target="_blank" href="https://maps.google.com/maps?daddr=%4$s" data-uuid="%1$s"><span class="ui-button-text">%5$s</span></a></span>',
+                        printf( '<a class="cn-map-anchor toggle-map ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="map-anchor-%1$s" href="#" data-uuid="%1$s" data-str-show="%2$s" data-str-hide="%3$s" data-entryID="%6$d" data-memLevel="%7$s"><span class="ui-button-text">%2$s</span></a><span class="tolocation"> | <a class="cn-map-get-directions  ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" target="_blank" href="https://maps.google.com/maps?daddr=%4$s" data-uuid="%1$s"><span class="ui-button-text">%5$s</span></a></span>',
                             $entry->getRuid(),
                             $atts['str_map_show'],
                             $atts['str_map_hide'],
 							urlencode( $address ),
-                            'Get directions'
+                            'Get directions',
+							$entry->getID(),
+							$cnlevel
                         );
                     }
                 }
