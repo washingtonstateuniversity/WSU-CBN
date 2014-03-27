@@ -259,7 +259,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'show_alphaindex'       => false,
 				'repeat_alphaindex'     => false,
 				'show_alphahead'       	=> false,
-				'organization'          => isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?$_POST['cn-keyword']:NULL,
+				//'organization'          => isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?$_POST['cn-keyword']:NULL,
 				'department'            => NULL,
 				'city'                  => NULL,
 				'state'                 => isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state']:NULL,
@@ -274,7 +274,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'home_id'               => in_the_loop() && is_page() ? get_the_id() : cnSettingsAPI::get( 'connections', 'connections_home_page', 'page_id' ),
 			);
 			
-			if( (isset($_POST['cn-latitude']) && isset($_POST['cn-longitude'])) || (isset($_POST['cn-near_addr'])) ){
+			if( (isset($_POST['cn-latitude']) && isset($_POST['cn-longitude']) && !empty($_POST['cn-latitude']) && !empty($_POST['cn-longitude'])) || (isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])) ){
 				$locationalPermittedAtts = array(
 					'near_addr'		=> isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])?"":NULL,
 					'latitude'		=> isset($_POST['cn-latitude']) && !empty($_POST['cn-latitude'])?"":NULL,
