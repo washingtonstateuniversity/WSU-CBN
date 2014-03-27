@@ -159,6 +159,7 @@ h1, h2 {
 	.navbar a.toggle i{
 		font-size: 50px;
 		font-weight: normal;
+		height:25px;
 	}
 	.navbar a.toggle:active, .navbar a.toggle.active, .navbar a.toggle:hover {
 		background: none;
