@@ -340,6 +340,9 @@ body.page.page-id-9 #main-content {
 #cn_category_chosen{width:100% !important;}
 .chosen-container{width:100% !important;}
 
+select{max-width:100% !important;}
+
+
 #cn-form label{
 	font-weight:normal !important;
     font-size: 12px !important;
