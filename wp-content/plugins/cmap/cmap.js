@@ -1,60 +1,8 @@
 jQuery(document).ready(function ($) {
 
-	$('a.toggle-map').on('click,', function() {
-		var $this = $(this);
-		var uuid = $this.attr('data-uuid');
-		var strShow = $this.attr('data-str-show');
-		var strHide = $this.attr('data-str-hide');
-		var fLatitude = 0;
-		var fLongitude = 0;
-
-		if ( $this.data('toggled') ) {
-
-			$this.data('toggled', false);
-			//$( '#map-container-' + uuid ).slideUp('normal', function() { $(this).remove() } );
-			$( '#map-container-' + uuid ).slideUp();
-			$this.html( '<span class="ui-button-text">'+strShow+'</span>' );
-
-		} else {
-
-			$this.data('toggled', true);
-			$this.html( '<span class="ui-button-text">'+strHide+'</span>' );
-			//$( $this.attr('data-gmap') ).appendTo( '#entry-id-' + uuid );
-			$( '#map-container-' + uuid ).fadeIn();
-
-			var strAddress = $( '#map-' + uuid ).attr('data-address');
-			var strMapType = $( '#map-' + uuid ).attr('data-maptype');
-			var intZoom = parseInt( $( '#map-' + uuid ).attr('data-zoom') );
-			if ( $('#map-' + uuid ).attr('data-latitude') ) fLatitude = parseFloat( $( '#map-' + uuid ).attr('data-latitude' ) );
-			if ( $('#map-' + uuid ).attr('data-longitude') ) fLongitude = parseFloat( $( '#map-' + uuid ).attr('data-longitude') );
-
-			//console.log(fLatitude);
-			//console.log(fLongitude);
-
-			if ( fLatitude == 0 && fLatitude == 0 ) {
-
-				$( '#map-' + uuid ).goMap({
-					markers: [ { address: '\'' + strAddress + '\'' } ] ,
-					zoom: intZoom,
-					maptype: strMapType
-				});
-
-			} else {
-
-				$( '#map-' + uuid ).goMap({
-					markers: [ { latitude: fLatitude , longitude: fLongitude } ] ,
-					zoom: intZoom,
-					maptype: strMapType
-				});
-
-			}
-
-		}
-
-		return false
-	});
-
-	$('a.toggle-div').on('click', function() {
+	$('a.toggle-div').off().on('click', function(e){
+		//alert();
+		e.preventDefault();
 		var $this = $(this);
 		var uuid = $this.attr('data-uuid');
 		var strShow = $this.attr('data-str-show');
@@ -62,21 +10,57 @@ jQuery(document).ready(function ($) {
 		var div = $this.attr('data-div-id');
 
 		if ( $this.data('toggled') ) {
-
 			$this.data('toggled', false);
 			$this.html( '<span class="ui-button-text">'+strShow+'</span>' );
 			$( '#' + div ).slideUp();
-
 		} else {
-
 			$this.data('toggled', true);
 			$this.html( '<span class="ui-button-text">'+strHide+'</span>' );
 			$( '#' + div ).slideDown();
+		}
+	});
+
+	$('a.toggle-map').off().on('click', function(e){
+		e.preventDefault();
+		var $this = $(this), fLatitude = 0, fLongitude = 0, uuid = $this.attr('data-uuid');
+
+		if ( $this.data('toggled') ) {
+			$this.data('toggled', false);
+			//$( '#map-container-' + uuid ).slideUp('normal', function() { $(this).remove() } );
+			$( '#map-container-' + uuid ).slideUp();
+			$this.html( '<span class="ui-button-text">'+$this.attr('data-str-show')+'</span>' );
+		} else {
+			$this.data('toggled', true);
+			$this.html( '<span class="ui-button-text">'+$this.attr('data-str-hide')+'</span>' );
+			//$( $this.attr('data-gmap') ).appendTo( '#entry-id-' + uuid );
+			$( '#map-container-' + uuid ).fadeIn();
+
+			var strAddress = $( '#map-' + uuid ).attr('data-address');
+			var strMapType = $( '#map-' + uuid ).attr('data-maptype');
+			var intZoom = parseInt( $( '#map-' + uuid ).attr('data-zoom') );
+			
+			if ( $('#map-' + uuid ).attr('data-latitude') ) fLatitude = parseFloat( $( '#map-' + uuid ).attr('data-latitude' ) );
+			if ( $('#map-' + uuid ).attr('data-longitude') ) fLongitude = parseFloat( $( '#map-' + uuid ).attr('data-longitude') );
+
+			if ( fLatitude == 0 && fLatitude == 0 ) {
+				$( '#map-' + uuid ).goMap({
+					markers: [ { address: '\'' + strAddress + '\'' } ] ,
+					zoom: intZoom,
+					maptype: strMapType
+				});
+			} else {
+				$( '#map-' + uuid ).goMap({
+					markers: [ { latitude: fLatitude , longitude: fLongitude } ] ,
+					zoom: intZoom,
+					maptype: strMapType
+				});
+			}
 
 		}
-
-		return false
 	});
+
+
+
 
 	//$(".accordion" ).accordion({collapsible: true,active:false,heightStyle: "content"});
 	//$('#tabs').tabs();
@@ -98,21 +82,17 @@ jQuery(document).ready(function ($) {
 		if ( $('#map-' + uuid ).attr('data-longitude') ) fLongitude = parseFloat( $( '#map-' + uuid ).attr('data-longitude') );
 
 		if ( fLatitude == 0 && fLatitude == 0 ) {
-
 			$( '#map-' + uuid ).goMap({
 				markers: [ { address: '\'' + strAddress + '\'' } ] ,
 				zoom: intZoom,
 				maptype: strMapType
 			});
-
 		} else {
-
 			$( '#map-' + uuid ).goMap({
 				markers: [ { latitude: fLatitude , longitude: fLongitude } ] ,
 				zoom: intZoom,
 				maptype: strMapType
 			});
-
 		}
 
 	}
