@@ -105,18 +105,19 @@ function iniMap(url,callback){
 					url: THEME_PATH+'/img/m1.png',
 					height: 52,
 					width: 53,
-					anchor: [20, 0],
+					anchor: [15, 0],
 					textColor: '#ffffff',
 					fontWeight:"bold",
-					textSize: 10
+					textSize: 15
 				  }, {
 					url: THEME_PATH+'/img/m2.png',
 					height: 55,
 					width: 56,
-					anchor: [20, 0],
+					anchor: [15, 0],
 					textColor: '#c2c2c2',
 					fontWeight:"bold",
-					textSize: 11
+					padding:"10px 0px 0px 0px",
+					textSize: 15
 				  }, {
 					url: THEME_PATH+'/img/m3.png',
 					height: 65,
@@ -124,7 +125,8 @@ function iniMap(url,callback){
 					anchor: [25, 0],
 					textColor: '#d2d2d2',
 					fontWeight:"bold",
-					textSize: 12
+					padding:"10px 0px 0px 0px",
+					textSize: 22
 				  }]
 			
 			}));
