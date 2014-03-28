@@ -270,7 +270,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'width'                 => NULL,
 				'lock'                  => FALSE,
 				'force_home'            => FALSE,
-				'search_terms'  		=> isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?explode(' ',$_POST['cn-keyword']):array(),
+				'search_terms'  		=> isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?$_POST['cn-keyword']:"",
 				'home_id'               => in_the_loop() && is_page() ? get_the_id() : cnSettingsAPI::get( 'connections', 'connections_home_page', 'page_id' ),
 			);
 			
@@ -286,8 +286,9 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			}
 			
 			$out = '';
-
+//var_dump($permittedAtts);die();
 			$results = $connections->retrieve->entries( $permittedAtts );
+			//var_dump($results);die();
 			set_transient( "results", $results, 0 );	
 			set_transient( "atts", $permittedAtts, 0 );	
 			ob_start();
