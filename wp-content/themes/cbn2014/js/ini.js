@@ -378,6 +378,10 @@ jQuery(document).ready(function(){
 		jQuery('input[id^="cn-email"][name$="[address]"]').attr('required','required');
 		jQuery('[name="email[preferred]"]').attr('checked',true);
 		jQuery('select[id^="cn-email"][name$="[type]"]').val('work');
+		
+		jQuery('#cn-metabox-metabox-bio .cn-metabox-title').text('Business Description');
+		
+		
 	}
 	
 	
