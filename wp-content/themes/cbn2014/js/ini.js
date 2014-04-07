@@ -218,6 +218,7 @@ function iniSingleMap(obj,callback){
 if(jQuery('#cn-form #cn-metabox-metabox-address').length>0){
 	jQuery('#cn-metabox-metabox-address .cn-add').trigger('click');
 	jQuery('[name="address[preferred]"]').attr('checked',true);
+	jQuery('select[id^="cn-address"][name$="[type]"]').val('work');
 }
 
 	if(jQuery('#tabs').length>0){
