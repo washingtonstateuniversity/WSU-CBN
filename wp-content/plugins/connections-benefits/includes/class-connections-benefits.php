@@ -180,7 +180,7 @@ if (!class_exists('Connections_benefits')) {
 				<br/>
 				<input name="cnbenefits[\'members_card\']" id="discounts_0_members_only" type="radio" value="1" '.($value['members_card']>0?"checked":"").'> Yes 
 				<input name="cnbenefits[\'members_card\']" id="discounts_0_members_only" type="radio" value="0" '.($value['members_card']>0?"":"checked").'> No 
-			</label>
+			</label><br/><br/>
 			<label>Is this an online offer?:
 				<br/>
 				<input name="cnbenefits[\'online\']" id="discounts_0_online" type="radio" value="1" '.($value['online']>0?"checked":"").'> Yes 
