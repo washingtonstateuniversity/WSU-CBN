@@ -377,6 +377,8 @@ jQuery(document).ready(function(){
 		
 		jQuery('[name="contact_first_name"]').attr('required','required');
 		jQuery('[name="contact_last_name"]').attr('required','required');
+		jQuery('#cn-department').attr('required','required');
+		
 		jQuery('label[for="cn-department"]').text('Title');
 		
 		
