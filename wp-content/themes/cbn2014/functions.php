@@ -606,7 +606,7 @@ function load_theme_js() {
 
 	
 		wp_enqueue_script( 'plugins',  $THEME. '/js/plugins.js', array( 'jquery','gumby.init' ), '2014.12.3', true );
-		wp_enqueue_script( 'iniscript',  $THEME. '/js/ini.js', array( 'jquery','gumby.init' ), '2014.12.3', true );
+		wp_enqueue_script( 'iniscript',  $THEME. '/js/ini.js', array( 'jquery','cn-form-ui-user','gumby.init' ), '2014.12.3', true );
 		wp_enqueue_script( 'main',  $THEME. '/js/main.js', array( 'jquery','gumby.init' ), '2014.12.3', true );
 	}
 	
