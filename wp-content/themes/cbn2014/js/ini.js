@@ -372,6 +372,8 @@ jQuery(document).ready(function(){
 		jQuery('input[id^="cn-address"][name$="[city]"]').attr('required','required');
 		jQuery('input[id^="cn-address"][name$="[state]"]').attr('required','required');
 		jQuery('input[id^="cn-address"][name$="[zipcode]"]').attr('required','required');
+		jQuery('input[id^="cn-address"][name$="[country]"]').attr('required','required');
+		
 		
 		jQuery('[name="contact_first_name"]').attr('required','required');
 		jQuery('[name="contact_last_name"]').attr('required','required');
