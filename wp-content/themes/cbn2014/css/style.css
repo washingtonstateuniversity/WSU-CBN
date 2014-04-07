@@ -3,7 +3,7 @@ body  { text-rendering: optimizeLegibility;font-weight: normal; }
 #body_wrap {  background:transparent url('../img/Header-background.png') repeat-x top center; }
 
 
-#displayImg{ max-width:250px; width:100%;}
+.displayImg{ max-width:250px; width:100%;}
 
 .row{max-width: 1260px;}
 a { color:#981e32; }
