@@ -376,6 +376,7 @@ jQuery(document).ready(function(){
 		
 		jQuery('#cn-metabox-metabox-email .cn-add').trigger('click');
 		jQuery('input[id^="cn-email"][name$="[address]"]').attr('required','required');
+		jQuery('[name="email[preferred]"]').attr('checked',true);
 		jQuery('select[id^="cn-email"][name$="[type]"]').val('work');
 	}
 	
