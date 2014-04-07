@@ -364,7 +364,21 @@ function disableFields(selected){
 jQuery(document).ready(function(){
 	
 	
-	
+	if(jQuery('#cn-form').length>0){
+		jQuery('#cn-metabox-metabox-address .cn-add').trigger('click');
+		jQuery('[name="address[preferred]"]').attr('checked',true);
+		jQuery('select[id^="cn-address"][name$="[type]"]').val('work');
+		jQuery('input[id^="cn-address"][name$="[line_1]"]').attr('required','required');
+
+		
+		
+		jQuery('label[for="cn-department"]').text('Title');
+		
+		jQuery('#cn-metabox-metabox-email .cn-add').trigger('click');
+		jQuery('input[id^="cn-email"][name$="[address]"]').attr('required','required');
+		jQuery('[name="email[preferred]"]').attr('checked',true);
+		jQuery('select[id^="cn-email"][name$="[type]"]').val('work');
+	}
 	
 	
 	/*
