@@ -215,7 +215,9 @@ function iniSingleMap(obj,callback){
 }
 
 
-
+if(jQuery('#cn-form #cn-metabox-metabox-address').length>0){
+	jQuery('#cn-metabox-metabox-address .cn-add').trigger('click');
+}
 
 	if(jQuery('#tabs').length>0){
 		jQuery( "#tabs" ).tabs({
