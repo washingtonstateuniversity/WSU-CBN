@@ -97,6 +97,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 				
 				<p><?=$metadata['description']?></p>
 				<?php if( isset($metadata['members_card']) && $metadata['members_card']==1): ?><h5>Must show card</h5><?php endif; ?>
+				<?php if( isset($metadata['online']) && $metadata['online']==1): ?><h5>Online only</h5><?php endif; ?>
 				<hr/>
 			</div>
 			
