@@ -25,8 +25,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 					$hasImg = false;
 					$block=$entry->getImage( array(
 						'image'    => $atts['image'] ,
-						'height'   => $atts['image_height'] ,
-						'width'    => $atts['image_width'] ,
+						'preset' => 'thumbnail',
 						'return' => TRUE,
 						'fallback' => array(
 							'type'     => $atts['image_fallback'] ,
@@ -34,6 +33,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 							)
 						)
 					);
+					//$block = $entry->getImageNameOriginal();
 					if(strpos($block,"cn-image-none")===false){	
 						echo '<div class="cn-right" style="float:right">'.$block.'</div>';
 						$hasImg = true;
