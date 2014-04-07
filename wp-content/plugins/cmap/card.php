@@ -113,8 +113,8 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
             
                         printf( '<a class="cn-bio-anchor toggle-div ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only" id="bio-anchor-%1$s" href="#" data-uuid="%1$s" data-div-id="bio-block-%1$s" data-str-show="%2$s" data-str-hide="%3$s"><span class="ui-button-text">%2$s</span></a>',
                             $entry->getRuid(),
-                            $atts['str_bio_show'],
-                            $atts['str_bio_hide']
+                            "[+] Description",
+                            "[-] Description"
                         );
                     }
             /*
@@ -179,7 +179,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
                 <?php 
 					if ( $atts['enable_bio'] && $entry->getBio() != '' ) {
 						echo '<div class="cn-bio" id="bio-block-' , $entry->getRuid() , '" style="display: none;">';
-							if ( $atts['enable_bio_head'] ) echo '<h4>' , $atts['str_bio_head'] , '</h4>';
+							//if ( $atts['enable_bio_head'] ) echo '<h4>' , "" , '</h4>';
 							$entry->getImage( array(
 								'image'    => $atts['tray_image'] ,
 								'height'   => $atts['tray_image_height'] ,

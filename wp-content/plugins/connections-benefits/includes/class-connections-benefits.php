@@ -137,15 +137,15 @@ if (!class_exists('Connections_benefits')) {
 		}
 		public static function field( $field, $value ) {
 			//this should be a merge.. no?
-			if(empty($value)){
-				$value=array(
-					'description'=>'',
-					'wsuaa_discounts'=>1,
-					'members_card'=>0,
-					'categories'=>'',
-					'online'=>0
-				);	
-			}
+			
+			$default=array(
+				'description'=>'',
+				'wsuaa_discounts'=>1,
+				'members_card'=>0,
+				'categories'=>'',
+				'online'=>0
+			);	
+			$value=array_merge($default,$value);
 			//var_dump($value);
 			$out ="";
 
