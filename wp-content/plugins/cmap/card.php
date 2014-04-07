@@ -179,7 +179,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
                 <?php 
 					if ( $atts['enable_bio'] && $entry->getBio() != '' ) {
 						echo '<div class="cn-bio" id="bio-block-' , $entry->getRuid() , '" style="display: none;">';
-							if ( $atts['enable_bio_head'] ) echo '<h4>' , $atts['str_bio_head'] , '</h4>';
+							//if ( $atts['enable_bio_head'] ) echo '<h4>' , "" , '</h4>';
 							$entry->getImage( array(
 								'image'    => $atts['tray_image'] ,
 								'height'   => $atts['tray_image_height'] ,
