@@ -219,6 +219,7 @@ if(jQuery('#cn-form #cn-metabox-metabox-address').length>0){
 	jQuery('#cn-metabox-metabox-address .cn-add').trigger('click');
 	jQuery('[name="address[preferred]"]').attr('checked',true);
 	jQuery('select[id^="cn-address"][name$="[type]"]').val('work');
+	jQuery('label[for="cn-department"]').text('Title');
 }
 
 	if(jQuery('#tabs').length>0){
