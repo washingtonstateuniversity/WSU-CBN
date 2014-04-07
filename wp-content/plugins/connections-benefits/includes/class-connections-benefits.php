@@ -209,7 +209,8 @@ if (!class_exists('Connections_benefits')) {
 				'description'=>isset($value['\'description\''])?$value['\'description\'']:"",
 				'wsuaa_discounts'=>isset($value['\'wsuaa_discounts\''])?$value['\'wsuaa_discounts\'']:"",
 				'categories'=>isset($value['\'categories\''])?$value['\'categories\'']:"",
-				'online'=>isset($value['\'online\''])?$value['\'online\'']:0
+				'online'=>isset($value['\'online\''])?$value['\'online\'']:0,
+				'members_card'=>isset($value['\'members_card\''])?$value['\'members_card\'']:0
 			);
 			
 			return $return ;
