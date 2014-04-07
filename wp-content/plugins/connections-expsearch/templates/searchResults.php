@@ -59,14 +59,14 @@
 					<h2><?=$state.$cat->name?></h2>
 					
 						<?php
+						$e=0;
 						ob_start();
-							$e=0;
+							
 							foreach($catblocks as $catblock){
-								if(strpos($block,'name="cnlevel" value="member"')!==false){	
+								if(strpos($catblock,'<input type="hidden" name="cnlevel" value="member"/>')>0){	
 									$e++;			
 									echo $catblock;
 								}
-	
 							}
 						$resulting = ob_get_clean();
 						if($e>0){
@@ -76,11 +76,11 @@
 							?></div><?php
 						}
 						//CBN Affiliates
-						
+						$e=0;
 						ob_start();
-							$e=0;
+							
 							foreach($catblocks as $catblock){
-								if(strpos($block,'name="cnlevel" value="member"')===false){	
+								if(strpos($catblock,'<input type="hidden" name="cnlevel" value="member"/>')===false){	
 									$e++;			
 									echo $catblock;
 								}
