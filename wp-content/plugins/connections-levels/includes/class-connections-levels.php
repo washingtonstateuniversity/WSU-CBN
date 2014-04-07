@@ -159,8 +159,8 @@ if (!class_exists('Connections_Levels')) {
 			
 			$levels = array(
 				//'pending'=>__('Pending', 'connections_levels' ),
-				'member'=>__('Member', 'connections_levels' ),
-				'affiliate'=>__('Affiliate', 'connections_levels' )
+				'member'=>__('Member (Cougar-owned or –managed)', 'connections_levels' ),
+				'affiliate'=>__('Affiliate (all other Cougars)', 'connections_levels' )
 			);			
 			
 			$out ='<select name="cnlevels" >';
