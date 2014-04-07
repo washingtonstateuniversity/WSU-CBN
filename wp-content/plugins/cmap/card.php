@@ -91,7 +91,11 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 			<div class="cn-clear"><hr/>
 				<h4>Benefits</h4>
 				<?php if( $metadata['wsuaa_discounts']==1): ?><h5>For WSUAA Members only</h5><?php endif; ?>
+				
+				
+				
 				<p><?=$metadata['description']?></p>
+				<?php if( $metadata['members_card']==1): ?><h5>Must show card</h5><?php endif; ?>
 				<hr/>
 			</div>
 			
