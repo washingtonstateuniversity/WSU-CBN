@@ -150,9 +150,9 @@ if (!class_exists('Connections_benefits')) {
 			$out ="";
 
 			$out .='
-			<div><label>Benefit description:
+			<div><label>Benefit/discount description:</label>
 			<br/><textarea name="cnbenefits[\'description\']" rows="5" cols="30">'.$value['description'].'</textarea>
-			</label>
+			
 			<br/><br/>
 			
 			<label>Is this offer for only WSUAA Members?:</label><br/>
