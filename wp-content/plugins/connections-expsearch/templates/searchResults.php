@@ -57,11 +57,13 @@
 					
 					?>
 					<h2><?=$state.$cat->name?></h2>
-					<div class="accordion"><?php
-					foreach($catblocks as $catblock){
-						echo $catblock;
-					}
-					?></div>
+					<div class="accordion">
+						<?php
+						foreach($catblocks as $catblock){
+							echo $catblock;
+						}
+						?>
+					</div>
 					<?php
 					
 				}
