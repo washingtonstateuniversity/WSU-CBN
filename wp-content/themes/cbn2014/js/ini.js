@@ -371,7 +371,8 @@ jQuery(document).ready(function(){
 		jQuery('input[id^="cn-address"][name$="[line_1]"]').attr('required','required');
 
 		
-		
+		jQuery('[name="contact_first_name"]').attr('required','required');
+		jQuery('[name="contact_last_name"]').attr('required','required');
 		jQuery('label[for="cn-department"]').text('Title');
 		
 		jQuery('#cn-metabox-metabox-email .cn-add').trigger('click');
@@ -380,7 +381,7 @@ jQuery(document).ready(function(){
 		jQuery('select[id^="cn-email"][name$="[type]"]').val('work');
 		
 		jQuery('#cn-metabox-metabox-bio .cn-metabox-title').text('Business Description');
-		jQuery('[name="entry_category[]').attr('required','required');
+		
 		
 	}
 	
