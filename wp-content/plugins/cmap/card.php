@@ -16,6 +16,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 </h3>
     
 <div  id="cn-cmap"  class="cn-template cn-cmap ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="cn-list-body" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display:none;">
+<input type="hidden" name="cnlevel" value="<?=$cnlevel?>"/>
     <div id="cn-list"  class="cn-list">
         <div class="businesscontainer connections-list cn-clear" rel="">
         
@@ -95,7 +96,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 				
 				
 				<p><?=$metadata['description']?></p>
-				<?php if( $metadata['members_card']==1): ?><h5>Must show card</h5><?php endif; ?>
+				<?php if( isset($metadata['members_card']) && $metadata['members_card']==1): ?><h5>Must show card</h5><?php endif; ?>
 				<hr/>
 			</div>
 			
