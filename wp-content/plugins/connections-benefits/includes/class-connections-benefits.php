@@ -176,7 +176,7 @@ if (!class_exists('Connections_benefits')) {
 				<option value="9" '.($value['categories']=="9"?"selected":"").'>Shopping</option>
 				<option value="10" '.($value['categories']=="10"?"selected":"").'>Travel</option>
 			</select></label> 	<br/><br/>
-			<label>Must have member card?:</label>
+			<label>Must customer present WSUAA benefit card to receive benefit/discount?</label>
 				<br/>
 				<input name="cnbenefits[\'members_card\']" id="discounts_0_members_only" type="radio" value="1" '.($value['members_card']>0?"checked":"").'> Yes 
 				<input name="cnbenefits[\'members_card\']" id="discounts_0_members_only" type="radio" value="0" '.($value['members_card']>0?"":"checked").'> No 
