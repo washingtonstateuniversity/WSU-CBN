@@ -375,7 +375,8 @@ jQuery(document).ready(function(){
 		jQuery('label[for="cn-department"]').text('Title');
 		
 		jQuery('#cn-metabox-metabox-email .cn-add').trigger('click');
-		
+		jQuery('input[id^="cn-email"][name$="[address]"]').attr('required','required');
+
 	}
 	
 	
