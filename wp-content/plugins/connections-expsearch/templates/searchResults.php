@@ -43,21 +43,31 @@
 			$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
 			foreach($categories as $cat){
 				$atts['category']=$cat->term_id;
+				$catblocks = array();
 				foreach($results as $result){
-					
-				
 					$atts['id'] = $result->id;
-					$catblock = connectionsList( $atts,NULL,'connections' );
-					//var_dump($catblock);
-					if(!empty($catblock) && strpos($catblock,'No results')===false){
-						?>
-						<h2><?=$state.$cat->name?></h2>
-						<div class="accordion">
-							<?=$catblock?>
-						</div>
-						<?php
+					$block = connectionsList( $atts,NULL,'connections' );
+					if(!empty($block) && strpos($block,'No results')===false){
+						$catblocks[] = $block;
 					}
 				}
+				
+				if(count($catblocks)>0){
+					//var_dump($catblock);
+					
+					?>
+					<h2><?=$state.$cat->name?></h2>
+					<div class="accordion"><?php
+					foreach($catblocks as $catblock){
+						echo $catblock;
+					}
+					?></div>
+					<?php
+					
+				}
+				
+				
+				
 			}
 		}else{
 			$state = isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state'].' and ':'';
