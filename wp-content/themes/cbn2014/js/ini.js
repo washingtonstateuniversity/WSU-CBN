@@ -380,7 +380,7 @@ jQuery(document).ready(function(){
 		jQuery('select[id^="cn-email"][name$="[type]"]').val('work');
 		
 		jQuery('#cn-metabox-metabox-bio .cn-metabox-title').text('Business Description');
-		
+		jQuery('[name="entry_category[]').attr('required','required');
 		
 	}
 	
