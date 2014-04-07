@@ -368,6 +368,10 @@ jQuery(document).ready(function(){
 		jQuery('#cn-metabox-metabox-address .cn-add').trigger('click');
 		jQuery('[name="address[preferred]"]').attr('checked',true);
 		jQuery('select[id^="cn-address"][name$="[type]"]').val('work');
+		jQuery('input[id^="cn-address"][name$="[line_1]"]').attr('required','required');
+
+		
+		
 		jQuery('label[for="cn-department"]').text('Title');
 		
 		jQuery('#cn-metabox-metabox-email .cn-add').trigger('click');
