@@ -150,16 +150,16 @@ if (!class_exists('Connections_benefits')) {
 			$out ="";
 
 			$out .='
-			<div><label>Benefit description:
+			<div><label>Benefit/discount description:</label>
 			<br/><textarea name="cnbenefits[\'description\']" rows="5" cols="30">'.$value['description'].'</textarea>
-			</label>
+			
 			<br/><br/>
 			
-			<label>Is this offer for only WSUAA Members?:<br/>
+			<label>Is this offer for only WSUAA Members?:</label><br/>
             
 			<input name="cnbenefits[\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts"  type="radio" value="1" '.($value['description']>0?"checked":"").'> Yes 
             <input name="cnbenefits[\'wsuaa_discounts\']" id="discounts_0_wsuaa_discounts" type="radio" value="0" '.($value['description']>0?"":"checked").'> No 
-			</label>
+			
 			<br/><br/>
             <label>Discount Category:
             <br/>
@@ -176,16 +176,16 @@ if (!class_exists('Connections_benefits')) {
 				<option value="9" '.($value['categories']=="9"?"selected":"").'>Shopping</option>
 				<option value="10" '.($value['categories']=="10"?"selected":"").'>Travel</option>
 			</select></label> 	<br/><br/>
-			<label>Must have member card?:
+			<label>Must customer present WSUAA benefit card to receive benefit/discount?</label>
 				<br/>
 				<input name="cnbenefits[\'members_card\']" id="discounts_0_members_only" type="radio" value="1" '.($value['members_card']>0?"checked":"").'> Yes 
 				<input name="cnbenefits[\'members_card\']" id="discounts_0_members_only" type="radio" value="0" '.($value['members_card']>0?"":"checked").'> No 
-			</label><br/><br/>
-			<label>Is this an online offer?:
+			<br/><br/>
+			<label>Is this an online offer?:</label>
 				<br/>
 				<input name="cnbenefits[\'online\']" id="discounts_0_online" type="radio" value="1" '.($value['online']>0?"checked":"").'> Yes 
 				<input name="cnbenefits[\'online\']" id="discounts_0_online" type="radio" value="0" '.($value['online']>0?"":"checked").'> No 
-			</label>
+			
 			<br/>
             <!--<em><strong>Note:</strong> to check if the online use is WSUAA Member have your web developer use this url http://cbn.wsu.edu/Business/is_member.castle with a url query of "Wsuid".  <br>The example is [ <strong>http://cbn.wsu.edu/Business/is_member.castle?Wsuid=47614823</strong> ]</em>-->
 			';

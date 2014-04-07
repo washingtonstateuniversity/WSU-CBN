@@ -369,10 +369,16 @@ jQuery(document).ready(function(){
 		jQuery('[name="address[preferred]"]').attr('checked',true);
 		jQuery('select[id^="cn-address"][name$="[type]"]').val('work');
 		jQuery('input[id^="cn-address"][name$="[line_1]"]').attr('required','required');
-
+		jQuery('input[id^="cn-address"][name$="[city]"]').attr('required','required');
+		jQuery('input[id^="cn-address"][name$="[state]"]').attr('required','required');
+		jQuery('input[id^="cn-address"][name$="[zipcode]"]').attr('required','required');
+		jQuery('input[id^="cn-address"][name$="[country]"]').attr('required','required');
+		
 		
 		jQuery('[name="contact_first_name"]').attr('required','required');
 		jQuery('[name="contact_last_name"]').attr('required','required');
+		jQuery('#cn-department').attr('required','required');
+		
 		jQuery('label[for="cn-department"]').text('Title');
 		
 		
