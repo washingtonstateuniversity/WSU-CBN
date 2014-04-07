@@ -57,13 +57,45 @@
 					
 					?>
 					<h2><?=$state.$cat->name?></h2>
-					<div class="accordion">
+					
 						<?php
-						foreach($catblocks as $catblock){
-							echo $catblock;
+						ob_start();
+							$e=0;
+							foreach($catblocks as $catblock){
+								if(strpos($block,'name="cnlevel" value="member"')!==false){	
+									$e++;			
+									echo $catblock;
+								}
+	
+							}
+						$resulting = ob_get_clean();
+						if($e>0){
+							?><h4>CBN Members</h4><?php
+							?><div class="accordion"><?php
+								echo $resulting;
+							?></div><?php
 						}
+						//CBN Affiliates
+						
+						ob_start();
+							$e=0;
+							foreach($catblocks as $catblock){
+								if(strpos($block,'name="cnlevel" value="member"')===false){	
+									$e++;			
+									echo $catblock;
+								}
+	
+							}
+						$resulting = ob_get_clean();
+						if($e>0){
+							?><h4>CBN Affiliates</h4><?php
+							?><div class="accordion"><?php
+								echo $resulting;
+							?></div><?php
+						}
+
 						?>
-					</div>
+					
 					<?php
 					
 				}
