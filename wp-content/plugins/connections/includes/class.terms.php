@@ -640,10 +640,10 @@ class cnTerms
 			// Retrieve the Uncategorized term data
 			$term = $this->getTermBy('slug', 'uncategorized', 'category');
 			if(isset($term->term_taxonomy_id)){
-			// Set the $IDs array for updating the term counts.
-			$termIDs[] = $term->term_taxonomy_id;
-
-			$wpdb->query( $wpdb->prepare( "INSERT INTO " . CN_TERM_RELATIONSHIP_TABLE . " SET entry_id = %d, term_taxonomy_id = %d, term_order = 0", $entryID, $term->term_id) );
+				// Set the $IDs array for updating the term counts.
+				$termIDs[] = $term->term_taxonomy_id;
+	
+				$wpdb->query( $wpdb->prepare( "INSERT INTO " . CN_TERM_RELATIONSHIP_TABLE . " SET entry_id = %d, term_taxonomy_id = %d, term_order = 0", $entryID, $term->term_id) );
 			}
 		}
 
