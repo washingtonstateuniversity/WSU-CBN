@@ -126,7 +126,7 @@ if (!class_exists('Connections_Education')) {
 			$out ='';
 			$out .='<label>'.__('Degree', 'connections_education' ).'<br/><input type="text" name="cneducation[\'degree\']" value="'.(isset($value['degree'])?$value['degree']:"").'" required /></label><br/>';
 			$out .='<label>'.__('Class Year', 'connections_education' ).'<br/><input type="text" name="cneducation[\'year\']" value="'.(isset($value['year'])?$value['year']:"").'" required /></label><br/>';
-			$out .='<label>'.__('WSUid', 'connections_education' ).'<br/><input type="text" name="cneducation[\'schoolid\']" value="'.(isset($value['schoolid'])?$value['schoolid']:"").'"  /></label><br/>';	
+			$out .='<label>'.__('WSU ID', 'connections_education' ).'<br/><input type="text" name="cneducation[\'schoolid\']" value="'.(isset($value['schoolid'])?$value['schoolid']:"").'"  /></label><br/>';	
 
 			printf( '%s', $out);
  
