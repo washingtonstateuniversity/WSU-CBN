@@ -317,7 +317,7 @@
 #cn-form span.selectbox select {padding:1px !important;vertical-align:middle !important;}
 #cn-form span.radio_group input {height: 13px; margin: 0px 5px 0px 2px; width:13px;}
 #cn-form span.radio_group label {float: left; line-height: 30px; padding-right: 15px; white-space: nowrap;}*/
-#cn-form img {-moz-border-radius:4px; background-color: #FFFFFF; border:1px solid #E3E3E3; margin-bottom:10px; padding:5px;}
+#cn-form img {-moz-border-radius:4px; /*background-color: #FFFFFF;*/ border:1px solid #E3E3E3; margin-bottom:10px; padding:5px;}
 
 /*#cn-form div.websites label {display: inline;}*/
 /*#cn-form div.cn-metabox-inside	span.radio_group label {float: left; line-height: 30px; margin: 6px; padding-right: 12px; white-space: nowrap;}
