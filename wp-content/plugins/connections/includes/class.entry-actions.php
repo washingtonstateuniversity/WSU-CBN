@@ -206,26 +206,26 @@ class cnEntry_Action {
 			// If an entry is being updated and a new image is uploaded, the old images need to be deleted.
 			if ( $entry->getImageNameOriginal() != NULL ) {
 				if ( $compatiblityDate < @filemtime( CN_IMAGE_PATH . $entry->getImageNameOriginal() ) ) {
-					@unlink( CN_IMAGE_PATH . $entry->getImageNameOriginal() );
+					//@unlink( CN_IMAGE_PATH . $entry->getImageNameOriginal() );
 				}
 			}
 
 			if ( $entry->getImageNameThumbnail() != NULL ) {
 				if ( $compatiblityDate < @filemtime( CN_IMAGE_PATH . $entry->getImageNameThumbnail() ) ) {
-					@unlink( CN_IMAGE_PATH . $entry->getImageNameThumbnail() );
+					//@unlink( CN_IMAGE_PATH . $entry->getImageNameThumbnail() );
 
 				}
 			}
 
 			if ( $entry->getImageNameCard() != NULL ) {
 				if ( $compatiblityDate < @filemtime( CN_IMAGE_PATH . $entry->getImageNameCard() ) ) {
-					@unlink( CN_IMAGE_PATH . $entry->getImageNameCard() );
+					//@unlink( CN_IMAGE_PATH . $entry->getImageNameCard() );
 				}
 			}
 
 			if ( $entry->getImageNameProfile() != NULL ) {
 				if ( $compatiblityDate < @filemtime( CN_IMAGE_PATH . $entry->getImageNameProfile() ) ) {
-					@unlink( CN_IMAGE_PATH . $entry->getImageNameProfile() );
+					//@unlink( CN_IMAGE_PATH . $entry->getImageNameProfile() );
 				}
 			}
 
@@ -283,26 +283,26 @@ class cnEntry_Action {
 
 					if ( is_file( CN_IMAGE_PATH . $entry->getImageNameOriginal() ) ) {
 						if ( $compatiblityDate < filemtime( CN_IMAGE_PATH . $entry->getImageNameOriginal() ) ) {
-							@unlink( CN_IMAGE_PATH . $entry->getImageNameOriginal() );
+							//@unlink( CN_IMAGE_PATH . $entry->getImageNameOriginal() );
 						}
 					}
 
 					if ( is_file( CN_IMAGE_PATH . $entry->getImageNameThumbnail() ) ) {
 						if ( $compatiblityDate < filemtime( CN_IMAGE_PATH . $entry->getImageNameThumbnail() ) ) {
-							@unlink( CN_IMAGE_PATH . $entry->getImageNameThumbnail() );
+							//@unlink( CN_IMAGE_PATH . $entry->getImageNameThumbnail() );
 
 						}
 					}
 
 					if ( is_file( CN_IMAGE_PATH . $entry->getImageNameCard() ) ) {
 						if ( $compatiblityDate < filemtime( CN_IMAGE_PATH . $entry->getImageNameCard() ) ) {
-							@unlink( CN_IMAGE_PATH . $entry->getImageNameCard() );
+							//@unlink( CN_IMAGE_PATH . $entry->getImageNameCard() );
 						}
 					}
 
 					if ( is_file( CN_IMAGE_PATH . $entry->getImageNameProfile() ) ) {
 						if ( $compatiblityDate < filemtime( CN_IMAGE_PATH . $entry->getImageNameProfile() ) ) {
-							@unlink( CN_IMAGE_PATH . $entry->getImageNameProfile() );
+							//@unlink( CN_IMAGE_PATH . $entry->getImageNameProfile() );
 						}
 					}
 
