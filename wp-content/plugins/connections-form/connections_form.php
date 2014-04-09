@@ -202,7 +202,33 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 		 * @return void
 		 */
 		public static function enqueueScripts() {
+			global $connections;
+ 
+			$min = defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 
+
+			wp_enqueue_script( 'jquery-validate' );
+			wp_enqueue_script( 'jquery-chosen-min' );
+			
+			if ( $connections->options->getGoogleMapsAPI()  ) {
+ 
+				if ( ! is_ssl() ) wp_enqueue_script( 'cn-google-maps-api', 'http://maps.googleapis.com/maps/api/js?sensor=false', array( 'jquery' ), CN_CURRENT_VERSION, $connections->options->getJavaScriptFooter() );
+ 
+				if ( is_ssl() ) wp_enqueue_script( 'cn-google-maps-api', 'https://maps.googleapis.com/maps/api/js?sensor=false', array( 'jquery' ), CN_CURRENT_VERSION, $connections->options->getJavaScriptFooter() );
+
+				wp_enqueue_script( 'jquery-gomap-min', CN_URL . "assets/js/jquery.gomap-1.3.2$min.js", array( 'jquery' , 'cn-google-maps-api' ), '1.3.2', $connections->options->getJavaScriptFooter() );
+ 
+				wp_enqueue_script( 'jquery-markerclusterer-min', CN_URL . "assets/js/jquery.markerclusterer$min.js", array( 'jquery' , 'cn-google-maps-api' , 'jquery-gomap-min' ), '2.0.15', $connections->options->getJavaScriptFooter() );
+ 
+			} else {
+ 
+				wp_enqueue_script( 'jquery-gomap-min', CN_URL . "assets/js/jquery.gomap-1.3.2$min.js", array( 'jquery' ), '1.3.2', $connections->options->getJavaScriptFooter() );
+ 
+				wp_enqueue_script( 'jquery-markerclusterer-min', CN_URL . "assets/js/jquery.markerclusterer$min.js", array( 'jquery' , 'jquery-gomap-min' ), '2.0.15', $connections->options->getJavaScriptFooter() );
+ 
+			}
+			
+			
 			wp_enqueue_script( 'cn-form-ui-user', CNFM_BASE_URL . 'js/cn-form-user.js', array( 'jquery', 'jquery-form' ), CNFM_CURRENT_VERSION, TRUE );
 
 			$protocol = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
@@ -222,9 +248,7 @@ if ( ! class_exists( 'Connections_Form' ) ) {
 				);
 
 			wp_localize_script( 'cn-form-ui-user', 'cn_form', $atts );
-
-			wp_enqueue_script( 'jquery-validate' );
-			wp_enqueue_script( 'jquery-chosen-min' );
+			
 		}
 
 		/**

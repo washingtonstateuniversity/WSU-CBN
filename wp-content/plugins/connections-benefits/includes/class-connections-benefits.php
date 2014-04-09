@@ -135,9 +135,11 @@ if (!class_exists('Connections_benefits')) {
 				);
 			$metabox::add( $atts );
 		}
-		public static function field( $field, $value ) {
+		public static function field( $field, $value=array() ) {
 			//this should be a merge.. no?
-			
+			if($value==""){
+			$value=array();	
+			}
 			$default=array(
 				'description'=>'',
 				'wsuaa_discounts'=>1,
