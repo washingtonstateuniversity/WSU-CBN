@@ -1,4 +1,5 @@
 var pullman = new google.maps.LatLng(46.73191920826778,-117.15296745300293);
+var basemark;
 var ib = [];
 var ibh = [];
 var markerLog = [];
@@ -425,7 +426,146 @@ jQuery(document).ready(function(){
 	
 	
 	
+( function( $ ) {
+	$(document).ready( function($) {
+
+		
+		/* 
+		* Geocode the address
+		*/
+		var uid = jQuery('a.geocode').data('uid');
+		
+		function startMap(){
+			jQuery( '#map-' + uid ).goMap({ maptype: 'ROADMAP' });
+			var address = new Object();
+			address	= $.extend(
+						{
+							line_1:'Wilson Rd',
+							city:'Pullman',
+							state:'WA',
+							zipcode:"99163"
+						},
+						address
+					);
+			$.goMap.createMarker({
+				address: '\'' 
+						+ address.line_1 + ', ' 
+						+ address.city + ', ' 
+						+ address.state + ', ' 
+						+ address.zipcode + ', ' 
+						+  '\'' ,
+				 id: 'baseMarker',
+				 draggable: true
+			});
+
+		}
+		startMap();
+		
+		
+		
+
+		function alterMap(uid){
+			var lat;
+			var lng;
+			var map = $.goMap.map;
+
+			var address = new Object();
+			var line_1 = $('input[name=address\\[' + uid + '\\]\\[line_1\\]]').val();
+			if(line_1!=""){address.line_1 = line_1;}
+			
+			
+			var line_2 = $('input[name=address\\[' + uid + '\\]\\[line_2\\]]').val();
+			if(line_2!=""){address.line_2 = line_2;}
+			
+			var line_3 = $('input[name=address\\[' + uid + '\\]\\[line_3\\]]').val();
+			if(line_3!=""){address.line_3 = line_3;}
+			
+			var city = $('input[name=address\\[' + uid + '\\]\\[city\\]]').val();
+			if(city!=""){address.city = city;}
+			
+			var state = $('input[name=address\\[' + uid + '\\]\\[state\\]]').val();
+			if(state!=""){address.state = state;}
+			
+			var zipcode = $('input[name=address\\[' + uid + '\\]\\[zipcode\\]]').val();
+			if(zipcode!=""){address.zipcode = zipcode;}
+			
+			var country = $('input[name=address\\[' + uid + '\\]\\[country\\]]').val();
+			if(country!=""){address.country = country;}
+
+			address	= $.extend(
+						{
+							line_1:'Wilson Rd',
+							city:'Pullman',
+							state:'WA',
+							zipcode:"99163"
+						},
+						address
+					);
+			$.goMap.clearMarkers();
+			$.goMap.createMarker({
+				address: '\'' 
+						+ address.line_1 + ', ' 
+						+ address.city + ', ' 
+						+ address.state + ', ' 
+						+ address.zipcode + ', ' 
+						+  '\'' ,
+				 id: 'baseMarker',
+				 draggable: true
+			});
+			
+			
+			$.goMap.setMap({ 
+				address: '\'' 
+						+ address.line_1 + ', ' 
+						+ address.city + ', ' 
+						+ address.state + ', ' 
+						+ address.zipcode + ', ' 
+						+  '\'' ,
+				zoom: 18
+			});
+			
+			$.goMap.createListener( {type:'marker', marker:'baseMarker'} , 'idle', function(event) {
+				var lat = event.latLng.lat();
+				var lng = event.latLng.lng();
+				$('input[name=address\\[' + uid + '\\]\\[latitude\\]]').val(lat);
+				$('input[name=address\\[' + uid + '\\]\\[longitude\\]]').val(lng);
+			});
+			
+			$.goMap.createListener( {type:'marker', marker:'baseMarker'} , 'dragend', function(event) {
+				var lat = event.latLng.lat();
+				var lng = event.latLng.lng();
+				$('input[name=address\\[' + uid + '\\]\\[latitude\\]]').val(lat);
+				$('input[name=address\\[' + uid + '\\]\\[longitude\\]]').val(lng);
+			});
+			
+			google.maps.event.trigger(map, 'resize');
+			
+			// There has to be a better way than setting a delay. I know I have to use a callback b/c the geocode is an asyn request.
+		setTimeout( function(){
+				var latLng = map.getCenter();
+				map.setCenter(latLng);
+				var baseMarkerPosition = $( '#map-' + uid ).data('baseMarker').getPosition();
+				$('input[name=address\\[' + uid + '\\]\\[latitude\\]]').val( baseMarkerPosition.lat() );
+				$('input[name=address\\[' + uid + '\\]\\[longitude\\]]').val( baseMarkerPosition.lng() );		
+		}, 1500);
+
+
+			
+		}
 	
+		
+		jQuery('.widget.address input,.widget.address select').on('change',function(){
+			alterMap(uid);
+		});	
+		jQuery('a.geocode.button').live('click', function() {
+			$( '#map-' + uid ).fadeIn('slow' , function() {
+				alterMap(uid);
+			});
+			return false;
+		 });
+
+	});
+} )( jQuery );
 	
 	
 });
