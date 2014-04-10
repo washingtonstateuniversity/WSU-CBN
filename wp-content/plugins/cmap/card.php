@@ -25,8 +25,10 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 				<?php
 					$hasImg = false;
 					$block=$entry->getImage( array(
-						'image'    => $atts['image'] ,
-						'preset' => 'thumbnail',
+						'image'  => $atts['image'],
+						'preset' => 'image',
+						'height' => isset($atts['height'])?$atts['height']:null,
+						'width'  => isset($atts['width'])?$atts['width']:250,
 						'return' => TRUE,
 						'fallback' => array(
 							'type'     => $atts['image_fallback'] ,
