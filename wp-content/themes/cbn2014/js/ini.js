@@ -541,16 +541,13 @@ jQuery(document).ready(function(){
 			google.maps.event.trigger(map, 'resize');
 			
 			// There has to be a better way than setting a delay. I know I have to use a callback b/c the geocode is an asyn request.
-		setTimeout( function(){
-				var latLng = map.getCenter();
-				map.setCenter(latLng);
-				var baseMarkerPosition = $( '#map-' + uid ).data('baseMarker').getPosition();
-				$('input[name=address\\[' + uid + '\\]\\[latitude\\]]').val( baseMarkerPosition.lat() );
-				$('input[name=address\\[' + uid + '\\]\\[longitude\\]]').val( baseMarkerPosition.lng() );		
-		}, 1500);
-
-
-			
+			setTimeout( function(){
+					var latLng = map.getCenter();
+					map.setCenter(latLng);
+					var baseMarkerPosition = $( '#map-' + uid ).data('baseMarker').getPosition();
+					$('input[name=address\\[' + uid + '\\]\\[latitude\\]]').val( baseMarkerPosition.lat() );
+					$('input[name=address\\[' + uid + '\\]\\[longitude\\]]').val( baseMarkerPosition.lng() );		
+			}, 1500);
 		}
 	
 		
