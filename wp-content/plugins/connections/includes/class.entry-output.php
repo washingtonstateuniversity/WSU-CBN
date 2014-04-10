@@ -146,13 +146,39 @@ class cnOutput extends cnEntry
 					$atts['title'] = __( 'Photo of', 'connections' ) . ' ' . $this->getName();
 
 					if ( $customSize ) {
-
+						
+						
+						
+						$orgImg = CN_IMAGE_PATH . $this->getImageNameOriginal();
+						$image = wp_get_image_editor( $orgImg ); 
+						if ( ! is_wp_error( $image ) ) {
+							
+							$ext = $image->get_extension();
+							$hash = md5($this->getImageNameOriginal().$atts['height'].$atts['width']);
+							
+							$sized =  $hash . '.' . $ext;
+							
+							$newImgPath = CN_IMAGE_PATH . $sized;
+	
+							if(!file_exists($newImgPath)){
+								$image->save( $newImgPath );						
+							}
+	
+							$newImgUrl = CN_IMAGE_RELATIVE_URL . $sized;
+						}else{
+							$newImgUrl = "failed to load wp_image_editor";
+						}
+						
+						$atts['src'] = $newImgUrl;
+						
+						
+/*
 						$atts['src'] = CN_URL . 'includes/libraries/timthumb/timthumb.php?src=' .
 							CN_IMAGE_RELATIVE_URL . $this->getImageNameOriginal() .
 							( empty( $atts['height'] ) ? '' : '&amp;h=' . $atts['height'] ) .
 							( empty( $atts['width'] ) ? '' : '&amp;w=' . $atts['width'] ) .
 							( empty( $atts['zc'] ) ? '' : '&amp;zc=' . $atts['zc'] );
-
+*/
 					} else {
 
 						switch ( $atts['preset'] ) {
@@ -219,12 +245,31 @@ class cnOutput extends cnEntry
 					$atts['title'] = __( 'Logo for', 'connections' ) . ' ' . $this->getName();
 
 					if ( $customSize ) {
-
-						$atts['src'] = CN_URL . 'includes/libraries/timthumb/timthumb.php?src=' .
+						$orgImg = CN_IMAGE_PATH . $this->getLogoName();
+						
+						$hash = md5($this->getLogoName().$atts['height'].$atts['width']);
+						$filetype = wp_check_filetype($orgImg);
+						$sized =  $hash . '.' . $filetype['ext'];
+						$newImgPath = CN_IMAGE_PATH . $sized;
+						$newImgUrl = CN_IMAGE_RELATIVE_URL . $sized;
+						
+						if(!file_exists($newImgPath)){
+							$image = wp_get_image_editor( $orgImg ); 
+							if ( ! is_wp_error( $image ) ) {
+								$image->save( $newImgPath );
+							}else{
+								$newImgUrl = false;	
+							}
+						}
+						if((bool)$newImgUrl){
+							$newImgUrl = CN_IMAGE_RELATIVE_URL . $this->getLogoName();
+						}
+						$atts['src'] = $newImgUrl;
+						/*$atts['src'] = CN_URL . 'includes/libraries/timthumb/timthumb.php?src=' .
 							CN_IMAGE_RELATIVE_URL . $this->getLogoName() .
 							( empty( $atts['height'] ) ? '' : '&amp;h=' . $atts['height'] ) .
 							( empty( $atts['width'] ) ? '' : '&amp;w=' . $atts['width'] ) .
-							( empty( $atts['zc'] ) ? '' : '&amp;zc=' . $atts['zc'] );
+							( empty( $atts['zc'] ) ? '' : '&amp;zc=' . $atts['zc'] );*/
 
 					} else {
 						$atts['image_size'] = @getimagesize( CN_IMAGE_PATH . $this->getLogoName() );
