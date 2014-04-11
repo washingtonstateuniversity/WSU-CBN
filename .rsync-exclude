@@ -2,6 +2,7 @@
 wordpress
 wp-config.php
 wp-content/uploads
+wp-content/connection_images
 wp-content/plugins/wsuwp-sso-authentication
 wp-content/plugins/wsuwp-plugin-custom-css
 states
