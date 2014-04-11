@@ -264,6 +264,7 @@ class cnOutput extends cnEntry
 						if((bool)$newImgUrl){
 							$newImgUrl = CN_IMAGE_RELATIVE_URL . $this->getLogoName();
 						}
+						
 						$atts['src'] = $newImgUrl;
 						/*$atts['src'] = CN_URL . 'includes/libraries/timthumb/timthumb.php?src=' .
 							CN_IMAGE_RELATIVE_URL . $this->getLogoName() .
@@ -301,7 +302,7 @@ class cnOutput extends cnEntry
 		}
 
 		if ( $displayImage ) {
-
+if( !empty( $atts['src'] ) && $atts['src'] !="" ){
 			foreach ( $atts as $attr => $value ) {
 				if ( ! empty( $value ) && ! in_array( $attr , $nonAtts ) ) $tag[] = "$attr=\"$value\"";
 			}
@@ -318,7 +319,7 @@ class cnOutput extends cnEntry
 				implode( ' ', $tag ),
 				empty( $anchorStart ) ? '' : '</a>'
 			);
-
+}
 		} else {
 
 			if ( $customSize ) {
