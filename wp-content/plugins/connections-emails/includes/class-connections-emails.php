@@ -108,7 +108,7 @@ if (!class_exists('Connections_Emails')) {
 		
 			// Register the core tab banks.
 			$tabs[] = array(
-				'id'        => 'email' ,
+				'id'        => 'cnemail' ,
 				'position'  => 30.1 ,
 				'title'     => __( 'Emails' , 'connections' ) ,
 				'page_hook' => $settings
@@ -123,7 +123,7 @@ if (!class_exists('Connections_Emails')) {
 
 			// Register the core setting sections.
 			$sections[] = array(
-				'tab'       => 'email' ,
+				'tab'       => 'cnemail' ,
 				'id'        => 'connections_emails_defaults' ,
 				'position'  => 20 ,
 				'title'     => __( 'Email defaults' , 'connections_emails' ) ,
@@ -148,7 +148,7 @@ if (!class_exists('Connections_Emails')) {
 				'id'        => 'from_email',
 				'position'  => 101,
 				'page_hook' => $settings,
-				'tab'       => 'email',
+				'tab'       => 'cnemail',
 				'section'   => 'connections_emails_defaults',
 				'title'     => __('Sender Email', 'connections_emails'),
 				'desc'      => '',
@@ -162,7 +162,7 @@ if (!class_exists('Connections_Emails')) {
 				'id'        => 'from_name_email',
 				'position'  => 102,
 				'page_hook' => $settings,
-				'tab'       => 'email',
+				'tab'       => 'cnemail',
 				'section'   => 'connections_emails_defaults',
 				'title'     => __('Sender Name', 'connections_emails'),
 				'desc'      => '',
@@ -176,7 +176,7 @@ if (!class_exists('Connections_Emails')) {
 				'id'        => 'to_name_format_email',
 				'position'  => 103,
 				'page_hook' => $settings,
-				'tab'       => 'email',
+				'tab'       => 'cnemail',
 				'section'   => 'connections_emails_defaults',
 				'title'     => __('Recipient Name Format', 'connections_emails'),
 				'desc'      => '',
@@ -191,7 +191,7 @@ if (!class_exists('Connections_Emails')) {
 				'id'        => 'default_subject_email',
 				'position'  => 104,
 				'page_hook' => $settings,
-				'tab'       => 'email',
+				'tab'       => 'cnemail',
 				'section'   => 'connections_emails_defaults',
 				'title'     => __('Default email subject', 'connections_emails'),
 				'desc'      => '',
@@ -204,7 +204,7 @@ if (!class_exists('Connections_Emails')) {
 				'id'        => 'default_html_email',
 				'position'  => 105,
 				'page_hook' => $settings,
-				'tab'       => 'email',
+				'tab'       => 'cnemail',
 				'section'   => 'connections_emails_defaults',
 				'title'     => __('Default HTML email', 'connections_emails'),
 				'desc'      => '',
