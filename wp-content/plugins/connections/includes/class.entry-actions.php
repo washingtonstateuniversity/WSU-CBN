@@ -135,7 +135,7 @@ class cnEntry_Action {
 		if ( isset( $_FILES['original_logo'] ) && $_FILES['original_logo']['error'] != 4 ) {
 			// If an entry is being updated and a new logo is uploaded, the old logo needs to be deleted.
 			if ( $entry->getLogoName() != NULL ) {
-				@unlink( CN_IMAGE_PATH . $entry->getLogoName() );
+				//@unlink( CN_IMAGE_PATH . $entry->getLogoName() );
 			}
 
 			include_once CN_PATH . 'includes/admin/inc.processes.php';
@@ -180,7 +180,7 @@ class cnEntry_Action {
 					 * Delete logo assigned to the entry.
 					 */
 					if ( is_file( CN_IMAGE_PATH . $entry->getLogoName() ) ) {
-						@unlink( CN_IMAGE_PATH . $entry->getLogoName() );
+						//@unlink( CN_IMAGE_PATH . $entry->getLogoName() );
 					}
 
 					$entry->setLogoName( NULL );
