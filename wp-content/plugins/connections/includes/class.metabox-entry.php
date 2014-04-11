@@ -2038,7 +2038,7 @@ class cnEntryMetabox {
 							array(
 								'type'     => 'text',
 								'class'    => '',
-								'id'       => 'email[' . $token . '][adddress]',
+								'id'       => 'email[' . $token . '][address]',
 								'required' => FALSE,
 								'label'    => __( 'Email Address', 'connections' ),
 								'before'   => '',
