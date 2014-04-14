@@ -2,7 +2,11 @@
 //var_dump($atts);
 
 $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
-
+if(!is_array($cnlevel) && $cnlevel!=""){
+	$cnlevel=array(
+		'level'=>$cnlevel,
+	);	
+}
 
 ?>
 
@@ -16,7 +20,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 </h3>
     
 <div  id="cn-cmap"  class="cn-template cn-cmap ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="cn-list-body" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display:none;">
-<input type="hidden" name="cnlevel" value="<?=$cnlevel?>"/>
+<input type="hidden" name="cnlevel" value="<?=$cnlevel['level']?>"/>
     <div id="cn-list"  class="cn-list">
         <div class="businesscontainer connections-list cn-clear" rel="">
         
@@ -168,7 +172,7 @@ $cnlevel= $entry->getMeta(array( 'key' => 'cnlevels', 'single' => TRUE ));
 							urlencode( $address ),
                             'Get directions',
 							$entry->getID(),
-							$cnlevel
+							$cnlevel['level']
                         );
                     }
                 }
