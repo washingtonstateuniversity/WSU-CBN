@@ -196,12 +196,14 @@ if (!class_exists('Connections_Levels')) {
 			$out .='</select></br>';
 			$out .="</br>";
 
-			foreach($lifetime as $slug=>$label){
-				$out .='<input type="radio" name="cnlevels[\'lifetime\']" value="'.$slug.'" '.checked($value['lifetime'], $slug, false).' />'.$label.'<br/>';	
-			}
-			$out .="</br>";
-			$out .='Expiration<input type="date" name="cnlevels[\'expiration_date\']" value="'.$value['expiration_date'].'" >';	
 
+			if (is_admin()) {
+				foreach($lifetime as $slug=>$label){
+					$out .='<input type="radio" name="cnlevels[\'lifetime\']" value="'.$slug.'" '.checked($value['lifetime'], $slug, false).' />'.$label.'<br/>';	
+				}
+				$out .="</br>";
+				$out .='Expiration<input type="date" name="cnlevels[\'expiration_date\']" value="'.$value['expiration_date'].'" >';	
+			}
 
 			
 			printf( '%s', $out);	
