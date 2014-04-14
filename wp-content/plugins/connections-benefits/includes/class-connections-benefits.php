@@ -138,7 +138,7 @@ if (!class_exists('Connections_benefits')) {
 		public static function field( $field, $value=array() ) {
 			//this should be a merge.. no?
 			if($value==""){
-			$value=array();	
+				$value=array();	
 			}
 			$default=array(
 				'description'=>'',

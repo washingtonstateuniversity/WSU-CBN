@@ -131,15 +131,7 @@ if (!class_exists('Connections_Levels')) {
                     break;
             }
         }
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		public static function registerMetabox( $metabox ) {
 			$atts = array(
 				'id'       => 'leveled',
@@ -155,22 +147,62 @@ if (!class_exists('Connections_Levels')) {
 				);
 			$metabox::add( $atts );
 		}
-		public static function field( $field, $value ) {
+		public static function field( $field, $value=array() ) {
+			//var_dump($value);
+			
+			if(!is_array($value) && $value!=""){
+				$value=array(
+					'level'=>$value,
+				);	
+			}
+			if($value==""){
+				$value=array();	
+			}
+			$default=array(
+				'level'=>'',
+				'expiration_date'=>'',
+				'lifetime'=>''
+			);	
+			
+			//var_dump($value);
+			
+			
+			$value=array_merge($default,$value);
+			
+			
+			$lifetime = array(
+				'expires'=>__('Expires', 'connections_levels' ),
+				'lifetime'=>__('Life Member', 'connections_levels' ),
+				'platinum_lifetime'=>__('Platinum Life Member', 'connections_levels' )
+			);	
 			
 			$levels = array(
 				//'pending'=>__('Pending', 'connections_levels' ),
 				'member'=>__('Member (Cougar-owned or –managed)', 'connections_levels' ),
 				'affiliate'=>__('Affiliate (all other Cougars)', 'connections_levels' )
 			);			
+
+			$out ='<style>.form-table th.cn-metabox-label-empty{width:0px;}</style>';
+
+
 			
-			$out ='<select name="cnlevels" >';
+			$out .='<select name="cnlevels[\'level\']" style="max-width:100%;width:100%;">';
 			$out .='<option value="">'.__('Must choose', 'connections_levels' ).'</option>';	
 			//this would be pulled from the ?options?
 		
 			foreach($levels as $slug=>$label){
-				$out .='<option value="'.$slug.'" '.selected($value, $slug, false).'>'.$label.'</option>';	
+				$out .='<option value="'.$slug.'" '.selected($value['level'], $slug, false).'>'.$label.'</option>';	
 			}
-			$out .='</select>';
+			$out .='</select></br>';
+			$out .="</br>";
+
+			foreach($lifetime as $slug=>$label){
+				$out .='<input type="radio" name="cnlevels[\'lifetime\']" value="'.$slug.'" '.checked($value['lifetime'], $slug, false).' />'.$label.'<br/>';	
+			}
+			$out .="</br>";
+			$out .='Expiration<input type="date" name="cnlevels[\'expiration_date\']" value="'.$value['expiration_date'].'" >';	
+
+
 			
 			printf( '%s', $out);	
 		}
@@ -186,9 +218,13 @@ if (!class_exists('Connections_Levels')) {
 		 */
 		public static function sanitize( $value ) {
 
-			$value=cnSanitize::string( 'text', $value );
+			$return=array(
+				'level'=>isset($value['\'level\''])?$value['\'level\'']:"",
+				'lifetime'=>isset($value['\'lifetime\''])?$value['\'lifetime\'']:"",
+				'expiration_date'=>isset($value['\'expiration_date\''])?$value['\'expiration_date\'']:""
+			);
 
-			return $value;
+			return $return;
 		}
 		
 		
