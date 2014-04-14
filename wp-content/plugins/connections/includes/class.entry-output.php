@@ -148,7 +148,7 @@ class cnOutput extends cnEntry
 					if ( $customSize ) {
 						
 						
-						
+						/*
 						$orgImg = CN_IMAGE_PATH . $this->getImageNameOriginal();
 						$image = wp_get_image_editor( $orgImg ); 
 						if ( ! is_wp_error( $image ) ) {
@@ -156,7 +156,8 @@ class cnOutput extends cnEntry
 							$ext = $image->get_extension();
 							$hash = md5($this->getImageNameOriginal().$atts['height'].$atts['width']);
 							
-							$sized =  $hash . '.' . $ext;
+						$filetype = wp_check_filetype($orgImg);
+						$sized =  $hash . '.' . $filetype['ext'];
 							
 							$newImgPath = CN_IMAGE_PATH . $sized;
 	
@@ -170,7 +171,32 @@ class cnOutput extends cnEntry
 						}
 						
 						$atts['src'] = $newImgUrl;
+*/
+
+						$orgImg = CN_IMAGE_PATH . $this->getImageNameOriginal();
 						
+						$hash = md5($this->getImageNameOriginal().$atts['height'].$atts['width']);
+						$filetype = wp_check_filetype($orgImg);
+						$sized =  $hash . '.' . $filetype['ext'];
+						$newImgPath = CN_IMAGE_PATH . $sized;
+						$newImgUrl = CN_IMAGE_RELATIVE_URL . $sized;
+						
+						if(!file_exists($newImgPath)){
+							$image = wp_get_image_editor( $orgImg ); 
+							if ( ! is_wp_error( $image ) ) {
+								$image->save( $newImgPath );
+							}else{
+								$newImgUrl = false;	
+							}
+						}
+						if((bool)$newImgUrl){
+							$newImgUrl = CN_IMAGE_RELATIVE_URL . $this->getImageNameOriginal();
+						}
+						
+						$atts['src'] = $newImgUrl;
+
+
+
 						
 /*
 						$atts['src'] = CN_URL . 'includes/libraries/timthumb/timthumb.php?src=' .
