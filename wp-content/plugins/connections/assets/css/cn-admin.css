@@ -55,7 +55,7 @@ table.connections span.cn-image-style {
 	padding: 5px;
 }
 table.connections span.cn-image {
-	background:url("../images/loading.gif") transparent no-repeat 50% 50%;
+	/*background:url("../images/loading.gif") transparent no-repeat 50% 50%;*/
 	display: block;
 	position: relative;
 }
