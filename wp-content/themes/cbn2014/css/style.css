@@ -119,6 +119,8 @@ h1, h2 {
   color:#000000;
 }
 .navbar a.toggle span{ display:none; }
+.logo img{ max-height:165px;}
+
 @media screen and (max-width:850px) and (min-width:486px){.ie #nav{background-image:url(../../Content/img/nav_bk_ln.png);}}
 @media only screen and (max-width: 767px){
 	.ui-tabs .ui-tabs-panel {
