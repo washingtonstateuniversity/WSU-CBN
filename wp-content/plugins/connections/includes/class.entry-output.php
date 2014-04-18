@@ -1134,6 +1134,74 @@ if( !empty( $atts['src'] ) && $atts['src'] !="" ){
 		if ( $atts['return'] ) return ( "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) ) . $out . ( ( empty( $atts['after'] ) ? '' : $atts['after'] ) ) . "\n";
 		echo ( "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) ) . $out . ( ( empty( $atts['after'] ) ? '' : $atts['after'] ) ) . "\n";
 	}
+	public function getAddressHeaderBlock( $atts = array() , $cached = TRUE ) {
+		/*
+		 * // START -- Set the default attributes array. \\
+		 */
+		$defaults['preferred']           = NULL;
+		$defaults['type']                = NULL;
+		$defaults['city']                = NULL;
+		$defaults['state']               = NULL;
+		$defaults['zipcode']             = NULL;
+		$defaults['country']             = NULL;
+		$defaults['coordinates']         = array();
+		$defaults['format']              = '';
+		$defaults['link']['locality']    = cnSettingsAPI::get( 'connections', 'connections_link', 'locality' );
+		$defaults['link']['region']      = cnSettingsAPI::get( 'connections', 'connections_link', 'region' );
+		$defaults['link']['postal_code'] = cnSettingsAPI::get( 'connections', 'connections_link', 'postal_code' );
+		$defaults['link']['country']     = cnSettingsAPI::get( 'connections', 'connections_link', 'country' );
+		$defaults['separator']           = ':';
+		$defaults['before']              = '';
+		$defaults['after']               = '';
+		$defaults['return']              = FALSE;
+
+		$defaults = apply_filters( 'cn_output_default_atts_address' , $defaults );
+
+		$atts = $this->validate->attributesArray( $defaults, $atts );
+		$atts['link'] = $this->validate->attributesArray( $defaults['link'], $atts['link'] );
+		$atts['id'] = $this->getId();
+		/*
+		 * // END -- Set the default attributes array if not supplied. \\
+		 */
+
+		$out = '';
+		$addresses = $this->getAddresses( $atts , $cached );
+		$search = array( '%label%' , '%line1%' , '%line2%' , '%line3%' , '%city%' , '%state%' , '%zipcode%' , '%country%' , '%geo%' , '%separator%' );
+
+		if ( empty( $addresses ) ) return '';
+
+		$out .= '<span class="address-block">';
+		$cityState = array();
+		foreach ( $addresses as $address ) {
+			$state = $address->state;
+			$city = $address->city;
+			if(!isset($cityState[$state])){
+				$cityState[$state] = array();
+			}
+			if(!isset($cityState[$state][$city])){
+				$cityState[$state][$city]=1;
+			}else{
+				$cityState[$state][$city]++;
+			}
+			
+			
+		}
+		$Statetmp=array();
+		foreach ( $cityState as $State=>$city ) {
+			$tmp=array();
+			//var_dump($city);
+			foreach ( $city as $cityKey=>$citycount ) {
+				$tmp[]= $cityKey." ". (($citycount>1)?"<em class='cityCount'>({$citycount} locations)</em>":"");
+			}
+			$Statetmp[]= implode(' &amp; ',$tmp).', '.$State;
+		}
+
+		$out .= implode(' / ',$Statetmp);
+$out .= '</span>' . "\n";
+		if ( $atts['return'] ) return ( "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) ) . $out . ( ( empty( $atts['after'] ) ? '' : $atts['after'] ) ) . "\n";
+		echo ( "\n" . ( empty( $atts['before'] ) ? '' : $atts['before'] ) ) . $out . ( ( empty( $atts['after'] ) ? '' : $atts['after'] ) ) . "\n";
+		//var_dump($cityState);die();
+	}
 
 	/**
 	 * Echo or return a <div> with the entry's address within the HTML5 data- attribute. To be used for

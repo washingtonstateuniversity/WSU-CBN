@@ -14,7 +14,7 @@ if(!is_array($cnlevel) && $cnlevel!=""){
 <h3 class="ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons  ui-corner-top ui-corner-all" aria-selected="false">
 
 <a href='#'><em class="right"><?php
-    if ( $atts['show_addresses'] ) $entry->getAddressBlock( array( 'format' => '%city%, %state%' ,'link' => array('locality'=>false,'region'=>false,'postal_code'=>false,'country'=>false) ) );
+    if ( $atts['show_addresses'] ) $entry->getAddressHeaderBlock( array( 'format' => '%city%, %state%' ,'link' => array('locality'=>false,'region'=>false,'postal_code'=>false,'country'=>false) ) );
     ?></em>&nbsp;&nbsp;<?php $entry->getNameBlock( array( 'format' => '%first%', 'link' => false ) );
 ?></a>
 </h3>
