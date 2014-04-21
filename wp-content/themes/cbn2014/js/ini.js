@@ -459,7 +459,9 @@ jQuery(document).ready(function(){
 			});
 
 		}
-		startMap();
+		if($('[id*="#map"]').length){
+			startMap();
+		}
 		
 		
 		
