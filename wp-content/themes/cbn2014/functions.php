@@ -579,7 +579,7 @@ function load_theme_js() {
 		
 		wp_enqueue_script( 'modernizr', $THEME. '/js/libs/modernizr-2.5.3.min.js', array(), '2014.12.3', true );
 		
-		//wp_enqueue_script( 'jquery.mobile',  $THEME. '/js/libs/jquery.mobile.custom.min.js', array( 'jquery' ), '2014.12.3', true );
+		wp_enqueue_script( 'jquery.mobile',  $THEME. '/js/libs/jquery.mobile.custom.min.js', array( 'jquery' ), '2014.12.3', true );
 		wp_enqueue_script( 'gumby',  $THEME. '/js/libs/gumby.min.js', array( 'modernizr'), '2014.12.3', true );
 /*
 		wp_enqueue_script( 'gumby',  $THEME. '/js/libs/gumby.js', array( 'modernizr' ), '2014.12.3', true );
