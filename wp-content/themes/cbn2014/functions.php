@@ -617,7 +617,7 @@ function load_theme_css() {
 	if (!is_admin()) {
 		$THEME=get_template_directory_uri();
 		
-		wp_enqueue_style( 'gumby', $THEME . '/css/gumby.css', array(), '2014.12.3' );
+		wp_enqueue_style( 'gumby', $THEME . '/css/gumby.css', array(), '2014.21.3' );
 		wp_enqueue_style( 'jquery.ui', '//code.jquery.com/ui/1.8.22/themes/base/jquery-ui.css', array(), '2014.12.3' );
 		wp_enqueue_style( 'jquery.ui.wsu', '//images.wsu.edu/css/wsu_ui/jquery-ui-1.8.13.custom.css', array(), '2014.12.3' );
 		// Loads main stylesheet.
