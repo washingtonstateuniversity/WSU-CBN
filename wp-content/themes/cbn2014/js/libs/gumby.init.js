@@ -6,6 +6,9 @@
 
 	'use strict';
 
+	var mob_path = THEME_PATH+'/js/libs/jquery.mobile.custom.min.js';
+	//alert(mob_path);
+
 	// not touch device or no touch events required so auto initialize here
 	if((!Gumby.touchDevice || !Gumby.touchEvents) && Gumby.autoInit) {
 		window.Gumby.init();
@@ -14,10 +17,13 @@
 	} else if(Gumby.touchEvents && Gumby.touchDevice) {
 		/*Gumby.debug('Loading jQuery mobile touch events');*/
 		// set timeout to 2sec
+		
+		
+		
 		yepnope.errorTimeout = 2000;
 		Modernizr.load({
 			test: Modernizr.touch,
-			yep: THEME_PATH+'/js/libs/jquery.mobile.custom.min.js',
+			yep: mob_path,
 			complete: function() {
 				// error loading jQuery mobile
 				if(!$.mobile) {
