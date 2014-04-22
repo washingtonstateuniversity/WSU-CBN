@@ -38,6 +38,12 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			add_action( 'wp_print_styles', array( $this, 'loadStyles' ) );
 			add_action( 'init', array($this, 'loadJs') );
 			add_filter('wp_head', array($this, 'add_cnexpsh_data'));
+			
+			if (isset($_POST)){
+				add_action( 'cn_updated-entry', array(__CLASS__, 'clearCache' ) );
+			}
+			
+			
 			if (isset($_POST['start_search'])) {// Check if option save is performed
 				add_filter('the_content', array( $this, 'doSearch' ));
 			}
@@ -68,6 +74,45 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			
 			return $permittedAtts;
 		}
+		
+		public static function clearCache($instance){
+			global $connections;
+			$id=$instance->getId();
+			
+			
+			$cats =$connections->retrieve->entryCategories( $id );
+			$catIds = array();
+			foreach($cats as $cat){
+				$catIds[]=$cat->term_id;
+			}
+
+			$file = CN_IMAGE_PATH . "/tmps/id/${id}/";
+			if(file_exists($file)){	
+				$files = glob($file.'*');
+				foreach($files as $filename){
+					unlink($filename);
+				}
+			}
+			
+			$file = CN_IMAGE_PATH . "/tmps/json/";
+			if(file_exists($file)){	
+				$files = glob($file.'*');
+				foreach($files as $filename){
+					unlink($filename);
+				}
+			}
+			foreach($catIds as $catId){
+				$cat_file = CN_IMAGE_PATH . "/tmps/cats/${catId}/";
+				if(file_exists($cat_file)){	
+					$files = glob($cat_file.'*');
+					foreach($files as $filename){
+						unlink($filename);
+					}
+				}
+			}
+			
+		}
+
 
 		public function loadJs(){
 			if ( ! is_admin() ){ 
