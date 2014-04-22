@@ -202,7 +202,7 @@ if (!class_exists('Connections_Levels')) {
 					$out .='<input type="radio" name="cnlevels[\'lifetime\']" value="'.$slug.'" '.checked($value['lifetime'], $slug, false).' />'.$label.'<br/>';	
 				}
 				$out .="</br>";
-				$out .='Expiration<input type="date" name="cnlevels[\'expiration_date\']" value="'.$value['expiration_date'].'" >';	
+				$out .='Expiration:<input type="text" name="cnlevels[\'expiration_date\']" value="'.$value['expiration_date'].'" />';	
 			}
 
 			
