@@ -87,8 +87,12 @@ function iniMap(url,callback){
 				markerLog[i]=marker;
 			})
 			.click(function(){
-				jQuery('#data_display').html(jQuery('[data-id='+ib[i]+']').html());
-				})
+				var htmlDiv = jQuery('[data-id='+ib[i]+']').html();
+
+				jQuery('#data_display').html(htmlDiv);
+				jQuery('#data_display').find('.cn-bio-anchor').remove();
+				jQuery('#data_display').find('.cn-map-anchor').remove();
+			})
 			.mouseover(function(event){
 				jQuery.each(ibh, function(i) {ibh[i].close();});
 				jQuery('.infoBox').hover( 
