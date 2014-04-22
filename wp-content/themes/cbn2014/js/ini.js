@@ -87,7 +87,7 @@ function iniMap(url,callback){
 				markerLog[i]=marker;
 			})
 			.click(function(){
-				jQuery('#data_display').html(jQuery('.businesscontainer[rel='+ib[i]+']').find('.maininfo').html());
+				jQuery('#data_display').html(jQuery('[data-id='+ib[i]+']').html());
 				})
 			.mouseover(function(event){
 				jQuery.each(ibh, function(i) {ibh[i].close();});
