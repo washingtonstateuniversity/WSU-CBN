@@ -60,7 +60,7 @@
 				if(!file_exists($cat_basedir)) mkdir($cat_basedir,0777,true);
 				
 				
-				$cat_file= $cat_basedir."${cat_id}_${state}.tmp";
+				$cat_file= $cat_basedir."${cat_id}_${state}_${hash}.tmp";
 				if(!file_exists($cat_file)){	
 					
 					ob_start();
