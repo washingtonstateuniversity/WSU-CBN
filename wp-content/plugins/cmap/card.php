@@ -19,7 +19,7 @@ if(!is_array($cnlevel) && $cnlevel!=""){
 ?></a>
 </h3>
     
-<div  id="cn-cmap"  data-id="<?php echo $entry->getRuid(); ?>"  class="cn-template cn-cmap ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="cn-list-body" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display:none;">
+<div  id="cn-cmap"  data-id="<?=$entry->id?>"  class="cn-template cn-cmap ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom" id="cn-list-body" role="tabpanel" aria-expanded="false" aria-hidden="true" style="display:none;">
 <input type="hidden" name="cnlevel" value="<?=$cnlevel['level']?>"/>
     <div id="cn-list"  class="cn-list">
         <div class="businesscontainer connections-list cn-clear" rel="">
