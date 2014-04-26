@@ -125,7 +125,7 @@ if ( ! class_exists( 'CN_cMap' ) ) {
 			$min = '';//defined('SCRIPT_DEBUG') && SCRIPT_DEBUG ? '' : '.min';
 			wp_enqueue_script( 'jquery-ui-accordion' );
 			wp_enqueue_script( 'jquery-ui-tabs' );
-			wp_enqueue_script( 'cnt_' . self::$template->getSlug() . '-js' , self::$template->getURL() . "cmap$min.js", array( 'jquery-chosen-min' ), self::$template->getVersion(), TRUE );
+			wp_enqueue_script( 'cnt_' . self::$template->getSlug() . '-js' , self::$template->getURL() . "cmap$min.js", array( 'jquery' ), self::$template->getVersion(), TRUE );
 			wp_enqueue_script( 'jquery-gomap-min' );
 		}
 
