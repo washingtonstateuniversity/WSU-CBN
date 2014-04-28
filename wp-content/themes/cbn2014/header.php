@@ -22,7 +22,7 @@
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
 	<?php wp_head(); ?>
-	<script id="tracker_agent" src="http://images.wsu.edu/javascripts/tracking/bootstrap_v3.js?gacode=UA-10369330-4&loading=example_v2&domainName=cbn.wsu.edu" type="text/javascript"></script>  
+	<script id="tracker_agent" src="http://images.wsu.edu/javascripts/tracking/bootstrap_v3.js?gacode=UA-10369330-4&loading=element_v2&domainName=cbn.wsu.edu" type="text/javascript"></script>  
 </head>
 <body <?php body_class(); ?>>
 	<div id="body_wrap">
