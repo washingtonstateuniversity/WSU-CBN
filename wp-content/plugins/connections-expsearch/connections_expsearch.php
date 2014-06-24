@@ -276,9 +276,30 @@ if (!class_exists('connectionsExpSearchLoad')) {
 		* returns string - The html of the search results
 		*/
 		public function doSearch() {
-			global $post,$connections;
+			global $post,$connections, $wpdb;
+			
+			$id = null;
+			//this is a hard coded for now thing
+			if(isset($_REQUEST['cnbenefits']) && $_REQUEST['cnbenefits']['wsuaa_discounts']){
+				$result = $wpdb->get_results(
+					'SELECT entry_id FROM '.CN_ENTRY_TABLE_META.' WHERE `meta_value` LIKE \'%wsuaa_discounts":1%\'',
+					ARRAY_A
+				);
+				$wpdb->show_errors();
+				
+				//echo $wpdb->last_query;
+
+				$flat_array = array();
+				foreach(new RecursiveIteratorIterator(new RecursiveArrayIterator($result)) as $k=>$v){
+					$flat_array[] = (int)$v;
+				}
+				$result=$flat_array;
+				//var_dump($result);die();
+				$id = $result;
+			}
+
 			$permittedAtts = array(
-				'id'                    => NULL,
+				'id'                    => $id,
 				'slug'                  => NULL,
 				'category'              => isset($_REQUEST['cn-cat'])&& !empty($_REQUEST['cn-cat']) ?$_REQUEST['cn-cat']:NULL,
 				'enable_category_select'	=>false,
@@ -333,9 +354,11 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$out = '';
 //var_dump($permittedAtts);die();
 			$results = $connections->retrieve->entries( $permittedAtts );
+			//echo $wpdb->last_query;
+			//var_dump($id);
 			//var_dump($results);die();
-			set_transient( "results", $results, 0 );	
-			set_transient( "atts", $permittedAtts, 0 );	
+			set_transient( "results", $results, 0 );
+			set_transient( "atts", $permittedAtts, 0 );
 			ob_start();
 				if ( $overridden_template = locate_template( 'searchResults.php' ) ) {
 					load_template( $overridden_template );
