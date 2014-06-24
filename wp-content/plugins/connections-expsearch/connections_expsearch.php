@@ -39,12 +39,12 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			add_action( 'init', array($this, 'loadJs') );
 			add_filter('wp_head', array($this, 'add_cnexpsh_data'));
 			
-			if (isset($_POST)){
+			if (isset($_REQUEST)){
 				add_action( 'cn_updated-entry', array(__CLASS__, 'clearCache' ) );
 			}
 			
 			
-			if (isset($_POST['start_search'])) {// Check if option save is performed
+			if (isset($_REQUEST['start_search'])) {// Check if option save is performed
 				add_filter('the_content', array( $this, 'doSearch' ));
 			}
 		}
@@ -280,7 +280,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			$permittedAtts = array(
 				'id'                    => NULL,
 				'slug'                  => NULL,
-				'category'              => isset($_POST['cn-cat'])&& !empty($_POST['cn-cat']) ?$_POST['cn-cat']:NULL,
+				'category'              => isset($_REQUEST['cn-cat'])&& !empty($_REQUEST['cn-cat']) ?$_REQUEST['cn-cat']:NULL,
 				'enable_category_select'	=>false,
 				'enable_search'			=> false,
 				'cards_only'			=> true,
@@ -307,25 +307,25 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				//'organization'          => isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?$_POST['cn-keyword']:NULL,
 				'department'            => NULL,
 				'city'                  => NULL,
-				'state'                 => isset($_POST['cn-state']) && !empty($_POST['cn-state'])?$_POST['cn-state']:NULL,
+				'state'                 => isset($_REQUEST['cn-state']) && !empty($_REQUEST['cn-state'])?$_REQUEST['cn-state']:NULL,
 				/*'zip_code'              => NULL,*/
-				'country'               => isset($_POST['cn-country']) && !empty($_POST['cn-country'])?$_POST['cn-country']:NULL,
+				'country'               => isset($_REQUEST['cn-country']) && !empty($_REQUEST['cn-country'])?$_REQUEST['cn-country']:NULL,
 				'template'              => NULL, /* @since version 0.7.1.0 */
 				'template_name'         => NULL, /* @deprecated since version 0.7.0.4 */
 				'width'                 => NULL,
 				'lock'                  => FALSE,
 				'force_home'            => FALSE,
-				'search_terms'  		=> isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?$_POST['cn-keyword']:"",
+				'search_terms'  		=> isset($_REQUEST['cn-keyword']) && !empty($_REQUEST['cn-keyword'])?$_REQUEST['cn-keyword']:"",
 				'home_id'               => in_the_loop() && is_page() ? get_the_id() : cnSettingsAPI::get( 'connections', 'connections_home_page', 'page_id' ),
 			);
 			
-			if( (isset($_POST['cn-latitude']) && isset($_POST['cn-longitude']) && !empty($_POST['cn-latitude']) && !empty($_POST['cn-longitude'])) || (isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])) ){
+			if( (isset($_REQUEST['cn-latitude']) && isset($_REQUEST['cn-longitude']) && !empty($_REQUEST['cn-latitude']) && !empty($_REQUEST['cn-longitude'])) || (isset($_REQUEST['cn-near_addr']) && !empty($_REQUEST['cn-near_addr'])) ){
 				$locationalPermittedAtts = array(
-					'near_addr'		=> isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])?"":NULL,
-					'latitude'		=> isset($_POST['cn-latitude']) && !empty($_POST['cn-latitude'])?"":NULL,
-					'longitude'		=> isset($_POST['cn-longitude']) && !empty($_POST['cn-longitude'])?"":NULL,
-					'radius'		=> isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])?"":10,
-					'unit'			=> isset($_POST['cn-near_addr']) && !empty($_POST['cn-near_addr'])?"":'mi',
+					'near_addr'		=> isset($_REQUEST['cn-near_addr']) && !empty($_REQUEST['cn-near_addr'])?"":NULL,
+					'latitude'		=> isset($_REQUEST['cn-latitude']) && !empty($_REQUEST['cn-latitude'])?"":NULL,
+					'longitude'		=> isset($_REQUEST['cn-longitude']) && !empty($_REQUEST['cn-longitude'])?"":NULL,
+					'radius'		=> isset($_REQUEST['cn-near_addr']) && !empty($_REQUEST['cn-near_addr'])?"":10,
+					'unit'			=> isset($_REQUEST['cn-near_addr']) && !empty($_REQUEST['cn-near_addr'])?"":'mi',
 				);
 				$permittedAtts = array_merge($permittedAtts,$locationalPermittedAtts);
 			}
