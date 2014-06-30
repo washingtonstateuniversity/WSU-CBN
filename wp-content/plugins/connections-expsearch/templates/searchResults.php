@@ -156,7 +156,7 @@
 	<div id="tabs-1" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
 		<h2><?=__('Hover on a point to find a business and click for more information' , 'connections_form' )?></h2>
 		<div id="mapJson"><?=$markerJson?></div>
-		<div id="front_cbn_map" class="byState " rel="<?=$_POST['cn-state']?>" style="width:100%;height:450px;"></div>
+		<div id="front_cbn_map" class="byState " rel="<?=(isset($_POST['cn-state'])?$_POST['cn-state']:"")?>" style="width:100%;height:450px;"></div>
 		<div class="ui-widget-content ui-corner-bottom" style="padding:5px 15px;">
 			<div id="data_display"></div>
 			<div style="clear:both;"></div>
