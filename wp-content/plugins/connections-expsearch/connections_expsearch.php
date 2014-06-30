@@ -282,7 +282,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			//this is a hard coded for now thing
 			if(isset($_REQUEST['cnbenefits']) && $_REQUEST['cnbenefits']['wsuaa_discounts']){
 				$result = $wpdb->get_results(
-					'SELECT entry_id FROM '.CN_ENTRY_TABLE_META.' WHERE `meta_value` LIKE \'%wsuaa_discounts":1%\'',
+					'SELECT entry_id FROM '.CN_ENTRY_TABLE_META.' WHERE `meta_value` LIKE \'%wsuaa_discounts":1%\' AND `meta_value` NOT LIKE \'%"description":""%\'',
 					ARRAY_A
 				);
 				$wpdb->show_errors();
@@ -325,7 +325,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'show_alphaindex'       => false,
 				'repeat_alphaindex'     => false,
 				'show_alphahead'       	=> false,
-				//'organization'          => isset($_POST['cn-keyword']) && !empty($_POST['cn-keyword'])?$_POST['cn-keyword']:NULL,
+				//'organization'          => isset($_REQUEST['cn-keyword']) && !empty($_REQUEST['cn-keyword'])?$_REQUEST['cn-keyword']:NULL,
 				'department'            => NULL,
 				'city'                  => NULL,
 				'state'                 => isset($_REQUEST['cn-state']) && !empty($_REQUEST['cn-state'])?$_REQUEST['cn-state']:NULL,
