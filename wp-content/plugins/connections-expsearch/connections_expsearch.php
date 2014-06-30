@@ -282,9 +282,10 @@ if (!class_exists('connectionsExpSearchLoad')) {
 			//this is a hard coded for now thing
 			if(isset($_REQUEST['cnbenefits']) && $_REQUEST['cnbenefits']['wsuaa_discounts']){
 				$result = $wpdb->get_results(
-					'SELECT entry_id FROM '.CN_ENTRY_TABLE_META.' WHERE `meta_value` LIKE \'%wsuaa_discounts":1%\' AND `meta_value` NOT LIKE \'%"description":""%\'',
+					'SELECT entry_id FROM '.CN_ENTRY_TABLE_META.' WHERE `meta_value` NOT LIKE \'%"description":""%\'',
 					ARRAY_A
 				);
+				//SELECT entry_id FROM cbn_wsu.wp_connections_meta WHERE  `meta_value` NOT LIKE '%"description":""%';
 				$wpdb->show_errors();
 				
 				//echo $wpdb->last_query;
