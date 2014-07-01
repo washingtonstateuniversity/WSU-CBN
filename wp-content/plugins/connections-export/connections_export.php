@@ -52,7 +52,7 @@ if (!class_exists('connectionsExportLoad')) {
 
 			add_action( 'wp_print_styles', array( $this, 'loadStyles' ) );
 			add_action( 'init', array($this, 'loadJs') );
-			add_filter('wp_head', array($this, 'add_cnexpsh_data'));
+			//add_filter('wp_head', array($this, 'add_cnexpsh_data'));
 
 
 		}
