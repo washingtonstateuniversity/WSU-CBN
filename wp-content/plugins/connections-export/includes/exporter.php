@@ -54,7 +54,41 @@ $skip=array(
 	"middle_name",
 	"last_name",
 	"honorific_suffix",
-	"title"
+	"title",
+	'anniversary',
+	'birthday',
+	'im',
+	'social',
+	'phone_numbers::visibility',
+	'phone_numbers::type',
+	'addresses::type',
+	'addresses::visibility',
+	'addresses::line_2',
+	'addresses::line_3',
+	'addresses::latitude',
+	'addresses::longitude',
+	'addresses::id',
+	'email::type',
+	'email::visibility',
+	'email::id',
+	'email::order',
+	'email::preferred',
+	'links::title',
+	'links::url',
+	'links::target',
+	'links::follow',
+	'links::id',
+	'links::order',
+	'links::preferred',
+	'links::image',
+	'links::logo',
+	'dates',
+	'phone_numbers::id',
+	'phone_numbers::order',
+	'phone_numbers::preferred',
+	'email',
+	'links',
+	'phone_numbers'
 );
 
 
@@ -140,8 +174,11 @@ $skip=array(
 	$exportData .= $settings['outputOpenData'];
 }
 function isJson($string) {
- json_decode($string);
- return (json_last_error() == JSON_ERROR_NONE);
+    if ( !is_string( $string ) ){
+        return false;
+	}
+	json_decode($string);
+	return (json_last_error() == JSON_ERROR_NONE);
 }
 
 // Writes out the data fields...
@@ -157,7 +194,25 @@ function create_header() {
 		
 		foreach($contact as $key=>$part){
 			if(!isset($head[$key]) && !in_array($key,$skip)){
-				$head[$key]=$key;
+				
+				if(is_serialized($part)){
+					$serial_value=@unserialize($part);
+					foreach($serial_value as $opkey=>$op){
+						foreach($op as $skey=>$spart){
+							$true_value=($spart=='0')?'false':($spart=='1')?'true':$spart;
+							$contact[]=$true_value;	
+							if(!isset($head[$key."::".$skey]) && !in_array($key."::".$skey,$skip)){
+								$head[$key."::".$skey]=$key."::".$skey;
+							}
+						}
+					}
+				}else{
+					$head[$key]=$key;
+				}
+						
+				
+				
+				
 			}
 		}		
 		$meta = $wpdb->get_results( "SELECT * FROM ".CN_ENTRY_TABLE_META." WHERE `entry_id`=".$contact['id'], ARRAY_A );
@@ -207,12 +262,12 @@ function create_header() {
 function exportCells() {
 	global $settings,$contacts, $exportData, $exportFields, $maxCategories, $wpdb, $header,$skip;
 	create_header();
-	
+	//var_dump($header);
 	$dataset = '';
 	// Go through each contact...
+	$row=array();
 	foreach($contacts as $contact) {
-		
-		
+		$contact_entry=array();
 		$meta = $wpdb->get_results( "SELECT * FROM ".CN_ENTRY_TABLE_META." WHERE `entry_id`=".$contact['id'], ARRAY_A );
 
 		foreach($meta as $part){
@@ -229,20 +284,38 @@ function exportCells() {
 			}
 		}
 
-		
-		foreach($header as $col){//keeps the col and head lined up
-			$rec = '';
-			foreach($contact as $key=>$part){
-				if($col=$key){
-					if(!in_array($key,$skip)){
-						$value=part_filter($key,$part);
-						$rec.=data($value);
+		$rec = '';
+		foreach($contact as $key=>$part){
+			$value=part_filter($key,$part);
+			
+			if(is_serialized($value)){
+				$serial_value=@unserialize($value);
+				foreach($serial_value as $opkey=>$op){
+					foreach($op as $skey=>$spart){
+						$true_value=($spart=='0')?'false':($spart=='1')?'true':$spart;
+						if(!in_array($key."::".$skey,$skip)){
+							$contact_entry[$key."::".$skey]=$true_value;
+						}
 					}
+				}
+			}else{
+				if(!in_array($key,$skip)){
+					$contact_entry[$key]=$value;
 				}
 			}
 		}
+		$row[]=$contact_entry;
+	}
+	foreach($row as $contact_entry){
+		$rec='';
+		foreach($header as $col){
+			$rec.=data($contact_entry[$col]);
+		}
 		$dataset .= exportRecord($rec);
 	}
+	//var_dump($dataset);die();
+	
+	
 	// Now write the data...
 	$exportData .= $dataset;
 }
@@ -252,6 +325,15 @@ function part_filter($key,$part){
 	switch (strtolower($key)) {
 		case "date_added":
 			$part=date('Y-m-d H:i:s',$part);
+			break;
+		case 'user':
+		case "edited_by":
+		case "owner":
+		case "added_by":
+		  	$user_info = get_userdata($part);
+			if($user_info){
+  				$part = $user_info->user_login;
+			}
 			break;
 	}
 	
