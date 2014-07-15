@@ -363,7 +363,11 @@ class cnEntry_Action {
 
 				// Set moderation status per role capability assigned to the current user.
 				if ( current_user_can( 'connections_edit_entry' ) ) {
-					$entry->setStatus( 'approved' );
+					if($_POST['approved']){
+						$entry->setStatus( 'approved' );
+					}else{
+						$entry->setStatus( 'pending' );
+					}
 					$messageID = 'entry_updated';
 				} elseif ( current_user_can( 'connections_edit_entry_moderated' ) ) {
 					$entry->setStatus( 'pending' );
