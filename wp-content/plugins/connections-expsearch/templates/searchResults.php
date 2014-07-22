@@ -26,7 +26,7 @@
 			$entryObj->position=new stdClass();
 			$addy = unserialize ($entry->addresses);
 			$array = (array) $addy;
-			$addy = array_pop($addy);
+			$addy = is_array($addy) ? array_pop($addy) : array();
 			if(!empty($addy['latitude']) && !empty($addy['longitude'])){
 				$entryObj->position->latitude=$addy['latitude'];
 				$entryObj->position->longitude=$addy['longitude'];
