@@ -306,6 +306,7 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'enable_category_select'	=>false,
 				'enable_search'			=> false,
 				'cards_only'			=> true,
+				'enable_pagination'		=> false,
 				/*'category_in'           => NULL,
 				'exclude_category'      => NULL,
 				'category_name'         => NULL,
