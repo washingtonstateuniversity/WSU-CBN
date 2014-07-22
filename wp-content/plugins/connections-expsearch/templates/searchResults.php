@@ -26,7 +26,7 @@
 			$entryObj->position=new stdClass();
 			$addy = unserialize ($entry->addresses);
 			$array = (array) $addy;
-			$addy = array_pop($addy);
+			$addy = is_array($addy) ? array_pop($addy) : array();
 			if(!empty($addy['latitude']) && !empty($addy['longitude'])){
 				$entryObj->position->latitude=$addy['latitude'];
 				$entryObj->position->longitude=$addy['longitude'];
@@ -49,6 +49,7 @@
 	</ul>
 
 	<div id="tabs-2" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<div style="float:right;"><i style="font-size:18px"><?=count($results)?> results</i></div>
 		<?php if($atts['category']==NULL){
 			$state = isset($_POST['cn-state']) ? $_POST['cn-state'] : "";
 			$state_message = !empty($state)?' in '.$state:'';

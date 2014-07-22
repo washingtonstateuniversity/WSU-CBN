@@ -332,7 +332,10 @@ class cnEntry_Action {
 			case 'add':
 
 				// Set moderation status per role capability assigned to the current user.
-				if ( current_user_can( 'connections_add_entry' ) ) {
+				if ( current_user_can( 'connections_add_entry' ) 
+						&& isset($_POST['visibility']) 
+						&& $_POST['visibility']!="unlisted" 
+						&& $_POST['visibility']!="private"){
 					//$entry->setStatus( 'approved' );
 					$entry->setStatus( 'pending' );
 					$messageID = 'entry_added';
@@ -363,7 +366,7 @@ class cnEntry_Action {
 
 				// Set moderation status per role capability assigned to the current user.
 				if ( current_user_can( 'connections_edit_entry' ) ) {
-					if(isset($_POST['visibility']) && $_POST['visibility']!="unlisted"){
+					if(isset($_POST['visibility']) && $_POST['visibility']!="unlisted" && $_POST['visibility']!="private"){
 						$entry->setStatus( 'approved' );
 					}else{
 						$entry->setStatus( 'pending' );
