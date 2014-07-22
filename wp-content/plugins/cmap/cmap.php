@@ -305,8 +305,8 @@ if ( ! class_exists( 'CN_cMap' ) ) {
 
 			// If pagination is enabled add the appropiate filters.
 			if ( $atts['enable_pagination'] ) {
-				add_filter( 'cn_list_retrieve_atts-' . self::$template->getSlug() , array( __CLASS__, 'limitList'), 10 );
-				add_action( 'cn_action_list_' . $atts['pagination_position'] . '-' . self::$template->getSlug() , array( __CLASS__, 'listPages') );
+				//add_filter( 'cn_list_retrieve_atts-' . self::$template->getSlug() , array( __CLASS__, 'limitList'), 10 );
+				//add_action( 'cn_action_list_' . $atts['pagination_position'] . '-' . self::$template->getSlug() , array( __CLASS__, 'listPages') );
 			}
 
 			// If the category select/filter feature is enabled, add the appropiate filters.
