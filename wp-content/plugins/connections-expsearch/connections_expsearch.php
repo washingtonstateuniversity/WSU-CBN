@@ -318,11 +318,12 @@ if (!class_exists('connectionsExpSearchLoad')) {
 				'show_alphahead'        => cnSettingsAPI::get( 'connections', 'connections_display_results', 'show_current_character' ),
 				'list_type'             => NULL,
 				'order_by'              => NULL,
-				'limit'                 => NULL,
+				
 				'offset'                => NULL,
 				'family_name'           => NULL,
 				'last_name'             => NULL,
 				'title'                 => NULL,*/
+				'limit'                 => 100000,
 				'show_alphaindex'       => false,
 				'repeat_alphaindex'     => false,
 				'show_alphahead'       	=> false,
