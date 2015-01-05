@@ -99,9 +99,13 @@ class QM_Collector_HTTP extends QM_Collector {
 			return $response;
 		}
 
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
 		// Something has filtered `pre_http_request` and short-circuited the request.
 		$this->data['http'][$args['_qm_key']]['end']      = $this->data['http'][$args['_qm_original_key']]['start'];
-		$this->data['http'][$args['_qm_key']]['response'] = new WP_Error( 'http_request_not_executed', __( 'Request not executed due to a filter on pre_http_request', 'query-monitor' ) );
+		$this->data['http'][$args['_qm_key']]['response'] = new WP_Error( 'http_request_not_executed', sprintf( __( 'Request not executed due to a filter on %s', 'query-monitor' ), 'pre_http_request' ) );
 
 		return $response;
 	}
@@ -118,6 +122,11 @@ class QM_Collector_HTTP extends QM_Collector {
 	}
 
 	public function process() {
+
+		foreach ( array( 'WP_PROXY_HOST', 'WP_PROXY_PORT', 'WP_PROXY_USERNAME', 'WP_PROXY_PASSWORD', 'WP_PROXY_BYPASS_HOSTS' ) as $var ) {
+			if ( defined( $var ) and constant( $var ) )
+				$this->data['vars'][$var] = constant( $var );
+		}
 
 		if ( ! isset( $this->data['http'] ) )
 			return;
@@ -142,10 +151,6 @@ class QM_Collector_HTTP extends QM_Collector {
 
 		}
 
-		foreach ( array( 'WP_PROXY_HOST', 'WP_PROXY_PORT' ) as $var ) {
-			if ( defined( $var ) and constant( $var ) )
-				$this->data['vars'][$var] = constant( $var );
-		}
 
 	}
 

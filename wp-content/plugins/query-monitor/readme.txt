@@ -2,8 +2,8 @@
 Contributors: johnbillion
 Tags: debug, debugging, development, developer, performance, profiler, profiling, queries, query monitor
 Requires at least: 3.5
-Tested up to: 3.9
-Stable tag: 2.6.7
+Tested up to: 4.1
+Stable tag: 2.6.8
 License: GPLv2 or later
 
 View debugging and performance information on database queries, hooks, conditionals, HTTP requests, redirects and more.	
@@ -12,7 +12,7 @@ View debugging and performance information on database queries, hooks, condition
 
 Query Monitor is a debugging plugin for anyone developing with WordPress. It has some advanced features not available in other debugging plugins, including automatic AJAX debugging and the ability to narrow down things by plugin or theme.
 
-For complete information, please see [Query Monitor's GitHub repo](https://github.com/johnbillion/QueryMonitor).
+For complete information, please see [the Query Monitor home page](https://querymonitor.com/) or [Query Monitor's GitHub repo](https://github.com/johnbillion/QueryMonitor).
 
 Here's an overview of what's shown:
 
@@ -129,7 +129,7 @@ In addition to this, you can set an authentication cookie which allows you to vi
 
 Short answer: Yes, but only a little.
 
-Long answer: Query Monitor has a small impact on page generation time because it hooks into a few places in WordPress in the same way that other plugins do. The impact is negligable.
+Long answer: Query Monitor has a small impact on page generation time because it hooks into a few places in WordPress in the same way that other plugins do. The impact is negligible.
 
 On pages that have an especially high number of database queries (in the hundreds), Query Monitor currently uses more memory than I would like it to. This is due to the amount of data that is captured in the stack trace for each query. I have been and will be working to continually reduce this.
 
@@ -147,10 +147,16 @@ No, I do not accept donations. If you like the plugin, I'd love for you to [leav
 
 == Upgrade Notice ==
 
-= 2.6.7 =
-* Various tweaks under the hood. No shiny new features just yet.
+= 2.6.8 =
+* Misc minor bugfixes. Nothing to get excited about.
 
 == Changelog ==
+
+= 2.6.8 =
+* RTL layout tweaks
+* Correct the component detection logic so it's more accurate
+* Re-implement output on the login screen which went missing
+* Display a few more proxy and debugging related constants
 
 = 2.6.7 =
 * Use an actual authentication cookie instead of a nonce in the Authentication component
