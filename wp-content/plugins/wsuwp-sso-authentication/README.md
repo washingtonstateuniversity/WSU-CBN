@@ -2,7 +2,7 @@
 
 Manages authentication for Washington State University WordPress installations.
 
-* Current Stable: [v1.6](https://github.com/washingtonstateuniversity/WSUWP-Plugin-SSO-Authentication/releases/tag/v1.6)
+* Current Stable: [2.0.0](https://github.com/washingtonstateuniversity/WSUWP-Plugin-SSO-Authentication/releases/tag/2.0.0)
 
 ## Overview
 
@@ -25,6 +25,20 @@ The following filters are available to modify some default behavior provided by 
 * `wsuwp_sso_allow_wp_auth`
     * **Default:** False. Do not show an option to authenticate with WordPress.
     * If set to true, authentication via WordPress will be allowed. It is highly recommended that SSL be enabled on any server handling credentials for authentication.
+* `wsuwp_sso_ad_auth_roles`
+	* **Default:** Administrator.
+	* If an array of roles is provided, these will be enforced as secure roles that can only be authenticated via WSU Network ID.
+* `wsuwp_sso_force_local_ad`
+	* **Default:** `false`, do not force AD locally.
+	* If using a local configuration, defined by `WSU_LOCAL_CONFIG`, AD authentication must be enabled by force by returning `true` through this filter.
+
+## Actions
+
+The following actions are available to provide additional functionality as things happen in the plugin.
+
+* `wsuwp_sso_user_created`
+	* Fires after a new user is automatically created via SSO authentication.
+	* Passes `$new_user_id` so that custom functionality can act accordingly.
 
 ## Public Functions
 
