@@ -43,6 +43,16 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 		echo '</tr>';
 		echo '</thead>';
 
+		$vars = '';
+
+		if ( !empty( $data['vars'] ) ) {
+			$vars = array();
+			foreach ( $data['vars'] as $key => $value ) {
+				$vars[] = $key . ': ' . esc_html( $value );
+			}
+			$vars = implode( ', ', $vars );
+		}
+
 		if ( !empty( $data['http'] ) ) {
 
 			echo '<tbody>';
@@ -84,17 +94,7 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 				else
 					$transport = '';
 
-				$stack = $row['trace']->get_stack();
-
-				foreach ( $stack as & $frame ) {
-					foreach ( array( 'WP_Http', 'wp_remote_', 'fetch_rss', 'fetch_feed', 'SimplePie', 'download_url' ) as $skip ) {
-						if ( 0 === strpos( $frame, $skip ) ) {
-							$frame = sprintf( '<span class="qm-na">%s</span>', $frame );
-							break;
-						}
-					}
-				}
-
+				$stack     = $row['trace']->get_stack();
 				$component = $row['trace']->get_component();
 
 				$stack = implode( '<br>', $stack );
@@ -116,16 +116,6 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 
 			$total_stime = number_format_i18n( $total_time, 4 );
 
-			$vars = '&nbsp;';
-
-			if ( isset( $data['vars'] ) ) {
-				$vars = array();
-				foreach ( $data['vars'] as $key => $value ) {
-					$vars[] = $key . ': ' . $value;
-				}
-				$vars = implode( ', ', $vars );
-			}
-
 			echo '<tr>';
 			echo '<td colspan="6">' . $vars . '</td>';
 			echo "<td>{$total_stime}</td>";
@@ -138,6 +128,11 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 			echo '<tr>';
 			echo '<td colspan="7" style="text-align:center !important"><em>' . __( 'none', 'query-monitor' ) . '</em></td>';
 			echo '</tr>';
+			if ( !empty( $vars ) ) {
+				echo '<tr>';
+				echo '<td colspan="7">' . $vars . '</td>';
+				echo '</tr>';
+			}
 			echo '</tbody>';
 		
 		}

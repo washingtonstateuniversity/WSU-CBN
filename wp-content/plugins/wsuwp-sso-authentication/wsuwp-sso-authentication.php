@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WSUWP Single Sign On Authentication
-Version: 1.6
+Version: 2.0.0
 Plugin URI: http://web.wsu.edu
 Description: Manages authentication for Washington State University WordPress installations.
 Author: washingtonstateuniversity, jeremyfelt, Nate Owen
@@ -11,24 +11,31 @@ Author URI: http://web.wsu.edu
 class WSUWP_SSO_Authentication {
 
 	/**
-	 * @var string URL of the main WSU login form that users are redirected to for authentication.
-	 */
-	var $auth_login_url = 'https://secure.wsu.edu/login/fidlogin.aspx';
-
-	/**
-	 * @var string URL credentials are validated against.
-	 */
-	var $auth_validate_url = 'https://secure.wsu.edu/login-server/auth-validate.asp';
-
-	/**
-	 * @var string URL to destroy WSU authentication cookies.
-	 */
-	var $auth_logout_url = 'https://secure.wsu.edu/login-server/logout.asp';
-
-	/**
 	 * @var string Version to use for cache breaking scripts and stylesheets.
 	 */
-	var $script_version = '1.6.0';
+	var $script_version = '2.0.0';
+
+	/**
+	 * @var bool Whether a recent update is occurring.
+	 */
+	var $recent_update = false;
+
+	/**
+	 * Track an open ldap link identifier.
+	 *
+	 * @var resource|bool
+	 */
+	var $ldap_link_id = false;
+
+	/**
+	 * @var string Temporary maintainer of an entered username.
+	 */
+	private $attempted_user = '';
+
+	/**
+	 * @var string Contains the last error for a failed AD attempt.
+	 */
+	private $last_error = '';
 
 	/**
 	 * Add hooks required for this plugin.
@@ -36,14 +43,13 @@ class WSUWP_SSO_Authentication {
 	public function __construct() {
 		// Basic login and logout actions.
 		add_action( 'login_init',        array( $this, 'login'  ), 11 );
-		add_action( 'login_form_logout', array( $this, 'logout' )     );
 
 		// Enqueue Javascript and custom stylesheets
-		add_action( 'login_enqueue_scripts', array( $this, 'login_enqueue_scripts' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
 
 		// Capture and enforce user additions and changes.
-		add_action( 'user_profile_update_errors', array( $this, 'user_profile_update_errors' ),  10, 1 );
+		add_action( 'edit_user_profile_update', array( $this, 'edit_user_profile_update' ), 10, 1 );
+		add_action( 'user_profile_update_errors', array( $this, 'user_profile_update_errors' ),  10, 3 );
 		add_action( 'user_profile_update_errors', array( $this, 'user_profile_update_role'   ), 999, 3 );
 
 		// Modify the header logo, URL, and link title displayed on wp-login.php
@@ -52,15 +58,23 @@ class WSUWP_SSO_Authentication {
 		add_filter( 'login_headertitle', array( $this, 'login_header_title' ), 10, 1 );
 
 		// Add messaging to direct toward Network ID authentication.
-		add_filter( 'login_message',     array( $this, 'login_message'      ), 10, 1 );
-	}
+		add_action( 'login_form',     array( $this, 'login_message'      ), 10, 1 );
 
-	/**
-	 * Enqueue the stylesheet and Javascript required for custom login functionality.
-	 */
-	public function login_enqueue_scripts() {
-		wp_enqueue_style(  'wsuwp-login', plugins_url( 'css/wsuwp-login.css', __FILE__ ), array(), $this->script_version );
-		wp_enqueue_script( 'wsuwp-login', plugins_url( 'js/wsuwp-login.js', __FILE__ ), array( 'jquery' ), $this->script_version, true );
+		add_filter( 'wp_login_errors', array( $this, 'login_errors' ), 10, 1 );
+
+		// Selectively show password fields for users.
+		add_filter( 'show_password_fields', array( $this, 'show_password_fields' ), 10, 2 );
+
+		// On non-multisite, we need to do some magic.
+		add_action( 'admin_init', array( $this, 'adjust_passwords' ), 10 );
+
+		add_action( 'personal_options', array( $this, 'personal_options' ) );
+
+		// By default, site admins cannot edit network users in a multisite configuration. Returning
+		// true on this filter allows this to happen. We continue to restrict this editing with our
+		// map_meta_cap filter to only users that are not WSU specific.
+		add_filter( 'enable_edit_any_user_configuration', '__return_true', 11 );
+		add_filter( 'map_meta_cap', array( $this, 'site_admin_edit_user' ), 10, 4 );
 	}
 
 	/**
@@ -75,11 +89,34 @@ class WSUWP_SSO_Authentication {
 	}
 
 	/**
+	 * Store the type of authentication assigned to a user.
+	 *
+	 * @param int $user_id ID of the user being edited.
+	 */
+	public function edit_user_profile_update( $user_id ) {
+		if ( isset( $_POST['wsuwp_user_type'] ) && 'standard' === $_POST['wsuwp_user_type'] ) {
+			$current_user_type = $this->get_user_type( $user_id );
+			update_user_meta( $user_id, '_wsuwp_sso_user_type', $_POST['wsuwp_user_type'] );
+			if ( $current_user_type != $_POST['wsuwp_user_type'] ) {
+				$this->recent_update = true;
+			}
+		} else {
+			update_user_meta( $user_id, '_wsuwp_sso_user_type', 'nid' );
+		}
+	}
+
+	/**
 	 * Enforce strong passwords when a user profile is edited.
 	 *
 	 * @param WP_Error $errors Errors generated during the profile update process.
+	 * @param bool     $update Not used. Indicates if this is an update procedure.
+	 * @param Object   $user   Current user data being processed.
 	 */
-	public function user_profile_update_errors( $errors ) {
+	public function user_profile_update_errors( $errors, $update, $user ) {
+		if ( $this->recent_update || false === $this->show_password_fields( true, $user ) ) {
+			return;
+		}
+
 		if ( '' === $_POST['pass1'] && '' === $_POST['pass2'] ) {
 			return;
 		}
@@ -90,10 +127,11 @@ class WSUWP_SSO_Authentication {
 	}
 
 	/**
-	 * Detect role changes and enforce a random password if the administrator role is being set.
+	 * Detect role changes and enforce a random password if a secure role is being set. By default,
+	 * this applies to the administrator role. A filter is available to enforce multiple secure roles.
 	 *
 	 * @param WP_Error $errors Any current errors that have been compiled.
-	 * @param bool     $update Indicates if this is an update procedure.
+	 * @param bool     $update Not used. Indicates if this is an update procedure.
 	 * @param Object   $user   Current user data being built for update/add.
 	 */
 	public function user_profile_update_role( $errors, $update, $user ) {
@@ -102,8 +140,17 @@ class WSUWP_SSO_Authentication {
 			return;
 		}
 
-		// If a user's profile is being updated and they are an administrator, reset the password as it passes through.
-		if ( isset( $_POST['role'] ) && isset( $user->role ) && 'administrator' === $_POST['role'] && 'administrator' === $user->role ) {
+		$ad_auth_roles = apply_filters( 'wsuwp_sso_ad_auth_roles', array( 'administrator' ) );
+
+		// Be forceful about the administrator requirement.
+		if ( ! is_array( $ad_auth_roles ) ) {
+			$ad_auth_roles = array( 'administrator' );
+		} elseif ( ! in_array( 'administrator', $ad_auth_roles ) ) {
+			$ad_auth_roles[] = 'administrator';
+		}
+
+		// If a user's profile is being updated an their role has been marked as secure, reset the password as it passes through.
+		if ( isset( $_POST['role'] ) && isset( $user->role ) && in_array( 'administrator', $ad_auth_roles ) && in_array( $user->role, $ad_auth_roles ) ) {
 			$user->user_pass = $this->generate_password();
 			unset( $_POST['send_password'] ); // Don't send any password to the user.
 		}
@@ -134,24 +181,34 @@ class WSUWP_SSO_Authentication {
 
 	/**
 	 * Provide a link to authenticate through WSU SSO Authentication.
-	 *
-	 * @return string HTML output for authentication options.
 	 */
 	public function login_message() {
-		$output  = '<div class="wsu-login-choice"><a class="button-primary" rel="nofollow" href="' . esc_url( add_query_arg( 'wsu_sso_auth', '1', wp_login_url() ) ) . '">Authenticate with WSU Network ID</a>';
-
-		if ( true === apply_filters( 'wsuwp_sso_allow_wp_auth', false ) ) {
-			$output .= '<span id="wsuwp-auth" class="button-primary">Authenticate with WordPress</span></div>';
-		}
-
-		return $output;
+		echo '<p class="login-message">Please enter your WSU Network ID and password.</p>';
 	}
 
 	/**
 	 * Add inline CSS to alter the display of the login header image.
 	 */
 	public function login_head_css() {
-		?><style>.login h1 a { background-image: url('<?php echo esc_url( plugins_url( 'images/wsu-shield-140x140.png', __FILE__ ) ); ?>'); }</style><?php
+		?><style>
+		.login h1 a {
+				background-image: url('<?php echo esc_url( plugins_url( 'images/wsu-shield-140x140.png', __FILE__ ) ); ?>');
+		}
+		.login h1 a {
+			background-size: 140px 140px;
+			width: 140px;
+			height: 140px;
+			border-radius: 6px;
+		}
+		.login .login-message {
+			color: #777;
+			font-size: 14px;
+			padding-bottom: 16px;
+		}
+		#nav {
+			display: none;
+		}
+		</style><?php
 	}
 
 	/**
@@ -173,20 +230,128 @@ class WSUWP_SSO_Authentication {
 	}
 
 	/**
+	 * Establish an initial ldap_connect and anonymous ldap_bind with the AD server.
+	 *
+	 * @return bool True if successful. False if not.
+	 */
+	private function _connect() {
+		$this->ldap_link_id = ldap_connect( 'ldap://directory.ad.wsu.edu/', 389 );
+
+		if ( false === $this->ldap_link_id ) {
+			$this->last_error = 'Initial connection refused.';
+			return false;
+		}
+
+		$ldap_set_protocol = ldap_set_option( $this->ldap_link_id, LDAP_OPT_PROTOCOL_VERSION, 3 );
+
+		if ( false === $ldap_set_protocol ) {
+			$this->last_error = ldap_error( $this->ldap_link_id );
+			return false;
+		}
+
+		$ldap_set_referrals = ldap_set_option( $this->ldap_link_id, LDAP_OPT_REFERRALS, 0 );
+
+		if ( false === $ldap_set_referrals ) {
+			$this->last_error = ldap_error( $this->ldap_link_id );
+			return false;
+		}
+
+		$ldap_bound = @ldap_bind( $this->ldap_link_id, null, null );
+
+		if ( false === $ldap_bound ) {
+			$this->last_error = ldap_error( $this->ldap_link_id );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
 	 * Perform login operations when wp-login.php is loaded.
 	 */
 	public function login() {
+		$ldap = true;
 
-		// Allow authentication with WordPress if filtered for `true`.
-		if ( true === apply_filters( 'wsuwp_sso_allow_wp_auth', false ) ) {
-			// Look for actual login attempts and process accordingly.
-			if ( isset( $_POST['log'] ) && isset( $_POST['pwd'] ) ) {
-				if ( ! isset( $_POST['wp-submit'] ) || ! isset( $_POST['redirect_to'] ) ) {
-					die(); // Intentional silence.
-				} else {
-					return;
+		// Look for actual login attempts and process accordingly.
+		if ( isset( $_POST['log'] ) && isset( $_POST['pwd'] ) ) {
+			if ( ! isset( $_POST['wp-submit'] ) || ! isset( $_POST['redirect_to'] ) ) {
+				die(); // Intentional silence.
+			}
+
+			// Reject any authentication attempts that are made without a username.
+			if ( empty( trim( $_POST['log'] ) ) ) {
+				$this->last_error = 'A username is required to authenticate.';
+				unset( $_POST['log'] );
+				unset( $_POST['pwd'] );
+				add_filter( 'wp_login_errors', array( $this, 'sso_login_error' ), 15 );
+				return;
+			}
+
+			// Reject any authentication attempts that are made without a password.
+			if ( empty( trim( $_POST['pwd'] ) ) ) {
+				$this->last_error = 'A password is required to authenticate.';
+				$this->attempted_user = $_POST['log'];
+				unset( $_POST['log'] );
+				unset( $_POST['pwd'] );
+				add_filter( 'wp_login_errors', array( $this, 'sso_login_error' ), 15 );
+				return;
+			}
+
+			if ( true === apply_filters( 'wsuwp_sso_allow_wp_auth', false ) ) {
+				/**
+				 * If standard authentication is allowed in general, we should first look
+				 * to see if it is allowed for this specific user.
+				 */
+				$attempt_user = get_user_by( 'login', sanitize_user( $_POST['log'] ) );
+				if ( $attempt_user ) {
+					if ( 'standard' === $this->get_user_type( $attempt_user->ID ) ) {
+						$ldap = false;
+					}
 				}
 			}
+
+			// Always allow local authentication unless explicitly filtered.
+			if ( defined( 'WSU_LOCAL_CONFIG' ) && WSU_LOCAL_CONFIG && false === apply_filters( 'wsuwp_sso_force_local_ad', false ) ) {
+				$ldap = false;
+			}
+
+			if ( $ldap ) {
+				// Open an initial LDAP connection.
+				if ( false === $this->_connect() ) {
+					// Temporarily store the attempted username.
+					$this->attempted_user = $_POST['log'];
+					unset( $_POST['log'] );
+					unset( $_POST['pwd'] );
+					add_filter( 'wp_login_errors', array( $this, 'sso_login_error' ), 15 );
+					return;
+				}
+
+				// Handle friend IDs in addition to standard WSU logins.
+				$username_parts = explode( '@', $_POST['log'] );
+				if ( isset( $username_parts[1] ) ) {
+					$account_suffix = '';
+				} else {
+					$account_suffix = '@wsu.edu';
+				}
+
+				$username = sanitize_user( $_POST['log'] );
+
+				$result = @ldap_bind( $this->ldap_link_id, $username . $account_suffix, $_POST['pwd'] );
+
+				if ( $result ) {
+					$this->process_sso_authentication( $username );
+				} else {
+					// Temporarily store the attempted username.
+					$this->attempted_user = $_POST['log'];
+					$this->last_error = ldap_error( $this->ldap_link_id );
+
+					unset( $_POST['log'] );
+					unset( $_POST['pwd'] );
+					add_filter( 'wp_login_errors', array( $this, 'sso_login_error' ), 15 );
+				}
+			}
+
+			return;
 		}
 
 		// Allow a logout request to process properly.
@@ -202,25 +367,64 @@ class WSUWP_SSO_Authentication {
 			wp_safe_redirect( home_url() );
 			exit;
 		}
+	}
 
-		// This is a return from secure.wsu.edu and should be processed accordingly.
-		if ( isset( $_GET['wsu_sso_auth'] ) ) {
-			$this->process_sso_authentication();
+	/**
+	 * Provide a custom error if active directory authentication is not successful.
+	 *
+	 * @param WP_Error $errors Any existing errors attached to this login page load.
+	 *
+	 * @return WP_Error Modified collection of errors.
+	 */
+	public function sso_login_error( $errors ) {
+		if ( ! is_wp_error( $errors ) ) {
+			$errors = new WP_Error();
 		}
+
+		if ( 'Invalid credentials' === $this->last_error ) {
+			$errors->add( 'incorrect_password', 'Incorrect WSU Network ID or password' );
+		} elseif ( empty( $this->last_error ) ) {
+			$errors->add( 'incorrect_password', $this->last_error . ' | Please contact University Communications.' );
+		} else {
+			$errors->add( 'incorrect_password', $this->last_error );
+		}
+
+		// Reset the previously attempted WSU Network ID that was removed from the global POST to
+		// skip default WordPress processing.
+		$_POST['log'] = $this->attempted_user;
+
+		return $errors;
+	}
+
+	/**
+	 * Filter the default list of login errors to remove the "username exists" messaging.
+	 *
+	 * @param WP_Error $errors Errors currently attached to this login page load.
+	 *
+	 * @return WP_Error Modified collection of errors.
+	 */
+	public function login_errors( $errors ) {
+		if ( ! is_wp_error( $errors ) ) {
+			return $errors;
+		}
+
+		if ( in_array( $errors->get_error_code(), array( 'incorrect_password' ) ) ) {
+			$errors = new WP_Error();
+			$errors->add( 'incorrect_password', 'Incorrect username or password' );
+		}
+
+		return $errors;
 	}
 
 	/**
 	 * Process the steps required for SSO authentication to be successful.
 	 */
-	private function process_sso_authentication() {
+	private function process_sso_authentication( $ad_username ) {
 		/* @var WP_Roles $wp_roles */
 		global $wp_roles;
 
-		// We can expect a valid username to be returned here.
-		$ad_username = sanitize_user( $this->validate_authentication() );
-
 		// If an empty Network Id is returned from the API request, we're in trouble.
-		if ( '' == $ad_username ) {
+		if ( empty( $ad_username ) ) {
 			wp_die( "Authentication was successful, but an empty user name was returned. Please report this error to University Web Communication." );
 		}
 
@@ -260,6 +464,8 @@ class WSUWP_SSO_Authentication {
 					wp_die( "We tried to create a new user for you but the attempt was not successful. Please report this error to University Web Communication." );
 				}
 
+				do_action( 'wsuwp_sso_user_created', $new_user_id );
+
 				$this->set_authentication( $new_user_id, $ad_username );
 			}
 		}
@@ -288,82 +494,135 @@ class WSUWP_SSO_Authentication {
 	}
 
 	/**
-	 * Validate authentication based on the user's session cookie.
+	 * Retrieve the type of authentication associated with a user.
 	 *
-	 * The data we receive back from a successful authentication request is
-	 * the following array:
-	 * 		[0]=> string(17) "Valid credentials"
-	 * 		[1]=> string(11) "WSU ID: 111"
-	 * 		[2]=> string(23) "Network ID: user.name"
-	 * 		[3]=> string(30) "Created: 10/11/2013 4:50:38 PM"
-	 * 		[4]=> string(31) "Accessed: 10/11/2013 4:51:59 PM"
-	 * 		[5]=> string(0) ""
+	 * @param int $user_id ID of the user.
 	 *
-	 * We only use Network ID at this time, but this comment serves to track the structure and
-	 * possible changes over time.
-	 *
-	 * @return string|void User's network ID if the session cookie valid. Redirects otherwise.
+	 * @return string The type of user authentication for the user.
 	 */
-	private function validate_authentication() {
-		$destination_url = add_query_arg( 'wsu_sso_auth', '1', home_url( $_SERVER['REQUEST_URI'] ) );
-		$login_url = $this->auth_login_url . "?dest=" . urlencode( $destination_url );
-
-		// If an AD cookie is not set, redirect to the active directory login site.
-		if ( ! isset( $_COOKIE['pasessionid'] ) || '' == $_COOKIE['pasessionid'] ) {
-			wp_redirect( $login_url );
-			exit(0);
+	public function get_user_type( $user_id ) {
+		$user_type = get_user_meta( $user_id, '_wsuwp_sso_user_type', true );
+		if ( 'standard' !== $user_type ) {
+			$user_type = 'nid';
 		}
 
-		$authentication_url = $this->auth_validate_url . '?session_id=' . urlencode( $_COOKIE['pasessionid'] ) . '&client_address=' . urlencode( $_SERVER['REMOTE_ADDR'] );
-
-		$output = wp_remote_get( $authentication_url );
-		$output = wp_remote_retrieve_body( $output );
-
-		// If the HTTP request is not successful, we're forced to go back to the login url.
-		if ( is_wp_error( $output ) ) {
-			wp_redirect( $login_url );
-			exit(0);
-		}
-
-		// Even if output is only one line, this explode will ensure we're dealing with an array.
-		$output = explode( PHP_EOL, $output );
-		$output = array_map( 'trim', $output );
-
-		if ( 'Valid credentials' == $output[0] ) {
-			$key = 'Network ID: ';
-
-			// Try to return a valid network ID.
-			foreach ( $output as $line ) {
-				if ( 0 == strncmp( $key, $line, strlen( $key ) ) ) {
-					return substr( $line, strlen( $key ) );
-				}
-			}
-		}
-
-		// No key was found, redirect to the login URL.
-		wp_redirect( $login_url );
-		exit(0);
+		return $user_type;
 	}
 
 	/**
-	 * Log the user out of the session by calling the WSU AD API and by destroying the built in
-	 * cookies provided by WordPress through wp_logout(). Once logged out, redirect to the home
-	 * page of this site to avoid confusion.
+	 * Only show password fields for users if standard authentication is allowed.
+	 *
+	 * This is a blanket check. A more granular check will also be needed for when
+	 * mixed users are being added. Only non-NID users should have this option.
+	 *
+	 * @param bool $show_fields The current setting.
+	 * @param bool|WP_User $profileuser The user being edited. False if adding a new user.
+	 *
+	 * @return bool True if password fields should show. False if not.
 	 */
-	public function logout() {
-		check_admin_referer('log-out');
-
-		// If auth was completed via WSU Network ID, destroy that session as well.
-		if ( isset( $_COOKIE['pasessionid'] ) ) {
-			wp_remote_get( $this->auth_logout_url . '?session_id=' . urlencode( $_COOKIE['pasessionid'] ) . '&client_address=' . urlencode( $_SERVER['REMOTE_ADDR'] ) );
+	public function show_password_fields( $show_fields, $profileuser = false ) {
+		// When adding a new user, profileuser is not available. We can assume a the filter default.
+		if ( true === apply_filters( 'wsuwp_sso_allow_wp_auth', false ) && false === $profileuser ) {
+			return true;
 		}
 
-		wp_logout();
+		if ( true === apply_filters( 'wsuwp_sso_allow_wp_auth', false ) && 'standard' === $this->get_user_type( $profileuser->ID ) ) {
+			return true;
+		}
 
-		wp_safe_redirect( home_url() );
-		exit;
+		return false;
 	}
 
+	/**
+	 * When adding a new user to a single site installation, we need to fake the entry
+	 * of a password as it is expected by `user_edit()` when the default process fires.
+	 *
+	 * Once a new user is added, their network type can be adjusted in the user settings
+	 * so that a non network ID password can be assigned if the site supports non NID
+	 * users.
+	 */
+	public function adjust_passwords() {
+		if ( is_multisite() ) {
+			return;
+		}
+
+		$user_pass = $this->generate_password();
+		$_POST['pass1'] = $user_pass;
+		$_POST['pass2'] = $user_pass;
+	}
+
+	/**
+	 * Allow the type of user to be selected through a dropdown box.
+	 *
+	 * The default option will be via WSU Network ID. In some instances, standard
+	 * authentication will be available as well.
+	 *
+	 * @param WP_User $profileuser Object containing user being edited.
+	 */
+	public function personal_options( $profileuser ) {
+		if ( IS_PROFILE_PAGE ) {
+			return;
+		}
+
+		$user_type = $this->get_user_type( $profileuser->ID );
+		?>
+		<tr>
+			<th><label for="wsuwp_user_type">User Type:</label></th>
+			<td>
+				<select name="wsuwp_user_type" id="wsuwp-user-type">
+					<option value="nid" <?php selected( 'nid', $user_type, true ); ?>>WSU Network ID</option>
+					<option value="standard" <?php selected( 'standard', $user_type, true ); ?>>Standard Authentication</option>
+				</select>
+			</td>
+		</tr>
+		<?php
+	}
+
+	/**
+	 * Give site administrators the ability to edit individual network users if
+	 * they are not WSU Network IDs.
+	 *
+	 * @param $caps
+	 * @param $cap
+	 * @param $user_id
+	 * @param $args
+	 *
+	 * @return mixed
+	 */
+	public function site_admin_edit_user( $caps, $cap, $user_id, $args ) {
+		if ( isset( $caps[0] ) && 'do_not_allow' === $caps[0] && 'edit_user' === $cap ) {
+
+			// This logic only applies to site administrators.
+			if ( false === current_user_can( 'administrator' ) ) {
+				return $caps;
+			}
+
+			$user = get_user_by( 'id', $args[0] );
+
+			// Our check relies an a user existing.
+			if ( false === $user ) {
+				return $caps;
+			}
+
+			// Our check relies on an email address attached to the user.
+			if ( ! isset( $user->user_email ) || empty( $user->user_email ) ) {
+				return $caps;
+			}
+
+			$user_email_domain = array_pop( explode( '@', $user->user_email ) );
+			$user_email_domain = explode( '.', $user_email_domain );
+			$edu = array_pop( $user_email_domain );
+			$wsu = array_pop( $user_email_domain );
+
+			// An email address must end with wsu.edu to be considered non-WSU. At this point,
+			// we give the site administrator the ability to edit the user.
+			if ( 'edu' !== $edu || 'wsu' !== $wsu ) {
+				$caps[0] = 'edit_users';
+			}
+		}
+
+		return $caps;
+	}
 }
 new WSUWP_SSO_Authentication();
 
@@ -375,11 +634,6 @@ new WSUWP_SSO_Authentication();
 function wsuwp_is_user_logged_in() {
 	// Check for a valid WordPress authentication first.
 	if ( false === is_user_logged_in() ) {
-		return false;
-	}
-
-	// Our best way of determining a current authentication is via $_COOKIE
-	if ( ! isset( $_COOKIE['pasessionid'] ) || empty( $_COOKIE['pasessionid'] ) ) {
 		return false;
 	}
 

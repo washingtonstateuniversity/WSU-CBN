@@ -2,8 +2,8 @@
 /*
 Plugin Name: Query Monitor
 Description: Monitoring of database queries, hooks, conditionals and more.
-Version:     2.6.7
-Plugin URI:  https://github.com/johnbillion/query-monitor
+Version:     2.6.8
+Plugin URI:  https://querymonitor.com/
 Author:      John Blackbourn
 Author URI:  https://johnblackbourn.com/
 Text Domain: query-monitor
@@ -154,7 +154,7 @@ class QueryMonitor extends QM_Plugin {
 
 		} else {
 
-			if ( ! did_action( 'wp' ) ) {
+			if ( ! ( did_action( 'wp' ) or did_action( 'login_init' ) ) ) {
 				return false;
 			}
 

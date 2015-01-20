@@ -285,11 +285,6 @@ body.js #qm-wrapper {
 	color: #ccc !important;
 }
 
-.qm span.qm-na,
-.qm tr.qm-na {
-	color: #ccc !important;
-}
-
 .qm .qm-sql {
 	word-wrap: break-word !important;
 	word-break: break-all !important;
@@ -340,8 +335,7 @@ body.js #qm-wrapper {
 	background: #eee !important;
 }
 
-.qm .qm-warn,
-.qm .qm-warn span.qm-na {
+.qm .qm-warn {
 	color: #f00 !important;
 }
 
@@ -416,16 +410,28 @@ html[dir="rtl"] .qm-ltr {
 	text-align: right !important;
 }
 
-html[dir="rtl"] .qm td.qm-priority {
-    padding: 1px 0 1px 0.75em !important;
-}
-
-html[dir="rtl"] .qm td.qm-var {
-	padding: 1px 0 1px 1.5em !important;
-	text-align: left !important;
-}
-
 html[dir="rtl"] body:not(.iframe).sticky-menu #qm {
-	margin-right: 150px !important;
+	margin-right: 160px !important;
 	margin-left: 0 !important;
+}
+
+@media all and (max-width: 900px) {
+	html[dir="rtl"] body:not(.iframe).sticky-menu #qm {
+		margin-right: 36px !important;
+		margin-left: 0 !important;
+	}
+}
+
+html[dir="rtl"] body:not(.iframe).sticky-menu.folded #qm {
+	margin-right: 36px !important;
+	margin-left: 0 !important;
+}
+
+html[dir="rtl"] #qm {
+	text-align: right !important;
+}
+
+html[dir="rtl"] .qm td,
+html[dir="rtl"] .qm th {
+	text-align: right !important;
 }
