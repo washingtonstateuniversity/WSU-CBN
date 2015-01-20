@@ -86,7 +86,7 @@ $skip=array(
 	'phone_numbers::id',
 	'phone_numbers::order',
 	'phone_numbers::preferred',
-	'email',
+	//'email',
 	'links',
 	'phone_numbers'
 );
